@@ -1,0 +1,69 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@import 'normalize.css';
+
+:root {
+    --primary: #0c66e4;
+    --light-blue: #e9f2ff;
+    --primary-cyan: #e9f2ff;
+    --text-color: #172b4d;
+    --dark-slate-blue: #44546f;
+    --light-gray: #626f86;
+    --border-gray: #091e4224;
+    --hover-background: #091e420f;
+    --default-layout-height: 60px;
+    --default-layout-width: 1150px;
+    --default-layout-horizontal-spacer: 24px;
+    --font-family: sans-serif;
+    --ds-shadow-overlay: 0px 8px 12px #091e4226, 0px 0px 1px #091e424f;
+}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+}
+
+body {
+    font-family: var(--font-family);
+    font-size: 1.6rem;
+    line-height: 1.5;
+    text-rendering: optimizeLegibility;
+    overflow-y: overlay;
+}
+
+html *::-webkit-scrollbar {
+    border-radius: 0;
+    width: 8px;
+}
+
+html *::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(22, 24, 35, 0.06);
+}
+
+html *::-webkit-scrollbar-track {
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+button,
+input,
+[tabindex] {
+    border: none;
+    outline: none;
+}
+a {
+    color: var(--text-color);
+}
+
+input[type='range' i] {
+    appearance: none;
+}
+
+@font-face {
+    font-family: system-ui, 'Segoe UI', 'Open Sans', 'Helvetica Neue', sans-serif;
+    src: url('../src/assets/fonts/Proxima-Nova-Bold.woff');
+}
