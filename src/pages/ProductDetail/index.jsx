@@ -8,7 +8,7 @@ import Button from '~/components/Button';
 import ImageSlider from '~/components/ImageSlider';
 import CountNumber from '~/components/CountNumber';
 import MenuProduct from '~/components/MenuProduct';
-import { GetProductBySlug } from '~/services/Product';
+import { GetProduct } from '~/services/Product';
 import routes from '~/config/routes';
 import { useStorage } from '~/Contexts';
 import { AddCart } from '~/services/Cart';
@@ -26,15 +26,16 @@ function ProductDetail() {
 
     useEffect(() => {
         const getProductById = () => {
-            GetProductBySlug({ slug })
+            GetProduct({ slug })
                 .then((res) => {
                     setLoading(true);
-                    const result = {
-                        ...res,
-                        ...res?.product,
-                        count: 1,
-                    };
-                    setProduct(result);
+                    console.log(res);
+                    // const result = {
+                    //     ...res,
+                    //     ...res?.product,
+                    //     count: 1,
+                    // };
+                    // setProduct(result);
                 })
                 .catch((err) => {
                     console.log(err);

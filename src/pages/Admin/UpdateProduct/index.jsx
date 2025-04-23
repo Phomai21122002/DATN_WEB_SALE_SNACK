@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { GetCategories } from '~/services/Category';
 import { useNavigate, useParams } from 'react-router-dom';
 import routes from '~/config/routes';
-import { AdminUpdateProduct, GetProductBySlug } from '~/services/Product';
+import { AdminUpdateProduct, GetProduct } from '~/services/Product';
 import { Categories } from '~/components/MenuCategory/Constains';
 
 function UpdateProduct() {
@@ -24,7 +24,7 @@ function UpdateProduct() {
                 const res = await GetCategories();
                 const resultRes = Categories(res.data);
                 setCategories(resultRes);
-                const resProduct = await GetProductBySlug({ slug });
+                const resProduct = await GetProduct({ slug });
                 setPreviewImages(resProduct.imageDtos.map((image) => image.url));
                 reset({
                     id: resProduct.product.id,

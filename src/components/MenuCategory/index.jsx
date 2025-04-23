@@ -13,8 +13,7 @@ function MenuCategory() {
         const getAllCategory = async () => {
             try {
                 const res = await GetCategories();
-                const resultRes = Categories(res.data);
-                setCategories(resultRes);
+                setCategories(res);
             } catch (err) {
                 console.error('Error fetching category data: ', err);
             }
@@ -61,7 +60,7 @@ function MenuCategory() {
                             >
                                 <div className="relative w-full h-[100px] overflow-hidden rounded-[100%]">
                                     <img
-                                        src={category.url || noImage}
+                                        src={category.imageCategories[0].url || noImage}
                                         alt={category.name}
                                         className="w-full h-full object-cover transform transition-all duration-300 group-hover:scale-105"
                                     />

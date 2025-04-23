@@ -7,11 +7,11 @@ import Storage from '~/Contexts/Storage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <React.StrictMode>
-        <Storage>
-            <App />
-        </Storage>
-    </React.StrictMode>,
+    // <React.StrictMode>
+    <Storage>
+        <App />
+    </Storage>,
+    // </React.StrictMode>,
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -57,7 +57,7 @@ function PopperCart({ id, open, anchorEl, dataCart, onClose }) {
                             {dataCart.map((cart, index) => (
                                 <Link
                                     key={cart.id}
-                                    to={routes.product.replace(':slug', cart?.product.slug)}
+                                    // to={routes.product.replace(':slug', cart?.product.slug)}
                                     style={{ textDecoration: 'none', color: 'inherit' }}
                                 >
                                     <Box
@@ -83,8 +83,8 @@ function PopperCart({ id, open, anchorEl, dataCart, onClose }) {
                                             }}
                                         >
                                             <img
-                                                src={cart?.listImage?.[0]?.url}
-                                                alt={cart?.listImage?.[0]?.description}
+                                                src={cart?.urls?.[0]}
+                                                alt={cart?.products?.name}
                                                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                             />
                                         </Box>
@@ -94,13 +94,13 @@ function PopperCart({ id, open, anchorEl, dataCart, onClose }) {
                                             }}
                                         >
                                             <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.primary' }}>
-                                                {cart?.product.name}
+                                                {cart?.products.name}
                                             </Typography>
                                             <Typography
                                                 variant="body2"
                                                 sx={{ color: 'text.secondary', marginTop: 0.5 }}
                                             >
-                                                Số lượng: {cart.quantity}
+                                                Số lượng: {cart?.products.quantity}
                                             </Typography>
                                         </Box>
                                         <Typography
@@ -111,7 +111,7 @@ function PopperCart({ id, open, anchorEl, dataCart, onClose }) {
                                                 whiteSpace: 'nowrap',
                                             }}
                                         >
-                                            {cart?.product.price.toLocaleString()} ₫
+                                            {cart?.products.price.toLocaleString()} ₫
                                         </Typography>
                                     </Box>
                                     {index < dataCart.length - 1 && <Divider />}
@@ -143,7 +143,10 @@ function PopperCart({ id, open, anchorEl, dataCart, onClose }) {
                                     color: 'error.main',
                                 }}
                             >
-                                {dataCart.reduce((total, item) => total + item.total, 0).toLocaleString()} ₫
+                                {dataCart
+                                    .reduce((total, item) => total + item?.products?.price * item?.products.quantity, 0)
+                                    .toLocaleString()}{' '}
+                                ₫
                             </Typography>
                         </Box>
                         <Box

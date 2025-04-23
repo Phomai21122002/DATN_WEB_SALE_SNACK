@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { Badge, Divider } from '@mui/material';
@@ -12,11 +12,23 @@ import AvatarUser from '../AvatarUser';
 import PopperProfile from '../PopperProfile';
 import { options, optionsUser } from '../PopperProfile/Constains';
 import PopperCart from '../PopperCart';
+import { GetCarts } from '~/services/Cart';
 
 const Header = () => {
-    const { userData, dataCart } = useStorage();
+    const { userData, dataCart, setDataCart, isLoggedIn } = useStorage();
     const [anchorEl, setAnchorEl] = useState(null);
     const [anchorElCart, setAnchorElCart] = useState(null);
+
+    useEffect(() => {
+        const getDataCart = async () => {
+            if (isLoggedIn && userData.id) {
+                const res = await GetCarts(userData.id);
+                setDataCart(res);
+            }
+        };
+        getDataCart();
+        // eslint-disable-next-line
+    }, [userData]);
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -81,7 +93,7 @@ const Header = () => {
                                     <ShoppingCartOutlinedIcon sx={{ fontSize: '16px' }} />
                                 </Badge>
                             </button>
-                            {userData.role === 'User' && (
+                            {userData?.role?.name === 'User' && (
                                 <PopperCart
                                     id={idCart}
                                     open={openCart}

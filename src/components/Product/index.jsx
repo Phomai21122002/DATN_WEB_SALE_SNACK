@@ -6,9 +6,7 @@ import { Link } from 'react-router-dom';
 import routes from '~/config/routes';
 
 function Product({ product, updateQuantity, addToCart }) {
-    const firstImageUrl =
-        product.imageDtos && product.imageDtos.length > 0 ? product.imageDtos[0]?.url : 'default-image-url.jpg';
-    product = product.product;
+    const firstImageUrl = product.urls && product.urls.length > 0 ? product.urls[0] : 'default-image-url.jpg';
     return (
         <div
             key={product.id}

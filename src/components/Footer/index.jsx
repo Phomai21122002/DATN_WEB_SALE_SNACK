@@ -1,93 +1,71 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import routes from '~/config/routes';
+
+import logoSale from '~/assets/images/Logo-sales.png';
+
 function Footer() {
     return (
         <footer className="bg-neutral-100 text-center text-neutral-600 dark:bg-neutral-600 dark:text-neutral-200 lg:text-left mt-[50px]">
             {/* <!-- Main container div: holds the entire content of the footer, including four sections (TW Elements, Products, Useful links, and Contact), with responsive styling and appropriate padding/margins. --> */}
-            <div className="mx-6 py-10 text-center md:text-left">
-                <div className="grid-1 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+            <div className="max-w-[80%] mx-auto py-10 text-center md:text-left">
+                <div className="grid-1 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {/* <!-- TW Elements section --> */}
                     <div className="">
-                        <h6 className="mb-4 flex items-center justify-center text-sm font-semibold uppercase md:justify-start">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                fill="currentColor"
-                                className="mr-3 h-4 w-4"
-                            >
-                                <path d="M12.378 1.602a.75.75 0 00-.756 0L3 6.632l9 5.25 9-5.25-8.622-5.03zM21.75 7.93l-9 5.25v9l8.628-5.032a.75.75 0 00.372-.648V7.93zM11.25 22.18v-9l-9-5.25v8.57a.75.75 0 00.372.648l8.628 5.033z" />
-                            </svg>
-                            TW Elements
+                        <h6 className="mb-4 flex items-center justify-center text-sm font-semibold md:justify-start">
+                            <Link to={routes.home}>
+                                <img
+                                    src={logoSale}
+                                    alt="Logo"
+                                    className="w-14 h-14 object-contain cursor-pointer mr-2"
+                                />
+                            </Link>
+                            Phô Mai Shop
                         </h6>
-                        <p className="text-sm">
-                            Here you can use rows and columns to organize your footer content. Lorem ipsum dolor sit
-                            amet, consectetur adipisicing elit.
+                        <p className="text-sm text-justify">
+                            Chào mừng bạn đến với shop đồ ăn vặt của chúng mình! Tại đây, bạn sẽ tìm thấy đủ loại món
+                            ngon từ bánh kẹo, snack, trà sữa siêu hấp dẫn. Hãy để tụi mình làm thỏa mãn cơn thèm ăn vặt
+                            của bạn mỗi ngày nhé!
                         </p>
                     </div>
                     {/* <!-- Products section --> */}
                     <div className="text-sm">
-                        <h6 className="mb-4 flex justify-center font-semibold uppercase md:justify-start">Products</h6>
-                        <p className="mb-4">
-                            <a href="/" className="text-neutral-600 dark:text-neutral-200">
-                                Angular
-                            </a>
-                        </p>
-                        <p className="mb-4">
-                            <a href="/" className="text-neutral-600 dark:text-neutral-200">
-                                React
-                            </a>
-                        </p>
-                        <p className="mb-4">
-                            <a href="/" className="text-neutral-600 dark:text-neutral-200">
-                                Vue
-                            </a>
-                        </p>
-                        <p>
-                            <a href="/" className="text-neutral-600 dark:text-neutral-200">
-                                Laravel
-                            </a>
-                        </p>
-                    </div>
-                    {/* <!-- Useful links section --> */}
-                    <div className="text-sm">
                         <h6 className="mb-4 flex justify-center font-semibold uppercase md:justify-start">
-                            Useful links
+                            Truy cập nhanh
                         </h6>
                         <p className="mb-4">
                             <a href="/" className="text-neutral-600 dark:text-neutral-200">
-                                Pricing
+                                Sản phẩm bán chạy
                             </a>
                         </p>
                         <p className="mb-4">
                             <a href="/" className="text-neutral-600 dark:text-neutral-200">
-                                Settings
+                                Sản phẩm mới ra mắt
                             </a>
                         </p>
                         <p className="mb-4">
                             <a href="/" className="text-neutral-600 dark:text-neutral-200">
-                                Orders
-                            </a>
-                        </p>
-                        <p>
-                            <a href="/" className="text-neutral-600 dark:text-neutral-200">
-                                Help
+                                Giỏ hàng
                             </a>
                         </p>
                     </div>
                     {/* <!-- Contact section --> */}
                     <div className="text-sm">
-                        <h6 className="mb-4 flex justify-center font-semibold uppercase md:justify-start">Contact</h6>
+                        <h6 className="mb-4 flex justify-center font-semibold uppercase md:justify-start">Liên hệ</h6>
+
                         <p className="mb-4 flex items-center justify-center md:justify-start">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
                                 fill="currentColor"
-                                className="mr-3 h-5 w-5"
+                                className="mr-3 h-7 w-7"
                             >
                                 <path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z" />
                                 <path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" />
                             </svg>
-                            New York, NY 10012, US
+                            Tòa E4, Khu công nghiệp Hòa Khánh, Phường Hòa Khánh Bắc, Quận Liên Chiểu, TP. Đà Nẵng
                         </p>
+
                         <p className="mb-4 flex items-center justify-center md:justify-start">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -98,8 +76,9 @@ function Footer() {
                                 <path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z" />
                                 <path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z" />
                             </svg>
-                            info@example.com
+                            thanhmai.20570@gmail.com
                         </p>
+
                         <p className="mb-4 flex items-center justify-center md:justify-start">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -113,8 +92,9 @@ function Footer() {
                                     clipRule="evenodd"
                                 />
                             </svg>
-                            + 01 234 567 88
+                            +84 774 758 142
                         </p>
+
                         <p className="flex items-center justify-center md:justify-start">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -128,7 +108,7 @@ function Footer() {
                                     clipRule="evenodd"
                                 />
                             </svg>
-                            + 01 234 567 89
+                            +84 905 834 767
                         </p>
                     </div>
                 </div>
@@ -136,9 +116,9 @@ function Footer() {
 
             {/* <!--Copyright section--> */}
             <div className="bg-neutral-200 p-6 text-sm text-center dark:bg-neutral-700">
-                <span>© 2023 Copyright:</span>
+                <span>© 2024 - Thành lập từ năm 2024 bởi: </span>
                 <a className="font-semibold text-neutral-600 dark:text-neutral-400" href="https://tw-elements.com/">
-                    TW Elements
+                    Phô Mai
                 </a>
             </div>
         </footer>

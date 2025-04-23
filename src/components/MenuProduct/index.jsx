@@ -19,8 +19,8 @@ function MenuProduct({ title }) {
         const getAllProduct = async () => {
             try {
                 const res = await GetProducts();
-                const resultProducts = updatedProducts(res);
-                setProducts(resultProducts);
+                const resultRes = updatedProducts(res);
+                setProducts(resultRes);
             } catch (err) {
                 console.error('Error fetching product data: ', err);
             }
@@ -37,7 +37,7 @@ function MenuProduct({ title }) {
         if (userData && Object.keys(userData).length > 0) {
             const res = await AddCart({
                 quantity: quantity,
-                userId: userData?.userId,
+                userId: userData?.id,
                 productId: productId,
             });
             res && getDataCartNow();
@@ -49,9 +49,7 @@ function MenuProduct({ title }) {
     const updateQuantity = (id, newQuantity) => {
         setProducts((prevProducts) =>
             prevProducts.map((product) =>
-                product.product.id === id && product.product.quantity >= newQuantity
-                    ? { ...product, product: { ...product.product, count: newQuantity } }
-                    : product,
+                product.id === id && product.quantity >= newQuantity ? { ...product, count: newQuantity } : product,
             ),
         );
     };
@@ -75,7 +73,7 @@ function MenuProduct({ title }) {
                     <div className="grid grid-cols-5 gap-2 transition-all duration-500 p-1">
                         {products?.map((product) => (
                             <Product
-                                key={product.product.id}
+                                key={product.id}
                                 product={product}
                                 addToCart={addToCart}
                                 updateQuantity={updateQuantity}

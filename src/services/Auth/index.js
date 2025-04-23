@@ -1,10 +1,17 @@
 import request from '../request';
 
-export const SignIn = async (username, password) => {
-    const res = await request.post('/account/login', {
-        username: username,
+export const SignIn = async (email, password) => {
+    const res = await request.post('/Auth/login', {
+        email: email,
         password: password,
     });
+    console.log(res.data);
+    return res.data;
+};
+
+export const Roles = async () => {
+    const res = await request.get('/role/roles');
+    console.log(res.data);
     return res.data;
 };
 

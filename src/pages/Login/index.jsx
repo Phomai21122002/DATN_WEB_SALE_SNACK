@@ -19,7 +19,7 @@ const Login = memo(() => {
     const [isLoading, setIsLoading] = useState(false);
     const { handleSubmit, control } = useForm({
         defaultValues: {
-            username: '',
+            email: '',
             password: '',
         },
     });
@@ -31,9 +31,9 @@ const Login = memo(() => {
     }, [setIsLoggedIn]);
 
     const onLogin = async (values) => {
-        const { username, password } = values;
+        const { email, password } = values;
         setIsLoading(true);
-        SignIn(username, password)
+        SignIn(email, password)
             .then((res) => {
                 const decoded = jwtDecode(res.token);
                 decoded.role = decoded[role];
@@ -73,7 +73,7 @@ const Login = memo(() => {
 
                         <form onSubmit={handleSubmit(onLogin)} className="flex flex-col gap-4">
                             <Controller
-                                name="username"
+                                name="email"
                                 control={control}
                                 render={({ field }) => (
                                     <TextField
@@ -85,7 +85,7 @@ const Login = memo(() => {
                                                 padding: 1,
                                             },
                                         }}
-                                        placeholder="Input your username"
+                                        placeholder="Input your email"
                                     />
                                 )}
                             />

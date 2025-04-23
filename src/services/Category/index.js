@@ -2,7 +2,7 @@ import request from '../request';
 
 export const GetCategories = async () => {
     try {
-        const res = await request.get('/Categories');
+        const res = await request.get('/category/categories');
         return res.data;
     } catch (error) {
         throw error;

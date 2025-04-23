@@ -1,8 +1,7 @@
 import Cookies from 'js-cookie';
-import { jwtDecode } from 'jwt-decode';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { role } from '~/pages/Login/constants/logo';
-import { GetCart } from '~/services/Cart';
+import { GetCarts } from '~/services/Cart';
+import { GetProfile } from '~/services/User';
 
 export const StorageContext = createContext();
 
@@ -13,8 +12,8 @@ function GlobalStates({ children }) {
 
     const getDataCartNow = async () => {
         const token = Cookies.get('authToken');
-        if (token) {
-            const res = await GetCart();
+        if (token && userData.id) {
+            const res = await GetCarts(userData.id);
             setDataCart(res);
         }
     };
@@ -33,25 +32,12 @@ function GlobalStates({ children }) {
         const getData = async () => {
             const token = Cookies.get('authToken');
             if (token) {
-                const decodedToken = jwtDecode(token);
-                decodedToken.role = decodedToken[role];
-                delete decodedToken[role];
-                setUserData(decodedToken);
+                const res = await GetProfile();
+                setUserData(res);
                 setIsLoggedIn(true);
             }
         };
         getData();
-    }, []);
-
-    useEffect(() => {
-        const getDataCart = async () => {
-            const token = Cookies.get('authToken');
-            if (token) {
-                const res = await GetCart();
-                setDataCart(res);
-            }
-        };
-        getDataCart();
     }, []);
 
     return <StorageContext.Provider value={states}>{children}</StorageContext.Provider>;
