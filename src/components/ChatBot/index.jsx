@@ -19,7 +19,7 @@ function ChatBot() {
     }, [chatHistory]);
 
     return (
-        <div className={`flex items-center justify-center absolute top-0 w-full h-[100vh]`}>
+        <div>
             <button
                 onClick={() => setShowChatBot((prev) => !prev)}
                 className="flex items-center justify-center fixed w-[60px] h-[60px] right-[50px] bottom-[50px] cursor-pointer 
@@ -42,8 +42,10 @@ function ChatBot() {
             </button>
 
             <div
-                className={`fixed overflow-hidden w-[350px] right-[50px] bottom-[120px] cursor-pointer rounded-xl bg-white origin-bottom-right ease-in-out duration-100 shadow-[0_35px_35px_rgba(0,0,0,0.25)] ${
-                    showChatBot ? 'opacity-1 scale-[1] pointer-event-auto' : 'opacity-0 scale-[0.2] pointer-event-none'
+                className={`fixed overflow-hidden w-[350px] right-[50px] bottom-[120px] rounded-xl bg-white origin-bottom-right ease-in-out duration-100 shadow-[0_35px_35px_rgba(0,0,0,0.25)] ${
+                    showChatBot
+                        ? 'opacity-1 scale-[1] pointer-event-auto cursor-pointer'
+                        : 'opacity-0 scale-[0.2] pointer-event-none'
                 }`}
             >
                 <div className="flex items-center justify-between bg-blue-500 p-3">

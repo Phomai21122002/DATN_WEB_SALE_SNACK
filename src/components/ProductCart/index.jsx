@@ -9,7 +9,6 @@ import { useStorage } from '~/Contexts';
 
 function ProductCart({ product, onUpdateQuantity, setChecked }) {
     const { setDataCart } = useStorage();
-
     const handleDelProduct = async (idCart) => {
         await DeleteCart(idCart);
         setDataCart((prev) => prev.filter((product) => product.id !== idCart));
@@ -37,17 +36,21 @@ function ProductCart({ product, onUpdateQuantity, setChecked }) {
                 className="w-4 h-4 mr-4 cursor-pointer"
             />
             <Link
-                to={routes.product.replace(':slug', product?.product.slug)}
+                to={routes.product.replace(':slug', product?.products.slug)}
                 className="flex items-center flex-grow space-x-4 w-[20%]"
             >
-                <img src={product?.listImage[0].url} alt="Sản phẩm" className="w-16 h-16 object-cover rounded" />
-                <div className="text-sm font-medium">{product?.product.name}</div>
+                <img src={product?.products.urls[0]} alt="Sản phẩm" className="w-16 h-16 object-cover rounded" />
+                <div className="text-sm font-medium">{product?.products.name}</div>
             </Link>
             <div className="w-32 text-center text-black text-sm font-medium">
-                {product?.product.price.toLocaleString()}₫
+                {product?.products.price.toLocaleString()}₫
             </div>
             <div className="w-32 flex justify-center">
-                <QuantitySelector product={product} quantity={product.quantity} onUpdateQuantity={onUpdateQuantity} />
+                <QuantitySelector
+                    product={product.products}
+                    quantity={product.products.quantity}
+                    onUpdateQuantity={onUpdateQuantity}
+                />
             </div>
             <div className="w-32 text-center text-sm text-red-500 font-medium">{product?.total.toLocaleString()}₫</div>
             <div className="w-32 text-center font-medium leading-none">

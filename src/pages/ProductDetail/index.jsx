@@ -8,7 +8,7 @@ import Button from '~/components/Button';
 import ImageSlider from '~/components/ImageSlider';
 import CountNumber from '~/components/CountNumber';
 import MenuProduct from '~/components/MenuProduct';
-import { GetProduct } from '~/services/Product';
+import { GetProductBySlug } from '~/services/Product';
 import routes from '~/config/routes';
 import { useStorage } from '~/Contexts';
 import { AddCart } from '~/services/Cart';
@@ -26,16 +26,15 @@ function ProductDetail() {
 
     useEffect(() => {
         const getProductById = () => {
-            GetProduct({ slug })
+            GetProductBySlug({ slug })
                 .then((res) => {
                     setLoading(true);
                     console.log(res);
-                    // const result = {
-                    //     ...res,
-                    //     ...res?.product,
-                    //     count: 1,
-                    // };
-                    // setProduct(result);
+                    const result = {
+                        ...res,
+                        count: 1,
+                    };
+                    setProduct(result);
                 })
                 .catch((err) => {
                     console.log(err);
@@ -48,10 +47,11 @@ function ProductDetail() {
     }, [slug]);
 
     const handlePurchase = async (productId, quantity) => {
+        console.log(productId, quantity, userData);
         if (userData && Object.keys(userData).length > 0) {
             const res = await AddCart({
                 quantity: quantity,
-                userId: userData?.userId,
+                userId: userData?.id,
                 productId: productId,
             });
             res && getDataCartNow();
@@ -66,15 +66,15 @@ function ProductDetail() {
             <div className="flex flex-col md:flex-row gap-8 mb-12">
                 <div className="flex-1">
                     <div className="w-full max-w-md mx-auto">
-                        {product.imageDtos?.length > 0 || (
+                        {product.urls?.length > 0 || (
                             <Skeleton variant="rectangular" animation="wave" width={370} height={370} />
                         )}
-                        <ImageSlider images={product.imageDtos} />
+                        <ImageSlider images={product.urls} />
                     </div>
                 </div>
 
                 <div className="flex-1 space-y-4">
-                    {product?.product?.name && !loading ? (
+                    {product?.name && !loading ? (
                         <h1 className="text-2xl font-semibold">{product.name}</h1>
                     ) : (
                         <Skeleton variant="text" className="text-lg" />
@@ -90,8 +90,8 @@ function ProductDetail() {
                         )}
                     </div>
 
-                    {product.description && !loading ? (
-                        <p className="text-gray-600 font-small text-[20px]">{product.description}</p>
+                    {product.decription && !loading ? (
+                        <p className="text-gray-600 font-small text-[20px]">{product.decription}</p>
                     ) : (
                         <Skeleton variant="text" className="w-full" />
                     )}

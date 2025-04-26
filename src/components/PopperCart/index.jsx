@@ -57,7 +57,7 @@ function PopperCart({ id, open, anchorEl, dataCart, onClose }) {
                             {dataCart.map((cart, index) => (
                                 <Link
                                     key={cart.id}
-                                    // to={routes.product.replace(':slug', cart?.product.slug)}
+                                    to={routes.product.replace(':slug', cart?.products.slug)}
                                     style={{ textDecoration: 'none', color: 'inherit' }}
                                 >
                                     <Box

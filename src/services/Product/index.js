@@ -18,15 +18,26 @@ export const GetProducts = async ({ Name, SortBy, isDecsending = false, PageNumb
     }
 };
 
-export const GetProduct = async ({ slug }) => {
-    console.log(slug);
+export const GetProduct = async ({ id }) => {
     try {
         const res = await request.get(`/product/products`, {
             params: {
-                slug,
+                productId: id,
             },
         });
-        console.log(res.data);
+        return res.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const GetProductBySlug = async ({ slug }) => {
+    try {
+        const res = await request.get(`/product/productBySlug`, {
+            params: {
+                slugProduct: slug,
+            },
+        });
         return res.data;
     } catch (error) {
         throw error;

@@ -27,11 +27,11 @@ function MenuProductSearch() {
         const getAllProduct = async () => {
             try {
                 const res = await GetProducts();
+                console.log(res);
                 const resultProducts = updatedProducts(res);
                 setProducts(resultProducts);
                 const resCate = await GetCategories();
-                const resultCategories = updatedCategories(resCate.data);
-                setCategories(resultCategories);
+                setCategories(resCate);
             } catch (err) {
                 console.error('Error fetching product data: ', err);
             }
@@ -44,7 +44,7 @@ function MenuProductSearch() {
 
         if (minPrice !== '' || maxPrice !== '') {
             filteredProducts = filteredProducts.filter((product) => {
-                const price = product.product.price;
+                const price = product.price;
                 const isWithinMin = minPrice === '' || price >= parseFloat(minPrice);
                 const isWithinMax = maxPrice === '' || price <= parseFloat(maxPrice);
                 return isWithinMin && isWithinMax;
@@ -56,9 +56,9 @@ function MenuProductSearch() {
         let currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
 
         if (sortOrder === 'Thấp đến Cao') {
-            currentProducts = currentProducts.sort((a, b) => a.product.price - b.product.price);
+            currentProducts = currentProducts.sort((a, b) => a.price - b.price);
         } else if (sortOrder === 'Cao đến Thấp') {
-            currentProducts = currentProducts.sort((a, b) => b.product.price - a.product.price);
+            currentProducts = currentProducts.sort((a, b) => b.price - a.price);
         }
 
         setPaginatedProducts(currentProducts);
@@ -68,8 +68,10 @@ function MenuProductSearch() {
         if (Number(selectedCategory)) {
             let filteredProducts = [...products];
             setPaginatedProducts(
-                filteredProducts.filter((product) => product.product.categoryId === Number(selectedCategory)),
+                filteredProducts.filter((product) => product.category.id === Number(selectedCategory)),
             );
+        } else {
+            setPaginatedProducts(products);
         }
     }, [selectedCategory, products]);
 
@@ -179,7 +181,7 @@ function MenuProductSearch() {
 
                 <div className="grid grid-cols-3 gap-2">
                     {paginatedProducts?.map((product) => (
-                        <Product key={product.product.id} product={product} addToCart={addToCart} />
+                        <Product key={product.id} product={product} addToCart={addToCart} />
                     ))}
                 </div>
             </div>

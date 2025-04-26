@@ -18,7 +18,6 @@ const Header = () => {
     const { userData, dataCart, setDataCart, isLoggedIn } = useStorage();
     const [anchorEl, setAnchorEl] = useState(null);
     const [anchorElCart, setAnchorElCart] = useState(null);
-
     useEffect(() => {
         const getDataCart = async () => {
             if (isLoggedIn && userData.id) {

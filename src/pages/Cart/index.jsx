@@ -9,11 +9,19 @@ import { OrderProduct } from '~/services/Order';
 import { GetProfile } from '~/services/User';
 
 function Cart() {
+    const navigate = useNavigate();
     const { userData, dataCart, setDataCart } = useStorage();
     const [checkProduct, setCheckProduct] = useState([]);
     const [profileUser, setProfileUser] = useState({});
-    const uniqueCategories = useMemo(() => [...new Set(dataCart.map((item) => item.categoryName))], [dataCart]);
-    const navigate = useNavigate();
+
+    const uniqueCategories = useMemo(() => {
+        const map = new Map();
+        dataCart.forEach((item) => {
+            map.set(item.category.id, item.category);
+        });
+        return [...map.values()];
+    }, [dataCart]);
+
     useEffect(() => {
         setCheckProduct(
             dataCart.map((product) => ({
@@ -56,7 +64,8 @@ function Cart() {
             navigate(routes.login);
         }
     };
-
+    console.log(checkProduct);
+    console.log(dataCart);
     return (
         <div className="max-w-[1100px] mx-auto py-8 mt-[64px]">
             <BackgroundCart className={'items-center'}>
@@ -67,17 +76,33 @@ function Cart() {
                 <div className="w-32 text-center text-sm text-gray-500 font-medium">Số tiền</div>
                 <div className="w-32 text-center text-sm text-gray-500 font-medium">Thao tác</div>
             </BackgroundCart>
-            {uniqueCategories.map((nameCategory) => (
-                <div key={nameCategory} className="flex flex-col items-center bg-white mb-8">
+            {uniqueCategories.map((category) => (
+                <div key={category.id} className="flex flex-col items-center bg-white mb-8">
                     <BackgroundCart className="w-full items-center justify-between">
                         <div className="flex items-center space-x-4">
-                            <input type="checkbox" className="w-4 h-4 cursor-pointer" />
-                            <span className="text-[16px] font-medium">{nameCategory}</span>
+                            <input
+                                checked={checkProduct
+                                    .filter((item) => item.category.id === category.id)
+                                    .every((item) => item.check)}
+                                onChange={(e) => {
+                                    const isChecked = e.target.checked;
+                                    setCheckProduct((prev) =>
+                                        prev.map((product) =>
+                                            product.category.id === category.id
+                                                ? { ...product, check: isChecked }
+                                                : product,
+                                        ),
+                                    );
+                                }}
+                                type="checkbox"
+                                className="w-4 h-4 cursor-pointer"
+                            />
+                            <span className="text-[16px] font-medium">{category.name}</span>
                         </div>
                     </BackgroundCart>
 
                     {checkProduct
-                        .filter((item) => item.categoryName === nameCategory)
+                        .filter((item) => item.category.id === category.id)
                         .map((item) => (
                             <BackgroundCart key={item.id} className="w-full items-center">
                                 <ProductCart
@@ -94,14 +119,24 @@ function Cart() {
                 <div className="flex items-center space-x-4">
                     <input type="checkbox" className="w-4 h-4 cursor-pointer" />
                     <span className="text-[16px] font-medium">
-                        Chọn tất cả ({checkProduct.reduce((count, item) => count + item.quantity, 0)} sản phẩm)
+                        Chọn tất cả (
+                        {checkProduct.reduce(
+                            (count, item) => (item.check === true ? count + item.products.quantity : count),
+                            0,
+                        )}{' '}
+                        sản phẩm)
                     </span>
                     <button className="text-red-500 text-[16px] font-medium hover:underline">Xóa tất cả</button>
                 </div>
                 <div className="flex items-center text-[16px] font-medium">
                     <div className="flex items-center justify-center mr-4">
                         Tổng thanh toán (
-                        <span className="mx-1">{checkProduct.reduce((count, item) => count + item.quantity, 0)}</span>{' '}
+                        <span className="mx-1">
+                            {checkProduct.reduce(
+                                (count, item) => (item.check === true ? count + item.products.quantity : count),
+                                0,
+                            )}
+                        </span>{' '}
                         sản phẩm)
                         <span className="text-red-500 ml-2">
                             {checkProduct

@@ -5,13 +5,11 @@ export const SignIn = async (email, password) => {
         email: email,
         password: password,
     });
-    console.log(res.data);
     return res.data;
 };
 
 export const Roles = async () => {
     const res = await request.get('/role/roles');
-    console.log(res.data);
     return res.data;
 };
 

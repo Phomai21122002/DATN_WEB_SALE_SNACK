@@ -26,7 +26,6 @@ export const GetCarts = async (userId) => {
                 inputUserId: userId,
             },
         });
-        console.log(res.data);
         return res.data;
     } catch (error) {
         throw error;

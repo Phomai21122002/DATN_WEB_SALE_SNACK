@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { ArrowForward, ArrowBack } from '@mui/icons-material';
 import { GetCategories } from '~/services/Category';
 import noImage from '~/assets/images/No-image.png';
-import { Categories } from './Constains';
 import { Link } from 'react-router-dom';
 import routes from '~/config/routes';
 
@@ -51,7 +50,7 @@ function MenuCategory() {
                     </button>
                 )}
                 <div className="overflow-hidden">
-                    <div className="grid grid-cols-8 gap-4 transition-all duration-500 p-1">
+                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 transition-all duration-500 p-1">
                         {categories.slice(currentIndex, currentIndex + itemsToShow).map((category) => (
                             <Link
                                 to={`${routes.search.replace('/:id', '')}/${category.id}`}

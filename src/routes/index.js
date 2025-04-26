@@ -35,9 +35,9 @@ const publicRoutes = [
     { path: config.routes.signup, component: SignUp, layout: AuthLayout },
     { path: config.routes.home, component: Home },
     { path: config.routes.cart, component: Cart },
-    // { path: config.routes.order, component: Order },
+    { path: config.routes.order, component: Order },
     { path: config.routes.product, component: ProductDetail },
-    // { path: config.routes.search, component: Search },
+    { path: config.routes.search, component: Search },
 ];
 
 const adminRoutes = [
