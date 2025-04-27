@@ -1,18 +1,19 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BackgroundCart from '~/components/BackgroundCart';
 import MenuProduct from '~/components/MenuProduct';
+import PopUpRemove from '~/components/PopUpRemove';
 import ProductCart from '~/components/ProductCart';
 import routes from '~/config/routes';
 import { useStorage } from '~/Contexts';
+import { DeleteCart } from '~/services/Cart';
 import { OrderProduct } from '~/services/Order';
-import { GetProfile } from '~/services/User';
 
 function Cart() {
     const navigate = useNavigate();
     const { userData, dataCart, setDataCart } = useStorage();
     const [checkProduct, setCheckProduct] = useState([]);
-    const [profileUser, setProfileUser] = useState({});
+    const [chooseRemove, setChooseRemove] = useState({});
 
     const uniqueCategories = useMemo(() => {
         const map = new Map();
@@ -29,29 +30,40 @@ function Cart() {
                 check: true,
             })),
         );
-
-        const GetAddressUser = async () => {
-            const res = await GetProfile();
-            setProfileUser(res);
-        };
-
-        GetAddressUser();
     }, [dataCart]);
 
-    const updateQuantity = (id, newQuantity) => {
+    const updateQuantity = useCallback((id, newQuantity) => {
         setDataCart((prevProducts) =>
             prevProducts.map((product) =>
-                product.id === id
-                    ? { ...product, quantity: newQuantity, total: newQuantity * product.product.price }
+                product.products.id === id
+                    ? {
+                          ...product,
+                          products: {
+                              ...product.products,
+                              quantity: newQuantity,
+                          },
+                          total: newQuantity * product.products.price,
+                      }
                     : product,
             ),
         );
-    };
+        // eslint-disable-next-line
+    }, []);
 
     const HandlePurchase = async () => {
-        if (profileUser?.addresses?.length <= 0 && !profileUser?.phoneNumber) {
+        if (
+            userData &&
+            Object.keys(userData).length > 0 &&
+            userData?.userAddresses?.length <= 0 &&
+            !userData?.phoneNumber
+        ) {
             navigate(routes.userProfile);
-        } else if (userData && Object.keys(userData).length > 0) {
+        } else if (
+            userData &&
+            Object.keys(userData).length > 0 &&
+            userData?.userAddresses?.length > 0 &&
+            userData?.phoneNumber
+        ) {
             const selectedProductIds = checkProduct
                 .filter((product) => product.check === true)
                 .map((product) => product.id);
@@ -64,8 +76,13 @@ function Cart() {
             navigate(routes.login);
         }
     };
-    console.log(checkProduct);
-    console.log(dataCart);
+
+    const handleRemoveCart = async (userId, idCart) => {
+        await DeleteCart(userId, idCart);
+        setChooseRemove({});
+        setDataCart((prev) => prev.filter((product) => product.id !== idCart));
+    };
+
     return (
         <div className="max-w-[1100px] mx-auto py-8 mt-[64px]">
             <BackgroundCart className={'items-center'}>
@@ -109,6 +126,7 @@ function Cart() {
                                     product={item}
                                     onUpdateQuantity={updateQuantity}
                                     setChecked={setCheckProduct}
+                                    setChooseRemove={setChooseRemove}
                                 />
                             </BackgroundCart>
                         ))}
@@ -155,6 +173,17 @@ function Cart() {
             </BackgroundCart>
 
             <MenuProduct title={'Có thể bạn cũng thích'} />
+
+            {Object.keys(chooseRemove).length > 0 && (
+                <PopUpRemove
+                    id={chooseRemove.id}
+                    title={'Delete Product In Cart?'}
+                    desc={`Are you sure you want to delete this product ${chooseRemove?.products.name}?`}
+                    onRemove={handleRemoveCart}
+                    onClose={() => setChooseRemove({})}
+                    isRemove={Object.keys(chooseRemove).length > 0}
+                />
+            )}
         </div>
     );
 }

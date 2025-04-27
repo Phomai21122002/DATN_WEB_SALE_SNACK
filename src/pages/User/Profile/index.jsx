@@ -30,17 +30,18 @@ function Profile() {
         const getProfile = async () => {
             try {
                 const profileRes = await GetProfile();
+                console.log(profileRes);
                 setDataProfile(profileRes);
-                const address = profileRes.addresses.find((address) => address.isDefault && address);
+                const address = profileRes.userAddresses.find((address) => address.isDefault && address);
+                console.log(address);
                 reset({
                     id: profileRes.id,
-                    username: profileRes.username,
+                    username: profileRes.lastName + ' ' + profileRes.firstName,
                     email: profileRes.email,
-                    phoneNumber: profileRes.phoneNumber,
+                    phoneNumber: profileRes.phone,
                     addresses: address?.wardCode,
                     homeNumber: address?.detail,
                 });
-
                 const provincesRes = await GetProvinces();
                 setDataProvinces(provincesRes);
             } catch (err) {
@@ -56,7 +57,7 @@ function Profile() {
                 try {
                     const districtsRes = await GetDistricts(selectedProvince);
                     setDataDistrict(districtsRes);
-                    setDataWard([]); // Reset wards when province changes
+                    setDataWard([]);
                 } catch (err) {
                     console.error('Error fetching districts:', err);
                 }
@@ -97,10 +98,6 @@ function Profile() {
         }
     };
 
-    const onSubmit = (data) => {
-        handleSaveProfile(data);
-    };
-
     const handleBack = () => {
         navigate(routes.home);
     };
@@ -120,7 +117,7 @@ function Profile() {
         <div className="flex flex-col items-center justify-center mt-24 bg-white p-4">
             <h2 className="text-xl font-bold mb-4 uppercase">Thông Tin Người Dùng</h2>
             <form
-                onSubmit={handleSubmit(onSubmit)}
+                onSubmit={handleSubmit(handleSaveProfile)}
                 className="bg-gray-300 min-w-[1000px] p-4 flex flex-col gap-4 shadow-md rounded-lg overflow-hidden"
             >
                 <div>
@@ -168,7 +165,7 @@ function Profile() {
                     {errors.phoneNumber && <p className="text-red-500 text-sm">{errors.phoneNumber.message}</p>}
                 </div>
 
-                {(dataProfile?.addresses?.length <= 0 || activeAddAddress) && (
+                {activeAddAddress && (
                     <>
                         <div className="flex gap-4">
                             <div className="flex-1">
@@ -217,54 +214,50 @@ function Profile() {
                                 {errors.ward && <p className="text-red-500 text-sm">{errors.ward.message}</p>}
                             </div>
                         </div>
-                        {activeAddAddress && (
-                            <div className="flex gap-4">
-                                <button
-                                    type="button"
-                                    className="bg-blue-500 text-sm text-white p-2 rounded-md hover:bg-blue-600"
-                                    onClick={handleAddAddress}
-                                >
-                                    Thêm
-                                </button>
+                        <div className="flex gap-4">
+                            <button
+                                type="button"
+                                className="bg-blue-500 text-sm text-white p-2 rounded-md hover:bg-blue-600"
+                                onClick={handleAddAddress}
+                            >
+                                Thêm
+                            </button>
 
-                                <button
-                                    type="button"
-                                    className="bg-gray-500 text-sm text-white p-2 rounded-md hover:bg-gray-600"
-                                    onClick={() => setActiveAddAddress((prev) => !prev && !prev)}
-                                >
-                                    Đóng
-                                </button>
-                            </div>
-                        )}
+                            <button
+                                type="button"
+                                className="bg-gray-500 text-sm text-white p-2 rounded-md hover:bg-gray-600"
+                                onClick={() => setActiveAddAddress((prev) => !prev && !prev)}
+                            >
+                                Đóng
+                            </button>
+                        </div>
                     </>
                 )}
 
-                {dataProfile?.addresses?.length > 0 && (
-                    <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                            <label className="block text-sm font-bold mb-1">Địa chỉ</label>
-                            <button
-                                type="button"
-                                className="bg-red-500 text-sm text-white p-1 rounded-md hover:bg-red-600"
-                                onClick={() => setActiveAddAddress(!activeAddAddress)}
-                            >
-                                <AddIcon />
-                            </button>
-                        </div>
-                        <select
-                            className="w-full text-sm p-2 border rounded-md"
-                            {...register('addresses', { required: 'Phường là bắt buộc' })}
+                <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                        <label className="block text-sm font-bold mb-1">Địa chỉ</label>
+                        <button
+                            type="button"
+                            className="bg-red-500 text-sm text-white p-1 rounded-md hover:bg-red-600"
+                            onClick={() => setActiveAddAddress(!activeAddAddress)}
                         >
-                            <option value="">Chọn địa chỉ</option>
-                            {dataProfile?.addresses?.map((address, index) => (
-                                <option key={index} value={address.wardCode}>
-                                    {address.path_With_Type}
-                                </option>
-                            ))}
-                        </select>
-                        {errors.addresses && <p className="text-red-500 text-sm">{errors.addresses.message}</p>}
+                            <AddIcon />
+                        </button>
                     </div>
-                )}
+                    <select
+                        className="w-full text-sm p-2 border rounded-md"
+                        {...register('addresses', { required: 'Phường là bắt buộc' })}
+                    >
+                        <option value="">Chọn địa chỉ</option>
+                        {dataProfile?.addresses?.map((address, index) => (
+                            <option key={index} value={address.wardCode}>
+                                {address.path_With_Type}
+                            </option>
+                        ))}
+                    </select>
+                    {errors.addresses && <p className="text-red-500 text-sm">{errors.addresses.message}</p>}
+                </div>
 
                 <div>
                     <label className="block text-sm font-bold mb-1">Số nhà</label>

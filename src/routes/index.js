@@ -62,7 +62,7 @@ const adminRoutes = [
 const userRoutes = [
     // { path: config.routes.userListBill, component: BoardBillUser },
     // { path: config.routes.userListOrder, component: BoardOrderUser },
-    // { path: config.routes.userProfile, component: ProfileUser },
+    { path: config.routes.userProfile, component: ProfileUser },
     // { path: config.routes.userChangePass, component: ChangePassUser },
 ];
 

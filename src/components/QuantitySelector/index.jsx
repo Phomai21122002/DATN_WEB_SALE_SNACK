@@ -3,6 +3,7 @@ import { Add, Remove } from '@mui/icons-material';
 
 function QuantitySelector({ onUpdateQuantity, quantity, product }) {
     const handleChange = (e) => {
+        console.log('handleChange');
         const value = e.target.value;
         if (/^\d*$/.test(value) && Number(value) <= product?.quantity) {
             onUpdateQuantity(product.id, Number(value) || 0);

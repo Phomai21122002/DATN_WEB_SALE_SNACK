@@ -20,7 +20,6 @@ export const UpdateCart = async (data) => {
 
 export const GetCarts = async (userId) => {
     try {
-        console.log(userId);
         const res = await request.get(`/cart/carts`, {
             params: {
                 inputUserId: userId,
@@ -32,9 +31,14 @@ export const GetCarts = async (userId) => {
     }
 };
 
-export const DeleteCart = async (cartId) => {
+export const DeleteCart = async (userId, cartId) => {
     try {
-        const res = await request.delete(`/Cart/${cartId}`);
+        const res = await request.delete(`/cart`, {
+            data: {
+                userId: userId,
+                cartId: cartId,
+            },
+        });
         return res.data;
     } catch (error) {
         throw error;

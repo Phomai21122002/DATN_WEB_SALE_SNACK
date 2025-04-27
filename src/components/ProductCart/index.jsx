@@ -4,14 +4,13 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 import routes from '~/config/routes';
 import QuantitySelector from '~/components/QuantitySelector';
-import { DeleteCart } from '~/services/Cart';
 import { useStorage } from '~/Contexts';
 
-function ProductCart({ product, onUpdateQuantity, setChecked }) {
-    const { setDataCart } = useStorage();
+function ProductCart({ product, onUpdateQuantity, setChecked, setChooseRemove }) {
+    const { dataCart } = useStorage();
     const handleDelProduct = async (idCart) => {
-        await DeleteCart(idCart);
-        setDataCart((prev) => prev.filter((product) => product.id !== idCart));
+        const cart = dataCart.find((cart) => cart.id === idCart);
+        setChooseRemove(cart);
     };
 
     const handleCheckedProduct = async (idProduct) => {
