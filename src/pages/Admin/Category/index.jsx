@@ -17,9 +17,8 @@ function Category() {
         const getAllCategory = async () => {
             try {
                 const res = await GetCategories();
-                const resultRes = Categories(res.data);
-                setCategories(resultRes);
-                setAllCategories(resultRes);
+                setCategories(res);
+                setAllCategories(res);
             } catch (err) {
                 console.error('Error fetching category data: ', err);
             }
@@ -75,9 +74,9 @@ function Category() {
                             <tr key={category.id} className="border-b hover:bg-gray-50">
                                 <td className="py-3 px-6">{index + 1}</td>
                                 <td className="py-3 px-6">
-                                    {category.url && (
+                                    {category.imageCategories.length > 0 && (
                                         <img
-                                            src={category.url || noImage}
+                                            src={category.imageCategories[0].url || noImage}
                                             alt={`category-${category.id}`}
                                             className="w-16 h-16 object-cover rounded-md"
                                         />

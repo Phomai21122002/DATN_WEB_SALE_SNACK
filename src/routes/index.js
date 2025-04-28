@@ -41,20 +41,20 @@ const publicRoutes = [
 ];
 
 const adminRoutes = [
-    // { path: config.routes.admin, component: BoardOrder, layout: AdminLayout },
-    // { path: config.routes.adminProduct, component: CreateProduct, layout: AdminLayout },
-    // { path: config.routes.adminUpdateProduct, component: UpdateProduct, layout: AdminLayout },
-    // { path: config.routes.adminListProduct, component: Product, layout: AdminLayout },
-    // { path: config.routes.adminCategory, component: CreateCategory, layout: AdminLayout },
-    // { path: config.routes.adminUpdateCategory, component: UpdateCategory, layout: AdminLayout },
-    // { path: config.routes.adminListCategory, component: Category, layout: AdminLayout },
+    { path: config.routes.admin, component: BoardOrder, layout: AdminLayout },
+    { path: config.routes.adminProduct, component: CreateProduct, layout: AdminLayout },
+    { path: config.routes.adminUpdateProduct, component: UpdateProduct, layout: AdminLayout },
+    { path: config.routes.adminListProduct, component: Product, layout: AdminLayout },
+    { path: config.routes.adminCategory, component: CreateCategory, layout: AdminLayout },
+    { path: config.routes.adminUpdateCategory, component: UpdateCategory, layout: AdminLayout },
+    { path: config.routes.adminListCategory, component: Category, layout: AdminLayout },
     // { path: config.routes.adminListConfirmOrder, component: BoardConfirmOrder, layout: AdminLayout },
     // { path: config.routes.adminListCancelOrder, component: BoardCancelOrder, layout: AdminLayout },
     // { path: config.routes.adminListBill, component: BoardBill, layout: AdminLayout },
-    // { path: config.routes.adminProfile, component: ProfileAdmin, layout: AdminLayout },
-    // { path: config.routes.adminChangePass, component: ChangePassAdmin, layout: AdminLayout },
+    { path: config.routes.adminProfile, component: ProfileAdmin, layout: AdminLayout },
+    { path: config.routes.adminChangePass, component: ChangePassAdmin, layout: AdminLayout },
     // { path: config.routes.adminRevenue, component: BoardRevenue, layout: AdminLayout },
-    // { path: config.routes.adminListUser, component: BoardUser, layout: AdminLayout },
+    { path: config.routes.adminListUser, component: BoardUser, layout: AdminLayout },
     // { path: config.routes.adminUpdateUser, component: UpdateUser, layout: AdminLayout },
     // { path: config.routes.adminUpdateOrder, component: UpdateOrder, layout: AdminLayout },
 ];
@@ -63,7 +63,7 @@ const userRoutes = [
     // { path: config.routes.userListBill, component: BoardBillUser },
     // { path: config.routes.userListOrder, component: BoardOrderUser },
     { path: config.routes.userProfile, component: ProfileUser },
-    // { path: config.routes.userChangePass, component: ChangePassUser },
+    { path: config.routes.userChangePass, component: ChangePassUser },
 ];
 
 export { publicRoutes, adminRoutes, userRoutes };

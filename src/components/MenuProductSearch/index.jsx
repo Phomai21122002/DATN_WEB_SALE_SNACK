@@ -27,7 +27,6 @@ function MenuProductSearch() {
         const getAllProduct = async () => {
             try {
                 const res = await GetProducts();
-                console.log(res);
                 const resultProducts = updatedProducts(res);
                 setProducts(resultProducts);
                 const resCate = await GetCategories();
@@ -79,13 +78,21 @@ function MenuProductSearch() {
         if (userData && Object.keys(userData).length > 0) {
             const res = await AddCart({
                 quantity: quantity,
-                userId: userData?.userId,
+                userId: userData?.id,
                 productId: productId,
             });
             res && getDataCartNow();
         } else {
             navigate(routes.login);
         }
+    };
+
+    const updateQuantity = (id, newQuantity) => {
+        setProducts((prevProducts) =>
+            prevProducts.map((product) =>
+                product.id === id && product.quantity >= newQuantity ? { ...product, count: newQuantity } : product,
+            ),
+        );
     };
 
     const handlePageChange = (event, value) => {
@@ -181,7 +188,12 @@ function MenuProductSearch() {
 
                 <div className="grid grid-cols-3 gap-2">
                     {paginatedProducts?.map((product) => (
-                        <Product key={product.id} product={product} addToCart={addToCart} />
+                        <Product
+                            key={product.id}
+                            product={product}
+                            addToCart={addToCart}
+                            updateQuantity={updateQuantity}
+                        />
                     ))}
                 </div>
             </div>

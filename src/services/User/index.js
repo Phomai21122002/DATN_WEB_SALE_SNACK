@@ -2,15 +2,7 @@ import request from '../request';
 
 export const GetUsers = async ({ Name, SortBy, isDecsending = false, PageNumber = 1, PageSize = 10 } = {}) => {
     try {
-        const res = await request.get(`/User/users`, {
-            params: {
-                Name,
-                SortBy,
-                isDecsending,
-                PageNumber,
-                PageSize,
-            },
-        });
+        const res = await request.get(`/user/users`);
         return res.data;
     } catch (error) {
         throw error;
@@ -61,23 +53,27 @@ export const GetProfile = async () => {
     }
 };
 
-export const ChangePassword = async (id, data) => {
-    const res = await request.patch(`/User/${id}`, data);
+export const ChangePassword = async (userId, data) => {
+    const res = await request.patch(`/user/change-password`, data, {
+        params: {
+            userId: userId,
+        },
+    });
     return res.data;
 };
 
 export const GetProvinces = async () => {
-    const res = await request.get(`http://localhost:5299/provinces`);
+    const res = await request.get(`/address/provinces`);
     return res.data;
 };
 
 export const GetDistricts = async (parentCode) => {
-    const res = await request.get(`http://localhost:5299/district/${parentCode}`);
+    const res = await request.get(`/address/district/${parentCode}`);
     return res.data;
 };
 
 export const GetWards = async (parentCode) => {
-    const res = await request.get(`http://localhost:5299/ward/${parentCode}`);
+    const res = await request.get(`/address/ward/${parentCode}`);
     return res.data;
 };
 

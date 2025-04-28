@@ -113,7 +113,7 @@ const Header = () => {
                                 open={open}
                                 anchorEl={anchorEl}
                                 onClose={handleClose}
-                                options={userData.role === 'Admin' ? options : optionsUser}
+                                options={userData.role.name === 'Admin' ? options : optionsUser}
                             />
                         </>
                     ) : (

@@ -21,7 +21,7 @@ function ChangePassAdmin() {
             ...dataPass,
         };
         try {
-            await ChangePassword(userData?.userId, dataReq);
+            await ChangePassword(userData?.id, dataReq);
             navigate(routes.admin);
             reset();
         } catch (err) {
@@ -42,15 +42,17 @@ function ChangePassAdmin() {
         <div className="bg-white p-4 shadow-md rounded-lg overflow-hidden">
             <h2 className="text-xl font-bold mb-4">Thay Đổi Mật Khẩu</h2>
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+                <input type="text" name="email" autoComplete="email" className="hidden" />
                 <div>
                     <label className="block text-sm font-bold mb-1">Mật khẩu hiện tại</label>
                     <input
                         type="password"
                         className="w-full text-sm p-2 border rounded-md"
-                        {...register('oldPassword', { required: 'Mật khẩu hiện tại là bắt buộc' })}
+                        {...register('password', { required: 'Mật khẩu hiện tại là bắt buộc' })}
                         placeholder="Nhập mật khẩu hiện tại"
+                        autoComplete="current-password"
                     />
-                    {errors.oldPassword && <p className="text-red-500 text-sm">{errors.oldPassword.message}</p>}
+                    {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
                 </div>
 
                 <div>
@@ -66,6 +68,7 @@ function ChangePassAdmin() {
                             },
                         })}
                         placeholder="Nhập mật khẩu mới"
+                        autoComplete="new-password"
                     />
                     {errors.newPassword && <p className="text-red-500 text-sm">{errors.newPassword.message}</p>}
                 </div>
@@ -80,6 +83,7 @@ function ChangePassAdmin() {
                             validate: (value, { newPassword }) => value === newPassword || 'Mật khẩu không khớp',
                         })}
                         placeholder="Nhập lại mật khẩu mới"
+                        autoComplete="new-password"
                     />
                     {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>}
                 </div>

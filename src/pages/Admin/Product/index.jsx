@@ -32,12 +32,11 @@ function Product() {
         const getAllProduct = async () => {
             try {
                 const res = await GetProducts();
-                const resultProducts = updatedProducts(res);
-                setAllProducts(resultProducts);
-                setProducts(resultProducts);
+                console.log(res);
+                setAllProducts(res);
+                setProducts(res);
                 const resCategory = await GetCategories();
-                const resultCategory = Categories(resCategory.data);
-                setCategories(resultCategory);
+                setCategories(resCategory);
             } catch (err) {
                 console.error('Error fetching product data: ', err);
             }
@@ -75,9 +74,9 @@ function Product() {
                             <tr key={product.id} className="border-b hover:bg-gray-50">
                                 <td className="py-3 px-6">{index + 1}</td>
                                 <td className="py-3 px-6">
-                                    {product.url && (
+                                    {product.urls.length > 0 && (
                                         <img
-                                            src={product.url || noImage}
+                                            src={product.urls[0] || noImage}
                                             alt={`product-${product.id}`}
                                             className="w-16 h-16 object-cover rounded-md"
                                         />

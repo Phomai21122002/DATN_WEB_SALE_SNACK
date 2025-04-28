@@ -44,6 +44,7 @@ export const GetOrderProduct = async ({
 };
 
 export const GetOrderProductAdmin = async ({
+    userId,
     isPriceDecsending,
     Status = '',
     PageNumber,
@@ -52,15 +53,8 @@ export const GetOrderProductAdmin = async ({
     EndDate = '',
 }) => {
     try {
-        const res = await request.get(`/Order/admin/total-orders`, {
-            params: {
-                isPriceDecsending,
-                Status,
-                PageNumber,
-                PageSize,
-                StartDate,
-                EndDate,
-            },
+        const res = await request.get(`/order/orders`, {
+            params: { inputUserId: userId },
         });
         return res.data;
     } catch (error) {

@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
 import routes from '~/config/routes';
 import { GetProfile, GetProvinces, GetDistricts, GetWards, UpdateUserById, UpdateAddress } from '~/services/User';
+import { useStorage } from '~/Contexts';
 
 function Profile() {
     const navigate = useNavigate();
@@ -14,8 +15,8 @@ function Profile() {
         watch,
         formState: { errors },
     } = useForm();
+    const { userData } = useStorage();
 
-    const [dataProfile, setDataProfile] = useState([]);
     const [dataProvinces, setDataProvinces] = useState([]);
     const [dataDistrict, setDataDistrict] = useState([]);
     const [dataWard, setDataWard] = useState([]);
@@ -29,16 +30,12 @@ function Profile() {
     useEffect(() => {
         const getProfile = async () => {
             try {
-                const profileRes = await GetProfile();
-                console.log(profileRes);
-                setDataProfile(profileRes);
-                const address = profileRes.userAddresses.find((address) => address.isDefault && address);
-                console.log(address);
+                const address = userData?.userAddresses.find((address) => address.isDefault && address);
                 reset({
-                    id: profileRes.id,
-                    username: profileRes.lastName + ' ' + profileRes.firstName,
-                    email: profileRes.email,
-                    phoneNumber: profileRes.phone,
+                    id: userData.id,
+                    username: userData.lastName + ' ' + userData.firstName,
+                    email: userData.email,
+                    phoneNumber: userData.phone,
                     addresses: address?.wardCode,
                     homeNumber: address?.detail,
                 });
@@ -250,7 +247,7 @@ function Profile() {
                         {...register('addresses', { required: 'Phường là bắt buộc' })}
                     >
                         <option value="">Chọn địa chỉ</option>
-                        {dataProfile?.addresses?.map((address, index) => (
+                        {userData?.addresses?.map((address, index) => (
                             <option key={index} value={address.wardCode}>
                                 {address.path_With_Type}
                             </option>
@@ -292,4 +289,4 @@ function Profile() {
     );
 }
 
-export default Profile;
+export default memo(Profile);

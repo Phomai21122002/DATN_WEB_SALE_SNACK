@@ -29,7 +29,6 @@ function ProductDetail() {
             GetProductBySlug({ slug })
                 .then((res) => {
                     setLoading(true);
-                    console.log(res);
                     const result = {
                         ...res,
                         count: 1,

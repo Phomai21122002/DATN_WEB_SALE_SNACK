@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
@@ -15,6 +15,7 @@ function ChangePass() {
         reset,
         formState: { errors },
     } = useForm();
+
     const [errorPass, setErrorPass] = useState('');
 
     const handleChangePassword = async (data) => {
@@ -23,7 +24,7 @@ function ChangePass() {
             ...dataPass,
         };
         try {
-            await ChangePassword(userData?.userId, dataReq);
+            await ChangePassword(userData?.id, dataReq);
             navigate(routes.home);
             reset();
         } catch (err) {
@@ -47,15 +48,17 @@ function ChangePass() {
                 onSubmit={handleSubmit(onSubmit)}
                 className="bg-gray-300 min-w-[1000px] p-4 flex flex-col gap-4 shadow-md rounded-lg overflow-hidden"
             >
+                <input type="text" name="email" autoComplete="email" className="hidden" />
                 <div>
                     <label className="block text-sm font-bold mb-1">Mật khẩu hiện tại</label>
                     <input
                         type="password"
                         className="w-full text-sm p-2 border rounded-md"
-                        {...register('oldPassword', { required: 'Mật khẩu hiện tại là bắt buộc' })}
+                        {...register('password', { required: 'Mật khẩu hiện tại là bắt buộc' })}
                         placeholder="Nhập mật khẩu hiện tại"
+                        autoComplete="current-password"
                     />
-                    {errors.oldPassword && <p className="text-red-500 text-sm">{errors.oldPassword.message}</p>}
+                    {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
                 </div>
 
                 <div>
@@ -71,6 +74,7 @@ function ChangePass() {
                             },
                         })}
                         placeholder="Nhập mật khẩu mới"
+                        autoComplete="new-password"
                     />
                     {errors.newPassword && <p className="text-red-500 text-sm">{errors.newPassword.message}</p>}
                 </div>
@@ -85,6 +89,7 @@ function ChangePass() {
                             validate: (value, { newPassword }) => value === newPassword || 'Mật khẩu không khớp',
                         })}
                         placeholder="Nhập lại mật khẩu mới"
+                        autoComplete="new-password"
                     />
                     {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>}
                 </div>
@@ -106,4 +111,4 @@ function ChangePass() {
     );
 }
 
-export default ChangePass;
+export default memo(ChangePass);

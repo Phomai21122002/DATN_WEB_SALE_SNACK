@@ -11,6 +11,7 @@ import { loginLogoList, role } from './constants/logo';
 import { SignIn } from '~/services/Auth';
 import Loading from '~/components/Loading';
 import { useStorage } from '~/Contexts';
+import { GetProfile } from '~/services/User';
 
 const Login = memo(() => {
     const navigate = useNavigate();
@@ -34,16 +35,14 @@ const Login = memo(() => {
         const { email, password } = values;
         setIsLoading(true);
         SignIn(email, password)
-            .then((res) => {
-                const decoded = jwtDecode(res.token);
-                decoded.role = decoded[role];
-                delete decoded[role];
-                setUserData(decoded);
+            .then(async (res) => {
                 setIsLoggedIn(true);
                 Cookies.set('authToken', res.token, {
                     expires: 7,
                     path: '/',
                 });
+                const profile = await GetProfile();
+                setUserData(profile);
                 toast.success('Login successfully');
                 navigate(routes.home);
             })

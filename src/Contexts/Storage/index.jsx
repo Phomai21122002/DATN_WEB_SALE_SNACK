@@ -9,7 +9,6 @@ function GlobalStates({ children }) {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userData, setUserData] = useState({});
     const [dataCart, setDataCart] = useState([]);
-
     const getDataCartNow = async () => {
         const token = Cookies.get('authToken');
         if (token && userData.id) {
@@ -18,17 +17,8 @@ function GlobalStates({ children }) {
         }
     };
 
-    const states = {
-        isLoggedIn,
-        setIsLoggedIn,
-        userData,
-        setUserData,
-        dataCart,
-        setDataCart,
-        getDataCartNow,
-    };
-
     useEffect(() => {
+        console.log('global');
         const getData = async () => {
             const token = Cookies.get('authToken');
             if (token) {
@@ -39,6 +29,16 @@ function GlobalStates({ children }) {
         };
         getData();
     }, []);
+
+    const states = {
+        isLoggedIn,
+        setIsLoggedIn,
+        userData,
+        setUserData,
+        dataCart,
+        setDataCart,
+        getDataCartNow,
+    };
 
     return <StorageContext.Provider value={states}>{children}</StorageContext.Provider>;
 }

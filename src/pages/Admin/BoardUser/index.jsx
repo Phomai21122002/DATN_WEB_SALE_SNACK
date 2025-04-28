@@ -86,10 +86,10 @@ function BoardUser() {
                         {users?.map((User, index) => (
                             <tr key={User.id} className="border-b hover:bg-gray-50">
                                 <td className="py-3 px-6">{index + 1}</td>
-                                <td className="py-3 px-6">{User.username}</td>
+                                <td className="py-3 px-6">{User.firstName + ' ' + User.lastName}</td>
                                 <td className="py-3 px-6">{User.email}</td>
-                                <td className="py-3 px-6">{User.phoneNumber}</td>
-                                <td className="py-3 px-6">{User.roles[0]}</td>
+                                <td className="py-3 px-6">{User.phone}</td>
+                                <td className="py-3 px-6">{User.role.name}</td>
                                 <td className="py-3 px-6">
                                     <button
                                         className="text-blue-600 hover:underline mr-2"
