@@ -1,8 +1,7 @@
 import HeaderTable from '~/components/HeaderTabel';
-import { listTitle, sortDate } from './Constant';
+import { listTitle, removeVietnameseTones, sortDate } from './Constant';
 import SearchSortListOfAdmin from '~/components/SearchSortListOfAdmin';
 import { GetCategories } from '~/services/Category';
-import { Categories } from '~/components/MenuCategory/Constains';
 import { useEffect, useState } from 'react';
 import noImage from '~/assets/images/No-image.png';
 import routes from '~/config/routes';
@@ -51,12 +50,17 @@ function Category() {
         }
     };
 
-    const handleSearchProduct = (title) => {
-        title
-            ? setCategories(() =>
-                  allcategories.filter((category) => category.name.toLowerCase().includes(title.toLowerCase())),
-              )
-            : setCategories(allcategories);
+    const handleSearchCategory = (title) => {
+        const lowerTitle = removeVietnameseTones(title?.toLowerCase() || '');
+
+        const filtered = lowerTitle
+            ? allcategories.filter((category) => {
+                  const name = removeVietnameseTones(category.name.toLowerCase());
+                  return name.includes(lowerTitle);
+              })
+            : allcategories;
+
+        setCategories(filtered);
     };
     return (
         <>
@@ -64,7 +68,7 @@ function Category() {
                 title={'Chọn loại sắp xếp'}
                 categories={sortDate}
                 onSortChange={handleSortChange}
-                onSearch={handleSearchProduct}
+                onSearch={handleSearchCategory}
             />
             <div className="bg-white shadow-md rounded-lg overflow-hidden">
                 <table className="min-w-full text-left text-sm">
@@ -83,6 +87,11 @@ function Category() {
                                     )}
                                 </td>
                                 <td className="py-3 px-6">{category.name}</td>
+                                <td className="py-3 px-6">
+                                    <p className="line-clamp-3 max-w-xs overflow-hidden text-ellipsis">
+                                        {category.description}
+                                    </p>
+                                </td>
                                 <td className="py-3 px-6">{category.productCount}</td>
                                 <td className="py-3 px-6">
                                     <button

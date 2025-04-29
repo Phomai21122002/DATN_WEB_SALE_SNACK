@@ -28,7 +28,6 @@ export const RequiredAuth = () => {
                 } else if (profile.role && profile.role.name === 'User') {
                     navigate(routes.home);
                 } else {
-                    console.log('login');
                     navigate(routes.login);
                 }
             } else {

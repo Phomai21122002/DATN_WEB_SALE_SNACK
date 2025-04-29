@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
 import { AddCategory } from '~/services/Category';
+import noImage from '~/assets/images/No-image.png';
 
 function CreateCategory() {
     const {
@@ -13,21 +14,16 @@ function CreateCategory() {
         formState: { errors },
     } = useForm();
     const navigate = useNavigate();
-    const [previewImages, setPreviewImages] = useState([]);
-    const [imageUrls, setImageUrls] = useState([]);
+    const [images, setImages] = useState([]);
 
     const handleSaveCategory = async (category) => {
-        const { images, descriptionImg, ...categoryWithoutImages } = category;
-        const categoryWithImages = {
-            ...categoryWithoutImages,
-            imageDto: {
-                // id: 0,
-                url: imageUrls[0],
-                description: descriptionImg,
-            },
+        const newCategory = {
+            name: category.name,
+            description: category.description,
+            urls: images.map((img) => img.url),
         };
         try {
-            await AddCategory(categoryWithImages);
+            await AddCategory(newCategory);
             navigate(routes.adminListCategory);
         } catch (err) {
             console.error('Error saving product:', err);
@@ -37,25 +33,31 @@ function CreateCategory() {
     const handleImageChange = async (e) => {
         const files = e.target.files;
         if (files && files.length > 0) {
-            const previews = [];
-            const uploadedUrls = [];
+            const newImages = [];
             for (const file of files) {
-                previews.push(URL.createObjectURL(file));
                 try {
                     const uploadedUrl = await uploadImageToCloudinary(file);
-                    if (uploadedUrl) uploadedUrls.push(uploadedUrl);
+                    if (uploadedUrl) newImages.push({ url: uploadedUrl });
                 } catch (err) {
                     console.error('Error uploading image:', err);
                 }
             }
-            setPreviewImages(previews);
-            setImageUrls(uploadedUrls);
+            setImages((prev) => [...prev, ...newImages]);
         }
     };
 
     const onSubmit = (data) => {
+        if (images.length === 0) {
+            alert('Vui lòng chọn ít nhất một hình ảnh');
+            return;
+        }
         handleSaveCategory(data);
         reset();
+    };
+
+    const handleRemoveImage = (image) => {
+        const newImages = images.filter((i) => i.url !== image.url);
+        setImages(newImages);
     };
     return (
         <div className="bg-white p-4 shadow-md rounded-lg overflow-hidden">
@@ -87,7 +89,6 @@ function CreateCategory() {
                     <input
                         type="file"
                         className="w-full text-sm"
-                        {...register('images', { required: 'Vui lòng chọn ít nhất một hình ảnh' })}
                         multiple
                         accept="image/*"
                         onChange={handleImageChange}
@@ -95,27 +96,23 @@ function CreateCategory() {
                     {errors.images && <p className="text-red-500 text-sm">{errors.images.message}</p>}
                 </div>
 
-                {previewImages.length > 0 && (
-                    <div className="mt-4 grid grid-cols-3 gap-2">
-                        {previewImages.map((src, index) => (
+                <div className="grid grid-cols-3 gap-2 mb-2">
+                    {images.map((image, index) => (
+                        <div key={index} className="relative group">
                             <img
-                                key={index}
-                                src={src}
-                                alt={`preview-${index}`}
+                                src={image.url || noImage}
+                                alt={`preview ${index}`}
                                 className="w-full h-32 object-cover border rounded-md"
                             />
-                        ))}
-                    </div>
-                )}
-
-                <div>
-                    <label className="block text-sm font-bold mb-1">Mô tả hình ảnh</label>
-                    <textarea
-                        className="w-full text-sm p-2 border rounded-md min-h-[100px]"
-                        {...register('descriptionImg', { required: 'Mô tả hình ảnh là bắt buộc' })}
-                        placeholder="Nhập mô tả hình ảnh"
-                    ></textarea>
-                    {errors.descriptionImg && <p className="text-red-500 text-sm">{errors.descriptionImg.message}</p>}
+                            <button
+                                type="button"
+                                className="absolute top-1 right-1 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+                                onClick={() => handleRemoveImage(image)}
+                            >
+                                ×
+                            </button>
+                        </div>
+                    ))}
                 </div>
 
                 <button type="submit" className="bg-blue-500 text-sm text-white p-2 rounded-md hover:bg-blue-600">

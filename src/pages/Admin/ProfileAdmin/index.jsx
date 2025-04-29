@@ -2,35 +2,26 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
+import { useStorage } from '~/Contexts';
 import { GetProfile, UpdateUserById } from '~/services/User';
 
 function ProfileAdmin() {
     const navigate = useNavigate();
+    const { userData } = useStorage();
     const {
         register,
         handleSubmit,
         reset,
         formState: { errors },
-    } = useForm();
-    const [dataProfile, setDataProfile] = useState([]);
-
-    useEffect(() => {
-        const getProfile = async () => {
-            try {
-                const res = await GetProfile();
-                setDataProfile(res);
-                reset({
-                    id: res.id,
-                    username: res.username,
-                    email: res.email,
-                    phoneNumber: res.phoneNumber,
-                });
-            } catch (err) {
-                console.error('Error fetching categories: ', err);
-            }
-        };
-        getProfile();
-    }, [reset]);
+    } = useForm({
+        defaultValues: {
+            id: userData?.id,
+            firstName: userData?.firstName,
+            lastName: userData?.lastName,
+            email: userData?.email,
+            phone: userData?.phone,
+        },
+    });
 
     const handleSaveProfile = async (profile) => {
         const { id, ...profileToDB } = profile;
@@ -59,15 +50,27 @@ function ProfileAdmin() {
         <div className="bg-white p-4 shadow-md rounded-lg overflow-hidden">
             <h2 className="text-xl font-bold mb-4">Thông Tin Admin</h2>
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-                <div>
-                    <label className="block text-sm font-bold mb-1">Tên người dùng</label>
-                    <input
-                        type="text"
-                        className="w-full text-sm p-2 border rounded-md"
-                        {...register('username', { required: 'Tên người dùng là bắt buộc' })}
-                        placeholder="Nhập tên người dùng"
-                    />
-                    {errors.username && <p className="text-red-500 text-sm">{errors.username.message}</p>}
+                <div className="flex items-center">
+                    <div className="flex-1">
+                        <label className="block text-sm font-bold mb-1">Tên người dùng</label>
+                        <input
+                            type="text"
+                            className="w-full text-sm p-2 border rounded-md"
+                            {...register('firstName', { required: 'Tên người dùng là bắt buộc' })}
+                            placeholder="Nhập tên người dùng"
+                        />
+                        {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName.message}</p>}
+                    </div>
+                    <div className="flex-1">
+                        <label className="block text-sm font-bold mb-1">Họ người dùng</label>
+                        <input
+                            type="text"
+                            className="w-full text-sm p-2 border rounded-md"
+                            {...register('lastName', { required: 'Tên người dùng là bắt buộc' })}
+                            placeholder="Nhập họ người dùng"
+                        />
+                        {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName.message}</p>}
+                    </div>
                 </div>
 
                 <div>
@@ -92,7 +95,7 @@ function ProfileAdmin() {
                     <input
                         type="tel"
                         className="w-full text-sm p-2 border rounded-md"
-                        {...register('phoneNumber', {
+                        {...register('phone', {
                             required: 'Số điện thoại là bắt buộc',
                             pattern: {
                                 value: /^[0-9]{10,11}$/,
@@ -101,7 +104,7 @@ function ProfileAdmin() {
                         })}
                         placeholder="Nhập số điện thoại"
                     />
-                    {errors.phoneNumber && <p className="text-red-500 text-sm">{errors.phoneNumber.message}</p>}
+                    {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
                 </div>
 
                 <div>
@@ -111,7 +114,7 @@ function ProfileAdmin() {
                         {...register('address', { required: 'Địa chỉ là bắt buộc' })}
                     >
                         <option value="">Chọn địa chỉ</option>
-                        {dataProfile?.addresses?.map((profile, index) => (
+                        {userData?.addresses?.map((profile, index) => (
                             <option key={index} value={profile.city}>
                                 {profile.city}
                             </option>

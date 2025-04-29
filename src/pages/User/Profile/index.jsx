@@ -3,8 +3,9 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
 import routes from '~/config/routes';
-import { GetProfile, GetProvinces, GetDistricts, GetWards, UpdateUserById, UpdateAddress } from '~/services/User';
+import { UpdateUserById, AddAddressByUserId } from '~/services/User';
 import { useStorage } from '~/Contexts';
+import AddAddress from '~/components/AddAddress';
 
 function Profile() {
     const navigate = useNavigate();
@@ -16,72 +17,35 @@ function Profile() {
         formState: { errors },
     } = useForm();
     const { userData } = useStorage();
-
-    const [dataProvinces, setDataProvinces] = useState([]);
-    const [dataDistrict, setDataDistrict] = useState([]);
-    const [dataWard, setDataWard] = useState([]);
     const [activeAddAddress, setActiveAddAddress] = useState(false);
-
-    const selectedProvince = watch('province');
-    const selectedDistrict = watch('district');
-    const selectedWard = watch('ward');
     const codeWard = watch('addresses');
 
     useEffect(() => {
         const getProfile = async () => {
             try {
-                const address = userData?.userAddresses.find((address) => address.isDefault && address);
-                reset({
-                    id: userData.id,
-                    username: userData.lastName + ' ' + userData.firstName,
-                    email: userData.email,
-                    phoneNumber: userData.phone,
-                    addresses: address?.wardCode,
-                    homeNumber: address?.detail,
-                });
-                const provincesRes = await GetProvinces();
-                setDataProvinces(provincesRes);
+                if (Object.keys(userData).length > 0) {
+                    const address = userData?.userAddresses?.find((address) => address?.isDefault && address);
+                    reset({
+                        id: userData.id,
+                        username: userData.lastName + ' ' + userData.firstName,
+                        email: userData.email,
+                        phoneNumber: userData.phone,
+                        addresses: address?.wardCode,
+                        homeNumber: address?.detail,
+                    });
+                }
             } catch (err) {
                 console.error('Error fetching profile or provinces:', err);
             }
         };
         getProfile();
-    }, [reset, activeAddAddress]);
-
-    useEffect(() => {
-        const fetchDistricts = async () => {
-            if (selectedProvince) {
-                try {
-                    const districtsRes = await GetDistricts(selectedProvince);
-                    setDataDistrict(districtsRes);
-                    setDataWard([]);
-                } catch (err) {
-                    console.error('Error fetching districts:', err);
-                }
-            }
-        };
-        fetchDistricts();
-    }, [selectedProvince]);
-
-    useEffect(() => {
-        const fetchWards = async () => {
-            if (selectedDistrict) {
-                try {
-                    const wardsRes = await GetWards(selectedDistrict);
-                    setDataWard(wardsRes);
-                } catch (err) {
-                    console.error('Error fetching wards:', err);
-                }
-            }
-        };
-        fetchWards();
-    }, [selectedDistrict]);
+    }, [reset, activeAddAddress, userData]);
 
     const handleSaveProfile = async (profile) => {
         const { district, province, id, ward, homeNumber, addresses, ...reqProfile } = profile;
         try {
             await UpdateUserById(id, { ...reqProfile });
-            await UpdateAddress({
+            await AddAddressByUserId({
                 address: {
                     detail: homeNumber,
                     wardCode: addresses ? codeWard : ward,
@@ -97,17 +61,6 @@ function Profile() {
 
     const handleBack = () => {
         navigate(routes.home);
-    };
-
-    const handleAddAddress = async () => {
-        await UpdateAddress({
-            address: {
-                detail: '42 Nguyễn Trãi',
-                wardCode: selectedWard,
-            },
-            isDefault: false,
-        });
-        setActiveAddAddress(!activeAddAddress);
     };
 
     return (
@@ -161,76 +114,9 @@ function Profile() {
                     />
                     {errors.phoneNumber && <p className="text-red-500 text-sm">{errors.phoneNumber.message}</p>}
                 </div>
-
                 {activeAddAddress && (
-                    <>
-                        <div className="flex gap-4">
-                            <div className="flex-1">
-                                <label className="block text-sm font-bold mb-1">Tỉnh / Thành Phố</label>
-                                <select
-                                    className="w-full text-sm p-2 border rounded-md"
-                                    {...register('province', { required: 'Tỉnh / Thành Phố là bắt buộc' })}
-                                >
-                                    <option value="">Chọn tỉnh thành</option>
-                                    {dataProvinces.map((province, index) => (
-                                        <option key={index} value={province.code}>
-                                            {province.name}
-                                        </option>
-                                    ))}
-                                </select>
-                                {errors.province && <p className="text-red-500 text-sm">{errors.province.message}</p>}
-                            </div>
-                            <div className="flex-1">
-                                <label className="block text-sm font-bold mb-1">Huyện</label>
-                                <select
-                                    className="w-full text-sm p-2 border rounded-md"
-                                    {...register('district', { required: 'Huyện là bắt buộc' })}
-                                >
-                                    <option value="">Chọn huyện</option>
-                                    {dataDistrict.map((district, index) => (
-                                        <option key={index} value={district.code}>
-                                            {district.name}
-                                        </option>
-                                    ))}
-                                </select>
-                                {errors.district && <p className="text-red-500 text-sm">{errors.district.message}</p>}
-                            </div>
-                            <div className="flex-1">
-                                <label className="block text-sm font-bold mb-1">Phường</label>
-                                <select
-                                    className="w-full text-sm p-2 border rounded-md"
-                                    {...register('ward', { required: 'Phường là bắt buộc' })}
-                                >
-                                    <option value="">Chọn phường</option>
-                                    {dataWard.map((ward, index) => (
-                                        <option key={index} value={ward.code}>
-                                            {ward.name}
-                                        </option>
-                                    ))}
-                                </select>
-                                {errors.ward && <p className="text-red-500 text-sm">{errors.ward.message}</p>}
-                            </div>
-                        </div>
-                        <div className="flex gap-4">
-                            <button
-                                type="button"
-                                className="bg-blue-500 text-sm text-white p-2 rounded-md hover:bg-blue-600"
-                                onClick={handleAddAddress}
-                            >
-                                Thêm
-                            </button>
-
-                            <button
-                                type="button"
-                                className="bg-gray-500 text-sm text-white p-2 rounded-md hover:bg-gray-600"
-                                onClick={() => setActiveAddAddress((prev) => !prev && !prev)}
-                            >
-                                Đóng
-                            </button>
-                        </div>
-                    </>
+                    <AddAddress activeAddAddress={activeAddAddress} setActiveAddAddress={setActiveAddAddress} />
                 )}
-
                 <div className="flex-1">
                     <div className="flex items-center justify-between">
                         <label className="block text-sm font-bold mb-1">Địa chỉ</label>
@@ -244,7 +130,7 @@ function Profile() {
                     </div>
                     <select
                         className="w-full text-sm p-2 border rounded-md"
-                        {...register('addresses', { required: 'Phường là bắt buộc' })}
+                        {...register('addresses', { required: 'Địa chỉ nhà là bắt buộc' })}
                     >
                         <option value="">Chọn địa chỉ</option>
                         {userData?.addresses?.map((address, index) => (
@@ -254,22 +140,6 @@ function Profile() {
                         ))}
                     </select>
                     {errors.addresses && <p className="text-red-500 text-sm">{errors.addresses.message}</p>}
-                </div>
-
-                <div>
-                    <label className="block text-sm font-bold mb-1">Số nhà</label>
-                    <input
-                        type="tel"
-                        className="w-full text-sm p-2 border rounded-md"
-                        {...register('homeNumber', {
-                            required: 'Số nhà là bắt buộc',
-                            pattern: {
-                                message: 'Số nhà không hợp lệ',
-                            },
-                        })}
-                        placeholder="Nhập số nhà"
-                    />
-                    {errors.homeNumber && <p className="text-red-500 text-sm">{errors.homeNumber.message}</p>}
                 </div>
 
                 <div className="flex gap-4">

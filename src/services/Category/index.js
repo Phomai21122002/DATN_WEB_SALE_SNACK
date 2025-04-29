@@ -9,9 +9,14 @@ export const GetCategories = async () => {
     }
 };
 
-export const GetCategory = async ({ id }) => {
+export const GetCategory = async ({ categoryId }) => {
     try {
-        const res = await request.get(`/Categories/${id}`);
+        const res = await request.get(`/category/category`, {
+            params: {
+                categoryId: categoryId,
+            },
+        });
+        console.log(res.data);
         return res.data;
     } catch (error) {
         throw error;
@@ -20,7 +25,7 @@ export const GetCategory = async ({ id }) => {
 
 export const AddCategory = async (data) => {
     try {
-        const res = await request.post(`/Categories/admin`, data);
+        const res = await request.post(`/category`, data);
         return res.data;
     } catch (error) {
         throw error;
@@ -47,7 +52,11 @@ export const DeleteSoftCategory = async ({ id }) => {
 
 export const AdminUpdateCategory = async (id, data) => {
     try {
-        const res = await request.put(`/Categories/admin/${id}`, data);
+        const res = await request.put(`/category`, data, {
+            params: {
+                idCategory: id,
+            },
+        });
         return res.data;
     } catch (error) {
         throw error;

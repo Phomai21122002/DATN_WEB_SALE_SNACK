@@ -65,7 +65,9 @@ function MenuCategory() {
                                     />
                                 </div>
                                 <h3 className="text-center mt-2 text-sm font-semibold">{category.name}</h3>
-                                <p className="text-center text-[12px] text-gray-600">{category.description}</p>
+                                <p className="text-center text-[12px] text-gray-600 line-clamp-2 overflow-hidden">
+                                    {category.description}
+                                </p>
                             </Link>
                         ))}
                     </div>

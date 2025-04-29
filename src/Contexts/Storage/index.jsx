@@ -18,7 +18,6 @@ function GlobalStates({ children }) {
     };
 
     useEffect(() => {
-        console.log('global');
         const getData = async () => {
             const token = Cookies.get('authToken');
             if (token) {

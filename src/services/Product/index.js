@@ -44,19 +44,27 @@ export const GetProductBySlug = async ({ slug }) => {
     }
 };
 
-export const AddProduct = async (data) => {
+export const AddProduct = async (categoryId, data) => {
     try {
-        const res = await request.post(`/Products/admin`, data);
+        const res = await request.post(`/product`, data, {
+            params: {
+                categoryId: categoryId,
+            },
+        });
         return res.data;
     } catch (error) {
         throw error;
     }
 };
 
-export const AdminUpdateProduct = async (data) => {
+export const AdminUpdateProduct = async (productId, categoryId, data) => {
     try {
-        const id = data?.id;
-        const res = await request.put(`/Products/admin/${id}`, data);
+        const res = await request.put(`/product`, data, {
+            params: {
+                productId: productId,
+                categoryId: categoryId,
+            },
+        });
         return res.data;
     } catch (error) {
         throw error;

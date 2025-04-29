@@ -3,13 +3,18 @@ import { useEffect, useState } from 'react';
 import { GetCategories } from '~/services/Category';
 import { useNavigate, useParams } from 'react-router-dom';
 import routes from '~/config/routes';
-import { AdminUpdateProduct, GetProduct } from '~/services/Product';
+import { AdminUpdateProduct, GetProduct, GetProductBySlug } from '~/services/Product';
 import { Categories } from '~/components/MenuCategory/Constains';
+import AddIcon from '@mui/icons-material/Add';
+import noImage from '~/assets/images/No-image.png';
+import { uploadImageToCloudinary } from '../CreateProduct/Constant';
 
 function UpdateProduct() {
     const { slug } = useParams();
+
     const [previewImages, setPreviewImages] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [images, setImages] = useState([]);
     const navigate = useNavigate();
     const {
         register,
@@ -22,18 +27,18 @@ function UpdateProduct() {
         const getAllCategory = async () => {
             try {
                 const res = await GetCategories();
-                const resultRes = Categories(res.data);
-                setCategories(resultRes);
-                const resProduct = await GetProduct({ slug });
-                setPreviewImages(resProduct.imageDtos.map((image) => image.url));
+                setCategories(res);
+                const resProduct = await GetProductBySlug({ slug });
+                setImages(resProduct.urls?.map((img) => ({ url: img })) || []);
                 reset({
-                    id: resProduct.product.id,
-                    name: resProduct.product.name,
-                    category: resProduct.product.categoryId,
-                    description: resProduct.product.description,
-                    expiryDate: resProduct.product.expiryDate.slice(0, 10),
-                    quantity: resProduct.product.quantity,
-                    price: resProduct.product.price,
+                    id: resProduct.id,
+                    name: resProduct.name,
+                    categoryId: resProduct.category?.id,
+                    description: resProduct.description,
+                    descriptionDetail: resProduct.descriptionDetail,
+                    // expiryDate: resProduct.expiryDate.slice(0, 10) || '',
+                    quantity: resProduct.quantity,
+                    price: resProduct.price,
                 });
             } catch (err) {
                 console.error('Error fetching categories: ', err);
@@ -43,31 +48,50 @@ function UpdateProduct() {
     }, [slug, reset]);
 
     const handleUpdateProduct = async (product) => {
-        const { images, category, ...productWithoutImages } = product;
-        const productWithImages = {
-            ...productWithoutImages,
-            price: parseFloat(product.price),
-            quantity: parseInt(product.quantity),
-            categoryId: parseInt(category),
-            expiryDate: new Date(product.expiryDate).toISOString(),
+        const { categoryId, id, ...prevProduct } = product;
+        const updateProduct = {
+            ...prevProduct,
+            tag: '',
+            urls: images.map((img) => img.url),
         };
-
         try {
-            await AdminUpdateProduct(productWithImages);
+            await AdminUpdateProduct(id, categoryId, updateProduct);
             navigate(routes.adminListProduct);
         } catch (err) {
             console.error('Error saving product:', err);
         }
     };
 
+    const handleImageChange = async (e) => {
+        const files = e.target.files;
+        if (files && files.length > 0) {
+            const newImages = [];
+            for (const file of files) {
+                try {
+                    const uploadedUrl = await uploadImageToCloudinary(file);
+                    if (uploadedUrl) newImages.push({ url: uploadedUrl });
+                } catch (err) {
+                    console.error('Error uploading image:', err);
+                }
+            }
+            setImages((prev) => [...prev, ...newImages]);
+        }
+    };
+
+    const handleRemoveImage = (image) => {
+        const newImages = images.filter((i) => i.url !== image.url);
+        setImages(newImages);
+    };
+
     const onSubmit = (data) => {
+        if (images.length === 0) {
+            alert('Vui lòng chọn ít nhất một hình ảnh');
+            return;
+        }
         handleUpdateProduct(data);
-        reset();
-        setPreviewImages([]);
     };
     const handleBack = () => {
         reset();
-        setPreviewImages([]);
         navigate(routes.adminListProduct);
     };
     return (
@@ -89,7 +113,7 @@ function UpdateProduct() {
                     <label className="block text-sm font-bold mb-1">Loại sản phẩm</label>
                     <select
                         className="w-full text-sm p-2 border rounded-md"
-                        {...register('category', { required: 'Vui lòng chọn loại sản phẩm' })}
+                        {...register('categoryId', { required: 'Vui lòng chọn loại sản phẩm' })}
                     >
                         <option value="">Chọn loại sản phẩm</option>
                         {categories.map((category) => (
@@ -98,7 +122,7 @@ function UpdateProduct() {
                             </option>
                         ))}
                     </select>
-                    {errors.category && <p className="text-red-500 text-sm">{errors.category.message}</p>}
+                    {errors.categoryId && <p className="text-red-500 text-sm">{errors.categoryId.message}</p>}
                 </div>
 
                 <div>
@@ -109,6 +133,18 @@ function UpdateProduct() {
                         placeholder="Nhập mô tả sản phẩm"
                     ></textarea>
                     {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
+                </div>
+
+                <div>
+                    <label className="block text-sm font-bold mb-1">Mô tả sản phẩm</label>
+                    <textarea
+                        className="w-full text-sm p-2 border rounded-md min-h-[100px]"
+                        {...register('descriptionDetail', { required: 'Mô tả về chi tiết sản phẩm là bắt buộc' })}
+                        placeholder="Nhập mô tả chi tiết về sản phẩm"
+                    ></textarea>
+                    {errors.descriptionDetail && (
+                        <p className="text-red-500 text-sm">{errors.descriptionDetail.message}</p>
+                    )}
                 </div>
 
                 <div>
@@ -149,18 +185,45 @@ function UpdateProduct() {
                     {errors.price && <p className="text-red-500 text-sm">{errors.price.message}</p>}
                 </div>
 
-                {previewImages.length > 0 && (
-                    <div className="mt-4 grid grid-cols-3 gap-2">
-                        {previewImages.map((src, index) => (
-                            <img
-                                key={index}
-                                src={src}
-                                alt={`preview-${index}`}
-                                className="w-full h-32 object-cover border rounded-md"
-                            />
+                <div className="mt-4">
+                    <div className="flex items-center justify-between mb-4">
+                        <label className="block text-sm font-bold mb-1">Danh sách hình ảnh</label>
+                        <label
+                            htmlFor="imageUpload"
+                            className="cursor-pointer inline-block bg-yellow-300 text-white text-sm px-2 py-1 rounded hover:bg-yellow-400 transition"
+                        >
+                            <AddIcon />
+                        </label>
+                        <input
+                            id="imageUpload"
+                            type="file"
+                            className="hidden"
+                            multiple
+                            accept="image/*"
+                            onChange={handleImageChange}
+                        />
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 mb-2">
+                        {images.map((image, index) => (
+                            <div key={index} className="relative group">
+                                <img
+                                    src={image.url || noImage}
+                                    alt={`preview ${index}`}
+                                    className="w-full h-32 object-cover border rounded-md"
+                                />
+                                <button
+                                    type="button"
+                                    className="absolute top-1 right-1 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+                                    onClick={() => handleRemoveImage(image)}
+                                >
+                                    ×
+                                </button>
+                            </div>
                         ))}
                     </div>
-                )}
+
+                    {errors.images && <p className="text-red-500 text-sm mt-1">{errors.images.message}</p>}
+                </div>
 
                 <div className="flex gap-4">
                     <button type="submit" className="bg-blue-500 text-sm text-white p-2 rounded-md hover:bg-blue-600">

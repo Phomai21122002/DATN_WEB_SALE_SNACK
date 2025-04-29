@@ -62,25 +62,51 @@ export const ChangePassword = async (userId, data) => {
     return res.data;
 };
 
-export const GetProvinces = async () => {
-    const res = await request.get(`/address/provinces`);
+export const GetProvinces = async (inputUserId) => {
+    const res = await request.get(`/address/provinces`, {
+        params: {
+            inputUserId: inputUserId,
+        },
+    });
     return res.data;
 };
 
-export const GetDistricts = async (parentCode) => {
-    const res = await request.get(`/address/district/${parentCode}`);
+export const GetDistricts = async (inputUserId, parentCode) => {
+    const res = await request.get(`/address/districts`, {
+        params: {
+            inputUserId: inputUserId,
+            codeParent: parentCode,
+        },
+    });
     return res.data;
 };
 
-export const GetWards = async (parentCode) => {
-    const res = await request.get(`/address/ward/${parentCode}`);
+export const GetWards = async (inputUserId, parentCode) => {
+    const res = await request.get(`/address/wards`, {
+        params: {
+            inputUserId: inputUserId,
+            codeParent: parentCode,
+        },
+    });
     return res.data;
 };
 
-export const UpdateAddress = async (data) => {
+export const AddAddressByUserId = async ({ inputUserId, name, code }) => {
     try {
-        const res = await request.post(`/Address`, data);
-        return res;
+        console.log(inputUserId, name, code);
+        const res = await request.post(
+            `/address`,
+            {
+                name: name,
+                code: code,
+            },
+            {
+                params: {
+                    inputUserId: inputUserId,
+                },
+            },
+        );
+        return res.data;
     } catch (error) {
         throw error;
     }

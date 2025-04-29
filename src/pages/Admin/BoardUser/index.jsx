@@ -50,7 +50,7 @@ function BoardUser() {
         }
     };
 
-    const handleSearchProduct = (title) => {
+    const handleSearchUser = (title) => {
         if (idSort === 1) {
             title
                 ? setUsers(() => allUser.filter((User) => User.username?.toLowerCase().includes(title.toLowerCase())))
@@ -77,7 +77,7 @@ function BoardUser() {
                 title={'Chọn để sắp xếp và tìm kiếm'}
                 categories={sorts}
                 onSortChange={handleSortChange}
-                onSearch={handleSearchProduct}
+                onSearch={handleSearchUser}
             />
             <div className="bg-white shadow-md rounded-lg overflow-hidden">
                 <table className="min-w-full text-left text-sm">

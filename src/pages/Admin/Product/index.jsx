@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
 import { GetCategories } from '~/services/Category';
 import { Categories } from '~/components/MenuCategory/Constains';
+import { removeVietnameseTones } from '../Category/Constant';
 
 function Product() {
     const [products, setProducts] = useState([]);
@@ -32,7 +33,6 @@ function Product() {
         const getAllProduct = async () => {
             try {
                 const res = await GetProducts();
-                console.log(res);
                 setAllProducts(res);
                 setProducts(res);
                 const resCategory = await GetCategories();
@@ -46,16 +46,21 @@ function Product() {
 
     const handleSortChange = (id) => {
         id
-            ? setProducts(() => allProducts.filter((product) => product.categoryId === parseInt(id)))
+            ? setProducts(() => allProducts.filter((product) => product.category?.id === parseInt(id)))
             : setProducts(allProducts);
     };
 
     const handleSearchProduct = (title) => {
-        title
-            ? setProducts(() =>
-                  allProducts.filter((product) => product.name.toLowerCase().includes(title.toLowerCase())),
-              )
-            : setProducts(allProducts);
+        const lowerTitle = removeVietnameseTones(title?.toLowerCase() || '');
+
+        const filtered = lowerTitle
+            ? allProducts.filter((product) => {
+                  const name = removeVietnameseTones(product.name.toLowerCase());
+                  return name.includes(lowerTitle);
+              })
+            : allProducts;
+
+        setProducts(filtered);
     };
 
     return (
@@ -82,7 +87,16 @@ function Product() {
                                         />
                                     )}
                                 </td>
-                                <td className="py-3 px-6">{product.name}</td>
+                                <td className="py-3 px-6">
+                                    <p className="line-clamp-3 max-w-xs overflow-hidden text-ellipsis">
+                                        {product.name}
+                                    </p>
+                                </td>
+                                <td className="py-3 px-6">
+                                    <p className="line-clamp-3 max-w-xs overflow-hidden text-ellipsis">
+                                        {product.description}
+                                    </p>
+                                </td>
                                 <td className="py-3 px-6">{product.quantity}</td>
                                 <td className="py-3 px-6">{product.price.toLocaleString()} VND</td>
                                 <td className="py-3 px-6">

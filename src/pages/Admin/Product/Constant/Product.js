@@ -12,4 +12,13 @@ export const updatedProducts = (products) => {
     });
 };
 
-export const listTitle = ['STT', 'Ảnh sản phẩm', 'Tên sản phẩm', 'Số lượng', 'Giá', 'Hạng sử dụng', 'Điều chỉnh'];
+export const listTitle = [
+    'STT',
+    'Ảnh sản phẩm',
+    'Tên sản phẩm',
+    'Mô tả sản phẩm',
+    'Số lượng',
+    'Giá',
+    'Hạng sử dụng',
+    'Điều chỉnh',
+];
