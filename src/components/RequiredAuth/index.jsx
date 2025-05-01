@@ -15,6 +15,7 @@ export const RequiredAuth = () => {
     useEffect(() => {
         const NavigateRoute = async () => {
             if (!!token) {
+                console.log('requiredAuth');
                 const profile = await GetProfile();
                 setUserData(profile);
                 const currentPath = location.pathname;

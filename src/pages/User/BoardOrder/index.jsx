@@ -1,17 +1,22 @@
 import { useEffect, useState } from 'react';
-import { GetOrderProduct } from '~/services/Order';
+import { GetOrdersProduct } from '~/services/Order';
 import BackgroundCart from '~/components/BackgroundCart';
 import ProductOrder from '~/components/ProductOrder';
+import { useStorage } from '~/Contexts';
 
 function BoardOrder() {
+    const { userData } = useStorage();
     const [orderList, setOrderList] = useState([]);
     const [totalOrderPrice, setTotalOrderPrice] = useState(0);
 
     useEffect(() => {
         const getData = async () => {
-            const res = await GetOrderProduct();
-            setOrderList(res.filter((product) => product?.status !== 'Completed'));
-            setTotalOrderPrice(res?.reduce((sum, order) => sum + (order.total || 0), 0));
+            if (Object.keys(userData).length > 0) {
+                const res = await GetOrdersProduct(userData?.id);
+                console.log(res);
+                // setOrderList(res.filter((product) => product?.status !== 'Completed'));
+                // setTotalOrderPrice(res?.reduce((sum, order) => sum + (order.total || 0), 0));
+            }
         };
         getData();
     }, []);

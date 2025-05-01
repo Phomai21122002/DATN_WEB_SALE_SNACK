@@ -2,14 +2,14 @@ import HeaderTable from '~/components/HeaderTabel';
 import { listTitleUser } from './Constant';
 import BodyTabel from '~/components/BodyTabel';
 import { useEffect, useState } from 'react';
-import { GetOrderProduct } from '~/services/Order';
+import { GetOrdersProduct } from '~/services/Order';
 
 function BoardBill() {
     const [orderList, setOrderList] = useState([]);
 
     useEffect(() => {
         const getData = async () => {
-            const res = await GetOrderProduct({ Status: 2 });
+            const res = await GetOrdersProduct({ Status: 2 });
             setOrderList(res);
         };
         getData();

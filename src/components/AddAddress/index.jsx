@@ -19,6 +19,7 @@ function AddAddress({ activeAddAddress, setActiveAddAddress }) {
     const selectedHomeNumber = watch('homeNumber');
 
     useEffect(() => {
+        console.log('addaddress');
         const getProfile = async () => {
             try {
                 if (Object.keys(userData).length > 0) {
@@ -65,7 +66,7 @@ function AddAddress({ activeAddAddress, setActiveAddAddress }) {
         const selectedWardObj = dataWard.find((ward) => ward.code === selectedWard);
         await AddAddressByUserId({
             inputUserId: userData.id,
-            name: selectedHomeNumber + ',' + selectedWardObj.path_with_type,
+            name: selectedHomeNumber + ', ' + selectedWardObj.path_with_type,
             code: Number(selectedWard),
         });
         setActiveAddAddress(!activeAddAddress);

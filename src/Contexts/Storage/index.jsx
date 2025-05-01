@@ -21,6 +21,7 @@ function GlobalStates({ children }) {
         const getData = async () => {
             const token = Cookies.get('authToken');
             if (token) {
+                console.log('globalstates');
                 const res = await GetProfile();
                 setUserData(res);
                 setIsLoggedIn(true);

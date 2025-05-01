@@ -1,8 +1,12 @@
 import request from '../request';
 
-export const OrderProduct = async (data) => {
+export const OrderProduct = async (userId, data) => {
     try {
-        const res = await request.post(`/Order`, data);
+        const res = await request.post(`/order`, data, {
+            params: {
+                inputUserId: userId,
+            },
+        });
         return res.data;
     } catch (error) {
         throw error;
@@ -18,23 +22,11 @@ export const UpdateOrderProduct = async (orderId, data) => {
     }
 };
 
-export const GetOrderProduct = async ({
-    isPriceDecsending = false,
-    Status = '',
-    PageNumber,
-    PageSize,
-    StartDate = '',
-    EndDate = '',
-} = {}) => {
+export const GetOrdersProduct = async (userId) => {
     try {
-        const res = await request.get(`/Order`, {
+        const res = await request.get(`/order/orders`, {
             params: {
-                isPriceDecsending,
-                Status,
-                PageNumber,
-                PageSize,
-                StartDate,
-                EndDate,
+                inputUserId: userId,
             },
         });
         return res.data;

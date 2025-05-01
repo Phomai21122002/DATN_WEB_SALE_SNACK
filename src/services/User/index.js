@@ -24,7 +24,12 @@ export const GetUserById = async (id) => {
 
 export const UpdateUserById = async (id, data) => {
     try {
-        const res = await request.put(`/User/${id}`, data);
+        console.log(data);
+        const res = await request.put(`/user/profile`, data, {
+            params: {
+                userId: id,
+            },
+        });
         return res;
     } catch (error) {
         throw error;
@@ -47,6 +52,7 @@ export const DeleteUserById = async (id) => {
 export const GetProfile = async () => {
     try {
         const res = await request.get(`/user/profile`);
+        console.log(res.data);
         return res.data;
     } catch (error) {
         throw error;
@@ -106,6 +112,21 @@ export const AddAddressByUserId = async ({ inputUserId, name, code }) => {
                 },
             },
         );
+        return res.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const UpdateAddressByUserId = async ({ inputUserId, addressId }) => {
+    try {
+        console.log(inputUserId, addressId);
+        const res = await request.put(`/address`, null, {
+            params: {
+                inputUserId: inputUserId,
+                addressId: addressId,
+            },
+        });
         return res.data;
     } catch (error) {
         throw error;

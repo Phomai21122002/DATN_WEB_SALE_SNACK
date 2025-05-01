@@ -89,8 +89,8 @@ function ProductDetail() {
                         )}
                     </div>
 
-                    {product.decription && !loading ? (
-                        <p className="text-gray-600 font-small text-[20px]">{product.decription}</p>
+                    {product.description && !loading ? (
+                        <p className="text-gray-600 font-small text-[20px]">{product.description}</p>
                     ) : (
                         <Skeleton variant="text" className="w-full" />
                     )}

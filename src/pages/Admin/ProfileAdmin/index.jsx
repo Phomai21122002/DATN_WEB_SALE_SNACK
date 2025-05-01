@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
 import { useStorage } from '~/Contexts';
-import { GetProfile, UpdateUserById } from '~/services/User';
+import { UpdateUserById } from '~/services/User';
 
 function ProfileAdmin() {
     const navigate = useNavigate();
