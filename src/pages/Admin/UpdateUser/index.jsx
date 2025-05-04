@@ -19,12 +19,15 @@ function UpdateUser() {
         const getUser = async () => {
             try {
                 const res = await GetUserById(id);
+                console.log(res);
                 reset({
                     id: res.id,
-                    username: res.username,
+                    firstName: res.firstName,
+                    lastName: res.lastName,
                     email: res.email,
-                    phoneNumber: res.phoneNumber,
-                    // role: res.roles[0],
+                    phone: res.phone,
+                    role: res.role?.name || '',
+                    joinDate: res.createdAt?.split('T')[0] || '',
                 });
             } catch (err) {
                 console.error('Error fetching categories: ', err);
@@ -60,15 +63,27 @@ function UpdateUser() {
         <div className="bg-white p-4 shadow-md rounded-lg overflow-hidden">
             <h2 className="text-xl font-bold mb-4">Thông Tin Người Dùng</h2>
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-                <div>
-                    <label className="block text-sm font-bold mb-1">Tên người dùng</label>
-                    <input
-                        type="text"
-                        className="w-full text-sm p-2 border rounded-md"
-                        {...register('username', { required: 'Tên người dùng là bắt buộc' })}
-                        placeholder="Nhập tên người dùng"
-                    />
-                    {errors.username && <p className="text-red-500 text-sm">{errors.username.message}</p>}
+                <div className="flex items-center justify-between gap-32">
+                    <div className="flex-1">
+                        <label className="block text-sm font-bold mb-1">Tên người dùng</label>
+                        <input
+                            type="text"
+                            className="w-full text-sm p-2 border rounded-md"
+                            {...register('firstName', { required: 'Tên người dùng là bắt buộc' })}
+                            placeholder="Nhập tên người dùng"
+                        />
+                        {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName.message}</p>}
+                    </div>
+                    <div className="flex-1">
+                        <label className="block text-sm font-bold mb-1">Họ người dùng</label>
+                        <input
+                            type="text"
+                            className="w-full text-sm p-2 border rounded-md"
+                            {...register('lastName', { required: 'Tên người dùng là bắt buộc' })}
+                            placeholder="Nhập họ người dùng"
+                        />
+                        {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName.message}</p>}
+                    </div>
                 </div>
 
                 <div>
@@ -93,7 +108,7 @@ function UpdateUser() {
                     <input
                         type="tel"
                         className="w-full text-sm p-2 border rounded-md"
-                        {...register('phoneNumber', {
+                        {...register('phone', {
                             required: 'Số điện thoại là bắt buộc',
                             pattern: {
                                 value: /^[0-9]{10,11}$/,
@@ -102,7 +117,7 @@ function UpdateUser() {
                         })}
                         placeholder="Nhập số điện thoại"
                     />
-                    {errors.phoneNumber && <p className="text-red-500 text-sm">{errors.phoneNumber.message}</p>}
+                    {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
                 </div>
 
                 <div>

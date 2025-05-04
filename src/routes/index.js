@@ -48,15 +48,15 @@ const adminRoutes = [
     { path: config.routes.adminCategory, component: CreateCategory, layout: AdminLayout },
     { path: config.routes.adminUpdateCategory, component: UpdateCategory, layout: AdminLayout },
     { path: config.routes.adminListCategory, component: Category, layout: AdminLayout },
-    // { path: config.routes.adminListConfirmOrder, component: BoardConfirmOrder, layout: AdminLayout },
-    // { path: config.routes.adminListCancelOrder, component: BoardCancelOrder, layout: AdminLayout },
-    // { path: config.routes.adminListBill, component: BoardBill, layout: AdminLayout },
+    { path: config.routes.adminListConfirmOrder, component: BoardConfirmOrder, layout: AdminLayout },
+    { path: config.routes.adminListCancelOrder, component: BoardCancelOrder, layout: AdminLayout },
+    { path: config.routes.adminListBill, component: BoardBill, layout: AdminLayout },
     { path: config.routes.adminProfile, component: ProfileAdmin, layout: AdminLayout },
     { path: config.routes.adminChangePass, component: ChangePassAdmin, layout: AdminLayout },
-    // { path: config.routes.adminRevenue, component: BoardRevenue, layout: AdminLayout },
+    { path: config.routes.adminRevenue, component: BoardRevenue, layout: AdminLayout },
     { path: config.routes.adminListUser, component: BoardUser, layout: AdminLayout },
-    // { path: config.routes.adminUpdateUser, component: UpdateUser, layout: AdminLayout },
-    // { path: config.routes.adminUpdateOrder, component: UpdateOrder, layout: AdminLayout },
+    { path: config.routes.adminUpdateUser, component: UpdateUser, layout: AdminLayout },
+    { path: config.routes.adminUpdateOrder, component: UpdateOrder, layout: AdminLayout },
 ];
 
 const userRoutes = [

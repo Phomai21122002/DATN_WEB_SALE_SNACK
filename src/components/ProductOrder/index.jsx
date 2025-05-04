@@ -11,20 +11,20 @@ function ProductOrder({ products, date = null }) {
                 <div className="flex items-center mb-8" key={index}>
                     <Link to={routes.home} className="flex items-center flex-grow space-x-4 w-[20%]">
                         <img
-                            src={product?.images?.[0].url || NoImage}
+                            src={product?.urls?.[0] || NoImage}
                             alt="Sản phẩm"
                             className="w-16 h-16 object-cover rounded"
                         />
-                        <div className="text-sm font-medium">{product?.product.name}</div>
+                        <div className="text-sm font-medium">{product?.name}</div>
                     </Link>
                     <div className="w-32 text-center text-black-500 text-sm font-medium">
-                        {product?.product.price.toLocaleString()}đ
+                        {product?.price.toLocaleString()}đ
                     </div>
                     <div className="w-32 text-center text-black-500 text-sm font-medium">{product?.quantity}</div>
                     <div className="w-32 flex justify-center text-black-500 text-sm font-medium">
-                        {(product?.quantity * product?.product.price).toLocaleString()}đ
+                        {(product?.quantity * product?.price).toLocaleString()}đ
                     </div>
-                    <div className="w-32 text-center text-sm font-medium">{date.slice(0, 10)}</div>
+                    <div className="w-32 text-center text-sm font-medium">{date?.slice(0, 10)}</div>
                 </div>
             ))}
         </div>

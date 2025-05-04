@@ -16,19 +16,19 @@ function BoardOrder() {
         const getData = async () => {
             if (userData && userData.id) {
                 const res = await GetOrderProductAdmin({ userId: userData.id, Status: 0 });
-                setOrderList(res.orders);
+                setOrderList(res);
             }
         };
 
         getData();
     }, [statusPending, userData]);
 
-    const editOrder = (id, userId) => {
-        navigate(`${routes.adminUpdateOrder}?id=${id}&userId=${userId}`);
+    const editOrder = (id) => {
+        navigate(routes.adminUpdateOrder.replace(':id', id));
     };
-    const deleteOrder = async (orderId, userId) => {
+    const deleteOrder = async (orderId) => {
         const data = {
-            userId: userId,
+            userId: userData?.id,
             status: 3,
         };
         await UpdateOrderProduct(orderId, data);

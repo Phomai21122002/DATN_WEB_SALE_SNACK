@@ -11,7 +11,7 @@ export const GetUsers = async ({ Name, SortBy, isDecsending = false, PageNumber 
 
 export const GetUserById = async (id) => {
     try {
-        const res = await request.get(`/User/${id}`, {
+        const res = await request.get(`/user/user`, {
             params: {
                 id,
             },

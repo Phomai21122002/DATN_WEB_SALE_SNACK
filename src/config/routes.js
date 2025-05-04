@@ -15,7 +15,7 @@ export const routesAdmin = Object.fromEntries(
         adminRevenue: 'revenue',
         adminProfile: 'profile',
         adminChangePass: 'changepass',
-        adminUpdateOrder: 'updateorder',
+        adminUpdateOrder: 'updateorder/:id',
     }).map(([key, value]) => [key, `/admin/${value}`]),
 );
 

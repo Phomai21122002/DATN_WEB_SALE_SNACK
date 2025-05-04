@@ -13,17 +13,17 @@ function BoardRevenue() {
 
     useEffect(() => {
         const getData = async () => {
-            const resTotal = await GetTotalRevenue();
-            setTotalRevenue(resTotal.totalRevenue);
-            const resSales = await GetProductSales();
-            setProductSalesCount(resSales.productSales);
-            var resRevenueProduct = await GetRevenueProducts();
-            const formattedArray = Object.entries(resRevenueProduct).map(([name, price]) => {
-                return { name: name.trim(), price: parseInt(price, 10) };
-            });
-            setRevenueProducts(formattedArray);
-            const resOrderCount = await GetOrderByDate();
-            setOrdersCountByDate(resOrderCount);
+            // const resTotal = await GetTotalRevenue();
+            // setTotalRevenue(resTotal.totalRevenue);
+            // const resSales = await GetProductSales();
+            // setProductSalesCount(resSales.productSales);
+            // var resRevenueProduct = await GetRevenueProducts();
+            // const formattedArray = Object.entries(resRevenueProduct).map(([name, price]) => {
+            //     return { name: name.trim(), price: parseInt(price, 10) };
+            // });
+            // setRevenueProducts(formattedArray);
+            // const resOrderCount = await GetOrderByDate();
+            // setOrdersCountByDate(resOrderCount);
         };
         getData();
     }, []);
@@ -51,7 +51,7 @@ function BoardRevenue() {
             <BackgroundCart className="flex flex-col w-full orders-end mt-8 mb-12">
                 <div className="text-[16px] font-medium w-full max-w-md">
                     <div className="flex justify-between orders-center mb-4">
-                        <span className="text-gray-700">Tổng sản phẩm đã bán và đặt hàng:</span>
+                        <span className="text-gray-700">Tổng sản phẩm đã bán:</span>
                         <span className="text-black-500 font-semibold">{productSalesCount?.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between orders-center mb-4">

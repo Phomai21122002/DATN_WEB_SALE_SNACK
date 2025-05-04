@@ -26,7 +26,8 @@ function BoardOrder() {
             <div className="max-w-[1100px] mx-auto py-8">
                 <BackgroundCart className={'items-center'}>
                     <div className="flex-grow text-sm text-gray-900 font-medium">Mã đơn hàng</div>
-                    <div className="w-32 text-center text-sm text-gray-500 font-medium">Đơn giá</div>
+                    <div className="w-32 text-center text-sm text-gray-500 font-medium">Tên người dùng</div>
+                    <div className="w-32 text-center text-sm text-gray-500 font-medium">Số điện thoại người dùng</div>
                     <div className="w-32 text-center text-sm text-gray-500 font-medium">Số lượng</div>
                     <div className="w-32 text-center text-sm text-gray-500 font-medium">Số tiền</div>
                     <div className="w-32 text-center text-sm text-gray-500 font-medium">Ngày đặt hàng</div>
