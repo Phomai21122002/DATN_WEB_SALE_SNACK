@@ -2,7 +2,7 @@ import HeaderTable from '~/components/HeaderTabel';
 import { listTitle } from './Constant';
 import BodyTabel from '~/components/BodyTabel';
 import { useEffect, useState } from 'react';
-import { GetOrderProductAdmin, UpdateOrderProduct } from '~/services/Order';
+import { GetOrderProductAdmin, RemoveSoftOrder } from '~/services/Order';
 import { useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
 import { useStorage } from '~/Contexts';
@@ -10,29 +10,25 @@ import { useStorage } from '~/Contexts';
 function BoardOrder() {
     const { userData } = useStorage();
     const [orderList, setOrderList] = useState([]);
-    const [statusPending, setStatusPending] = useState(false);
+    const [status, setStatus] = useState(false);
     const navigate = useNavigate();
     useEffect(() => {
-        const getData = async () => {
-            if (userData && userData.id) {
-                const res = await GetOrderProductAdmin({ userId: userData.id, Status: 0 });
+        console.log(userData);
+        if (userData && userData.id) {
+            const getData = async () => {
+                const res = await GetOrderProductAdmin({ userId: userData.id, Status: 1 });
                 setOrderList(res);
-            }
-        };
-
-        getData();
-    }, [statusPending, userData]);
+            };
+            getData();
+        }
+    }, [status, userData]);
 
     const editOrder = (id) => {
         navigate(routes.adminUpdateOrder.replace(':id', id));
     };
     const deleteOrder = async (orderId) => {
-        const data = {
-            userId: userData?.id,
-            status: 3,
-        };
-        await UpdateOrderProduct(orderId, data);
-        setStatusPending(!statusPending);
+        await RemoveSoftOrder({ userId: userData.id, orderId });
+        setStatus(!status);
     };
     return (
         <div className="bg-white shadow-md rounded-lg overflow-hidden">

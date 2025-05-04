@@ -4,34 +4,30 @@ import BodyTabel from '~/components/BodyTabel';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
-import { GetOrderProductAdmin } from '~/services/Order';
+import { GetOrderProductAdmin, RemoveOrder } from '~/services/Order';
 import { useStorage } from '~/Contexts';
 
 function BoardCancelOrder() {
     const { userData } = useStorage();
     const [orderList, setOrderList] = useState([]);
-    const [statusPending, setStatusPending] = useState(false);
+    const [status, setStatus] = useState(false);
     const navigate = useNavigate();
     useEffect(() => {
         if (userData && userData.id) {
             const getData = async () => {
-                const res = await GetOrderProductAdmin({ userId: userData?.id, Status: 3 });
+                const res = await GetOrderProductAdmin({ userId: userData?.id, Status: 4 });
                 setOrderList(res);
             };
             getData();
         }
-    }, [statusPending, userData]);
+    }, [status, userData]);
 
     const editOrder = (id) => {
         navigate(routes.adminUpdateOrder.replace(':id', id));
     };
     const deleteOrder = async (orderId) => {
-        // const data = {
-        //     userId: userId,
-        //     status: 3,
-        // };
-        // await UpdateOrderProduct(orderId, data);
-        // setStatusPending(!statusPending);
+        await RemoveOrder({ userId: userData.id, orderId });
+        setStatus(!status);
     };
     return (
         <div className="bg-white shadow-md rounded-lg overflow-hidden">

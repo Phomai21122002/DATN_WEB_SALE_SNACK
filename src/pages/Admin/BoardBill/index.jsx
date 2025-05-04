@@ -1,7 +1,7 @@
 import HeaderTable from '~/components/HeaderTabel';
 import { listTitle } from './Constant';
 import BodyTabel from '~/components/BodyTabel';
-import { GetOrderProductAdmin, UpdateOrderProduct } from '~/services/Order';
+import { GetOrderProductAdmin, RemoveSoftOrder } from '~/services/Order';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
@@ -10,24 +10,24 @@ import { useStorage } from '~/Contexts';
 function BoardBill() {
     const { userData } = useStorage();
     const [orderList, setOrderList] = useState([]);
-    const [statusPending, setStatusPending] = useState(false);
+    const [status, setStatus] = useState(false);
     const navigate = useNavigate();
     useEffect(() => {
         if (userData && userData.id) {
             const getData = async () => {
-                const res = await GetOrderProductAdmin({ userId: userData.id, Status: 2 });
+                const res = await GetOrderProductAdmin({ userId: userData.id, Status: 3 });
                 setOrderList(res);
             };
             getData();
         }
-    }, [statusPending, userData]);
+    }, [status, userData]);
 
     const editOrder = (id) => {
         navigate(routes.adminUpdateOrder.replace(':id', id));
     };
     const deleteOrder = async (orderId) => {
-        await UpdateOrderProduct(orderId, userData.id);
-        setStatusPending(!statusPending);
+        await RemoveSoftOrder({ userId: userData.id, orderId });
+        setStatus(!status);
     };
     return (
         <div className="bg-white shadow-md rounded-lg overflow-hidden">

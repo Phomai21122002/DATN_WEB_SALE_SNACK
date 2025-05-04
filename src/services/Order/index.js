@@ -31,17 +31,15 @@ export const GetOrdersProduct = async (userId) => {
 export const GetOrderProductAdmin = async ({
     userId,
     isPriceDecsending,
-    Status = '',
+    Status,
     PageNumber,
     PageSize,
     StartDate = '',
     EndDate = '',
 }) => {
-    console.log(userId);
     const res = await request.get(`/order/orders`, {
-        params: { inputUserId: userId },
+        params: { inputUserId: userId, inputStatus: Status },
     });
-    console.log(res.data);
     return res.data;
 };
 
@@ -52,7 +50,6 @@ export const GetOrderById = async (orderId, userId) => {
             orderId: orderId,
         },
     });
-    console.log(res.data);
     return res.data;
 };
 
@@ -74,6 +71,26 @@ export const GetOrderByUserId = async ({
             PageSize,
             StartDate,
             EndDate,
+        },
+    });
+    return res.data;
+};
+
+export const RemoveSoftOrder = async ({ userId, orderId }) => {
+    const res = await request.delete(`/order/Soft-Delete`, {
+        params: {
+            inputUserId: userId,
+            inputOrderId: orderId,
+        },
+    });
+    return res.data;
+};
+
+export const RemoveOrder = async ({ userId, orderId }) => {
+    const res = await request.delete(`/order`, {
+        params: {
+            inputUserId: userId,
+            inputOrderId: orderId,
         },
     });
     return res.data;
