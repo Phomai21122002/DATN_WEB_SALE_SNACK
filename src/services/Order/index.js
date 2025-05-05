@@ -19,10 +19,11 @@ export const UpdateOrderProduct = async (orderId, userId) => {
     return res.data;
 };
 
-export const GetOrdersProduct = async (userId) => {
+export const GetOrdersProduct = async (userId, Status) => {
     const res = await request.get(`/order/orders`, {
         params: {
             inputUserId: userId,
+            inputStatus: Status,
         },
     });
     return res.data;

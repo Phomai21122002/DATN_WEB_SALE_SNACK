@@ -51,9 +51,9 @@ function Cart() {
     }, []);
 
     const HandlePurchase = async () => {
-        if (userData && Object.keys(userData).length > 0 && userData?.addresses?.length <= 0 && !userData?.phone) {
+        if (userData && Object.keys(userData).length > 0 && userData?.addresses?.length <= 0) {
             navigate(routes.userProfile);
-        } else if (userData && Object.keys(userData).length > 0 && userData?.addresses?.length > 0 && userData?.phone) {
+        } else if (userData && Object.keys(userData).length > 0 && userData?.addresses?.length > 0) {
             const selectedProductIds = checkProduct
                 .filter((product) => product.check === true)
                 .map((product) => product.id);

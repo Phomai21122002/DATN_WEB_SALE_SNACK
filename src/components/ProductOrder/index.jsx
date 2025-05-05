@@ -5,6 +5,7 @@ import routes from '~/config/routes';
 import NoImage from '~/assets/images/No-image.png';
 
 function ProductOrder({ products, date = null }) {
+    console.log(products);
     return (
         <div className="w-full">
             {products?.map((product, index) => (
@@ -24,7 +25,7 @@ function ProductOrder({ products, date = null }) {
                     <div className="w-32 flex justify-center text-black-500 text-sm font-medium">
                         {(product?.quantity * product?.price).toLocaleString()}đ
                     </div>
-                    <div className="w-32 text-center text-sm font-medium">{date?.slice(0, 10)}</div>
+                    <div className="w-32 text-center text-sm font-medium">{new Date(date).toLocaleString()}</div>
                 </div>
             ))}
         </div>

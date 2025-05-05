@@ -1,85 +1,130 @@
-import { useEffect, useState } from 'react';
-import { GetOrdersProduct } from '~/services/Order';
+import { useEffect, useMemo, useState } from 'react';
+import { GetOrderById, GetOrdersProduct } from '~/services/Order';
 import BackgroundCart from '~/components/BackgroundCart';
 import ProductOrder from '~/components/ProductOrder';
 import { useStorage } from '~/Contexts';
+import { getOrderStatusStyle, getOrderStatusText } from '~/components/BodyTabel/Constant';
 
 function BoardOrder() {
     const { userData } = useStorage();
     const [orderList, setOrderList] = useState([]);
-    const [totalOrderPrice, setTotalOrderPrice] = useState(0);
+    const [expandedOrderId, setExpandedOrderId] = useState('');
+    const [selectedOrder, setSelectedOrder] = useState(null);
+
+    const { totalOrderPrice, totalProductCount, finalTotal, totalShipping } = useMemo(() => {
+        const shippingFee = 30000;
+        const totalShipping = shippingFee * orderList.length;
+        const totalOrderPrice = orderList?.reduce((sum, o) => sum + o.total, 0) || 0;
+        const totalProductCount = orderList?.reduce((sum, o) => sum + o.countProduct, 0) || 0;
+        const finalTotal = totalOrderPrice + totalShipping;
+        return { totalOrderPrice, totalProductCount, finalTotal, totalShipping };
+    }, [orderList]);
 
     useEffect(() => {
         const getData = async () => {
             if (Object.keys(userData).length > 0) {
-                const res = await GetOrdersProduct(userData?.id);
-                console.log(res);
-                // setOrderList(res.filter((product) => product?.status !== 'Completed'));
-                // setTotalOrderPrice(res?.reduce((sum, order) => sum + (order.total || 0), 0));
+                const res = await GetOrdersProduct(userData?.id, 1);
+                setOrderList(res);
             }
         };
         getData();
-    }, []);
+    }, [userData]);
+
+    const toggleExpand = async (orderId) => {
+        if (expandedOrderId === orderId) {
+            setExpandedOrderId(null);
+            setSelectedOrder(null);
+        } else {
+            setExpandedOrderId(orderId);
+            const res = await GetOrderById(orderId, userData.id);
+            console.log(res);
+            setSelectedOrder(res);
+        }
+    };
 
     return (
         <div className="flex justify-center mt-24 pb-8 bg-white shadow-md rounded-lg overflow-hidden">
-            <div className="max-w-[1100px] mx-auto py-8">
-                <BackgroundCart className={'items-center'}>
-                    <div className="flex-grow text-sm text-gray-900 font-medium">Mã đơn hàng</div>
-                    <div className="w-32 text-center text-sm text-gray-500 font-medium">Tên người dùng</div>
-                    <div className="w-32 text-center text-sm text-gray-500 font-medium">Số điện thoại người dùng</div>
-                    <div className="w-32 text-center text-sm text-gray-500 font-medium">Số lượng</div>
-                    <div className="w-32 text-center text-sm text-gray-500 font-medium">Số tiền</div>
-                    <div className="w-32 text-center text-sm text-gray-500 font-medium">Ngày đặt hàng</div>
-                </BackgroundCart>
-                {orderList?.map((item) => (
-                    <div key={item.id} className="flex flex-col items-center bg-white">
-                        <BackgroundCart className="w-full justify-between items-center">
-                            <div className="flex items-center space-x-4">
-                                <span className="text-[16px] font-medium">{item.name}</span>
-                                <span
-                                    className={`px-3 py-1 rounded-full text-xs ${
-                                        item.status === 'Completed'
-                                            ? 'bg-green-200 text-green-800'
-                                            : item.status === 'Pending'
-                                            ? 'bg-yellow-200 text-yellow-800'
-                                            : 'bg-red-200 text-red-800'
-                                    }`}
+            <div className="max-w-[1100px] mx-auto py-8 w-full">
+                <h2 className="text-xl font-semibold mb-6">Danh sách đơn hàng</h2>
+
+                <div className="overflow-x-auto">
+                    <table className="w-full text-sm text-left text-gray-700 border border-gray-300 rounded-md">
+                        <thead className="bg-gray-100 text-xs uppercase">
+                            <tr>
+                                <th className="px-4 py-2">Mã đơn hàng</th>
+                                <th className="px-4 py-2">Tên người dùng</th>
+                                <th className="px-4 py-2">Số điện thoại</th>
+                                <th className="px-4 py-2 text-center">Số lượng</th>
+                                <th className="px-4 py-2 text-center">Số tiền</th>
+                                <th className="px-4 py-2">Ngày đặt hàng</th>
+                                <th className="px-4 py-2 text-center">Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {orderList.map((order) => (
+                                <tr
+                                    key={order.id}
+                                    className="cursor-pointer hover:bg-gray-50"
+                                    onClick={() => toggleExpand(order.id)}
                                 >
-                                    {item.status}
-                                </span>
-                            </div>
-                        </BackgroundCart>
+                                    <td className="px-4 py-3">{order.name}</td>
+                                    <td className="px-4 py-3">{`${order.user?.lastName} ${order.user?.firstName}`}</td>
+                                    <td className="px-4 py-3">{order.user?.phone}</td>
+                                    <td className="px-4 py-3 text-center">{order.countProduct}</td>
+                                    <td className="px-4 py-3 text-center">{order.total.toLocaleString()}đ</td>
+                                    <td className="px-4 py-3">{new Date(order.createOrder).toLocaleString()}</td>
+                                    <td className="px-4 py-3 text-center">
+                                        <span
+                                            className={`px-3 py-1 rounded-full text-xs font-medium ${getOrderStatusStyle(
+                                                order.status,
+                                            )}`}
+                                        >
+                                            {getOrderStatusText(order.status)}
+                                        </span>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                {expandedOrderId && (
+                    <div className="mt-6">
+                        <h3 className="text-lg font-semibold mb-3">Chi tiết đơn hàng</h3>
                         <BackgroundCart className="w-full items-center">
-                            <ProductOrder products={item?.orderProduct} date={item?.createdAt} />
+                            <ProductOrder
+                                products={selectedOrder?.products || []}
+                                date={selectedOrder?.createOrder || ''}
+                            />
                         </BackgroundCart>
-                        <BackgroundCart className="flex flex-col w-full items-end mb-12">
+                        <BackgroundCart className="flex flex-col w-full items-end mb-12 mt-4">
                             <div className="text-[16px] font-medium w-full max-w-md">
                                 <div className="flex justify-between items-center mb-8">
                                     <span className="text-gray-700">
-                                        Tổng tiền hàng ({item.orderProduct.length} sản phẩm):
+                                        Tổng tiền hàng ({selectedOrder?.countProduct} sản phẩm):
                                     </span>
-                                    <span className="text-red-500 font-semibold">{item.total.toLocaleString()}đ</span>
+                                    <span className="text-red-500 font-semibold">
+                                        {selectedOrder?.total.toLocaleString()}đ
+                                    </span>
                                 </div>
                             </div>
                         </BackgroundCart>
                     </div>
-                ))}
+                )}
+
                 <BackgroundCart className="flex flex-col w-full items-end mt-8 mb-12">
                     <div className="text-[16px] font-medium w-full max-w-md">
                         <div className="flex justify-between items-center mb-4">
-                            <span className="text-gray-700">Tổng tiền hàng ({orderList?.length || 0} sản phẩm):</span>
-                            <span className="text-black-500 font-semibold">{totalOrderPrice.toLocaleString()}</span>
+                            <span className="text-gray-700">Tổng tiền hàng ({totalProductCount} sản phẩm):</span>
+                            <span className="text-black-500 font-semibold">{totalOrderPrice.toLocaleString()}đ</span>
                         </div>
                         <div className="flex justify-between items-center mb-4">
                             <span className="text-gray-700">Phí vận chuyển:</span>
-                            <span className="text-black-500 font-semibold">30.000đ</span>
+                            <span className="text-black-500 font-semibold">{totalShipping.toLocaleString()}đ</span>
                         </div>
                         <div className="flex justify-between items-center mb-4">
                             <span className="text-gray-700">Tổng thành tiền:</span>
-                            <span className="text-red-500 font-semibold">
-                                {(totalOrderPrice + 30000).toLocaleString()}đ
-                            </span>
+                            <span className="text-red-500 font-semibold">{finalTotal.toLocaleString()}đ</span>
                         </div>
                     </div>
                 </BackgroundCart>
