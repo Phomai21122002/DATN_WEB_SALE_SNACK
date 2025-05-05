@@ -1,21 +1,22 @@
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import { Button, Divider, TextField } from '@mui/material';
 import { Apple, FaceBookColor, GoogleColor } from '~/components/Icons';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 
 import { SignUp as Register } from '~/services/Auth';
 import { joiResolver } from '@hookform/resolvers/joi';
 import validation from './validation';
 import { toast } from 'react-toastify';
+import PopUpCode from '~/components/PopUpCode';
 
 const borderStyle = 'border-[1px] border-[#8590A2] border-solid';
 
 function SignUp() {
-    const navigate = useNavigate();
     const form = useForm({
         defaultValues: {
-            userName: '',
+            firstName: '',
+            lastName: '',
             email: '',
             password: '',
             confirmPassword: '',
@@ -24,13 +25,15 @@ function SignUp() {
         mode: 'onSubmit',
         reValidateMode: 'onBlur',
     });
+    const [showCodePopup, setShowCodePopup] = useState(false);
+    const [registeredEmail, setRegisteredEmail] = useState('');
 
     const handleSubmit = (values) => {
-        const { email, password, userName } = values;
-        Register(userName, email, password)
+        const { email, password, firstName, lastName } = values;
+        Register(firstName, lastName, email, password)
             .then(() => {
-                toast.success('Register account successfully');
-                navigate('/login');
+                setRegisteredEmail(email);
+                setShowCodePopup(true);
             })
             .catch((err) => {
                 console.error(err);
@@ -53,12 +56,12 @@ function SignUp() {
 
                     <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col">
                         <Controller
-                            name="userName"
+                            name="firstName"
                             control={form.control}
                             render={({ field, fieldState: { error } }) => (
                                 <TextField
                                     type="text"
-                                    value={field.userName}
+                                    value={field.firstName}
                                     onChange={field.onChange}
                                     error={Boolean(error)} // Hiển thị lỗi nếu có
                                     helperText={error ? error.message : ''} // Hiển thị thông báo lỗi
@@ -68,7 +71,27 @@ function SignUp() {
                                             padding: 1,
                                         },
                                     }}
-                                    placeholder="User Name"
+                                    placeholder="First Name"
+                                />
+                            )}
+                        />
+                        <Controller
+                            name="lastName"
+                            control={form.control}
+                            render={({ field, fieldState: { error } }) => (
+                                <TextField
+                                    type="text"
+                                    value={field.lastName}
+                                    onChange={field.onChange}
+                                    error={Boolean(error)}
+                                    helperText={error ? error.message : ''}
+                                    sx={{
+                                        marginBottom: 2,
+                                        '& .MuiInputBase-input': {
+                                            padding: 1,
+                                        },
+                                    }}
+                                    placeholder="Last Name"
                                 />
                             )}
                         />
@@ -174,6 +197,8 @@ function SignUp() {
                     </div>
                 </div>
             </div>
+
+            {showCodePopup && <PopUpCode email={registeredEmail} setShowCodePopup={setShowCodePopup} />}
         </div>
     );
 }

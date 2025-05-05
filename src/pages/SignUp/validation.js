@@ -21,7 +21,8 @@ const validation = Joi.object({
         .required()
         .label('confirm password')
         .messages({ 'any.only': 'Password and confirm password must match' }),
-    userName: Joi.string().min(5).max(10).required().label('user name'),
+    firstName: Joi.string().required().label('First name'),
+    lastName: Joi.string().required().label('Last name'),
 });
 
 export default validation;

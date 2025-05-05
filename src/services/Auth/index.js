@@ -13,15 +13,34 @@ export const Roles = async () => {
     return res.data;
 };
 
-export const SignUp = async (username, email, password) => {
-    try {
-        const res = await request.post('/account/register', {
-            username: username,
-            email: email,
-            password: password,
-        });
-        return res.data;
-    } catch (error) {
-        throw error;
-    }
+export const SignUp = async (firstName, lastName, email, password) => {
+    console.log(firstName, lastName, email, password);
+    const res = await request.post(
+        '/Auth/register',
+        {
+            email,
+            firstName,
+            lastName,
+            phone: '0905834767',
+            url: '',
+            password,
+        },
+        {
+            params: {
+                idRole: 2,
+            },
+        },
+    );
+    return res.data;
+};
+
+export const ConfirmEmail = async (email, code) => {
+    console.log(email, code);
+    const res = await request.post('/Auth/confirmEmail', null, {
+        params: {
+            email,
+            code,
+        },
+    });
+    return res.data;
 };

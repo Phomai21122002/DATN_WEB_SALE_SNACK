@@ -2,22 +2,24 @@ import { memo, useEffect, useState } from 'react';
 import { Button, Divider, TextField } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
-import { jwtDecode } from 'jwt-decode';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
 
 import routes from '../../config/routes';
-import { loginLogoList, role } from './constants/logo';
+import { loginLogoList } from './constants/logo';
 import { SignIn } from '~/services/Auth';
 import Loading from '~/components/Loading';
 import { useStorage } from '~/Contexts';
 import { GetProfile } from '~/services/User';
+import PopUpCode from '~/components/PopUpCode';
 
 const Login = memo(() => {
     const navigate = useNavigate();
     const { setUserData, setIsLoggedIn } = useStorage();
     const [errorPass, setErrorPass] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [showCodePopup, setShowCodePopup] = useState(false);
+    const [loginEmail, setLoginEmail] = useState('');
     const { handleSubmit, control } = useForm({
         defaultValues: {
             email: '',
@@ -36,15 +38,21 @@ const Login = memo(() => {
         setIsLoading(true);
         SignIn(email, password)
             .then(async (res) => {
-                setIsLoggedIn(true);
-                Cookies.set('authToken', res.token, {
-                    expires: 7,
-                    path: '/',
-                });
-                const profile = await GetProfile();
-                setUserData(profile);
-                toast.success('Login successfully');
-                navigate(routes.home);
+                console.log(res);
+                if (!res.isConfirmEmail) {
+                    setLoginEmail(email);
+                    setShowCodePopup(true);
+                } else {
+                    setIsLoggedIn(true);
+                    Cookies.set('authToken', res.token, {
+                        expires: 7,
+                        path: '/',
+                    });
+                    const profile = await GetProfile();
+                    setUserData(profile);
+                    toast.success('Login successfully');
+                    navigate(routes.home);
+                }
             })
             .catch(() => {
                 setErrorPass('Thông tin người dùng nhập không chính xác. Vui lòng nhập lại!');
@@ -136,6 +144,7 @@ const Login = memo(() => {
                 </div>
             </div>
             {isLoading && <Loading />}
+            {showCodePopup && <PopUpCode email={loginEmail} setShowCodePopup={setShowCodePopup} />}
         </div>
     );
 });
