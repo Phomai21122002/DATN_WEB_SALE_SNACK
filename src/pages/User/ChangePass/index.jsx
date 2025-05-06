@@ -56,7 +56,7 @@ function ChangePass() {
                         className="w-full text-sm p-2 border rounded-md"
                         {...register('password', { required: 'Mật khẩu hiện tại là bắt buộc' })}
                         placeholder="Nhập mật khẩu hiện tại"
-                        autoComplete="current-password"
+                        autoComplete="off"
                     />
                     {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
                 </div>

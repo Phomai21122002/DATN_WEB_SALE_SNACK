@@ -4,12 +4,15 @@ import App from '~/App';
 import reportWebVitals from './reportWebVitals';
 import './index.css';
 import Storage from '~/Contexts/Storage';
+import { ToastProvider } from './Contexts/ToastProvider';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     // <React.StrictMode>
     <Storage>
-        <App />
+        <ToastProvider>
+            <App />
+        </ToastProvider>
     </Storage>,
     // </React.StrictMode>,
 );

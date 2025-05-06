@@ -38,7 +38,6 @@ const Login = memo(() => {
         setIsLoading(true);
         SignIn(email, password)
             .then(async (res) => {
-                console.log(res);
                 if (!res.isConfirmEmail) {
                     setLoginEmail(email);
                     setShowCodePopup(true);
