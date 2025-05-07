@@ -6,25 +6,14 @@ export const orderTabs = [
     { label: 'Đã hủy', value: 4 },
 ];
 
-export const listTitle = [
-    'STT',
+export const listTitleOrder = [
+    'Mã đơn hàng',
     'Tên người dùng',
-    'Tên sản phẩm',
+    'Số điện thoại',
     'Số lượng',
-    'địa chỉ',
-    'Tổng tiền',
+    'Số tiền',
+    'Ngày đặt hàng',
     'Trạng thái',
-    'Điều chỉnh',
 ];
 
-export const listTitleUser = [
-    'STT',
-    'Mã đặt hàng',
-    'Ảnh sản phẩm',
-    'Tên sản phẩm',
-    'Số lượng',
-    'Ngày đặt',
-    'Tổng tiền',
-    'Trạng thái',
-    'Điều chỉnh',
-];
+export const listTitleProduct = ['Hình ảnh', 'Tên sản phẩm', 'Giá tiền', 'Số lượng', 'Tổng tiền', 'Ngày đặt'];

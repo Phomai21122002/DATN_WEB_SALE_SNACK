@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { GetOrderById, GetOrdersProduct } from '~/services/Order';
 import BackgroundCart from '~/components/BackgroundCart';
-import ProductOrder from '~/components/ProductOrder';
+import HeaderTable from '~/components/HeaderTabel';
 import { useStorage } from '~/Contexts';
 import { getOrderStatusStyle, getOrderStatusText } from '~/components/BodyTabel/Constant';
-import { orderTabs } from './Constant';
+import { listTitleOrder, orderTabs } from './Constant';
+import Purchase from '~/components/Purchase';
 
 function BoardOrder() {
     const { userData } = useStorage();
@@ -73,17 +74,8 @@ function BoardOrder() {
 
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm text-left text-gray-700 border border-gray-300 rounded-md">
-                            <thead className="bg-gray-100 text-xs uppercase">
-                                <tr>
-                                    <th className="px-4 py-2">Mã đơn hàng</th>
-                                    <th className="px-4 py-2">Tên người dùng</th>
-                                    <th className="px-4 py-2">Số điện thoại</th>
-                                    <th className="px-4 py-2 text-center">Số lượng</th>
-                                    <th className="px-4 py-2 text-center">Số tiền</th>
-                                    <th className="px-4 py-2">Ngày đặt hàng</th>
-                                    <th className="px-4 py-2 text-center">Trạng thái</th>
-                                </tr>
-                            </thead>
+                            <HeaderTable listTitle={listTitleOrder} />
+
                             <tbody>
                                 {Array.isArray(orderList) && orderList.length > 0 ? (
                                     orderList.map((order) => (
@@ -126,16 +118,16 @@ function BoardOrder() {
                 {expandedOrderId && (
                     <div className="mt-6">
                         <h3 className="text-lg font-semibold mb-3">Chi tiết đơn hàng</h3>
-                        
-                        <BackgroundCart className="w-full items-center">
-                            <ProductOrder
+                        <div className="w-full flex bg-white py-2 mb-4 font-semibold text-gray-600 shadow-sm">
+                            <Purchase
                                 products={selectedOrder?.products || []}
                                 date={selectedOrder?.createOrder || ''}
                             />
-                        </BackgroundCart>
+                        </div>
+
                         <BackgroundCart className="flex flex-col w-full items-end mb-12 mt-4">
-                            <div className="text-[16px] font-medium w-full max-w-md">
-                                <div className="flex justify-between items-center mb-8">
+                            <div className="text-base font-medium w-full max-w-md">
+                                <div className="flex justify-between items-center mb-4">
                                     <span className="text-gray-700">
                                         Tổng tiền hàng ({selectedOrder?.countProduct} sản phẩm):
                                     </span>
