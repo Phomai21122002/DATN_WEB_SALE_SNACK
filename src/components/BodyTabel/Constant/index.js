@@ -27,3 +27,18 @@ export const getOrderStatusStyle = (status) => {
             return 'bg-gray-200 text-gray-800'; // Không xác nhận
     }
 };
+
+export const getOrderStatusStyleText = (status) => {
+    switch (status) {
+        case 1:
+            return 'text-yellow-500'; // Chờ xử lý
+        case 2:
+            return 'text-blue-500'; // Đang xử lý
+        case 3:
+            return 'text-green-500'; // Hoàn tất
+        case 4:
+            return 'text-red-500'; // Đã hủy
+        default:
+            return 'text-gray-500'; // Không xác nhận
+    }
+};

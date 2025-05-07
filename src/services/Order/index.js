@@ -54,6 +54,21 @@ export const GetOrderById = async (orderId, userId) => {
     return res.data;
 };
 
+export const GetOrderProductInOrder = async ({
+    userId,
+    isPriceDecsending,
+    Status,
+    PageNumber,
+    PageSize,
+    StartDate = '',
+    EndDate = '',
+}) => {
+    const res = await request.get(`/order/ProductInOrders`, {
+        params: { inputUserId: userId, inputStatus: Status },
+    });
+    return res.data;
+};
+
 export const GetOrderByUserId = async ({
     id,
     isPriceDecsending,
