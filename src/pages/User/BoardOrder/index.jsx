@@ -126,6 +126,7 @@ function BoardOrder() {
                 {expandedOrderId && (
                     <div className="mt-6">
                         <h3 className="text-lg font-semibold mb-3">Chi tiết đơn hàng</h3>
+                        
                         <BackgroundCart className="w-full items-center">
                             <ProductOrder
                                 products={selectedOrder?.products || []}
