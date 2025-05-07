@@ -5,6 +5,12 @@ const LOGO_SIZE = 24;
 export const loginLogoList = [
     {
         name: 'Google',
+        handle: () => {
+            const backendUrl = 'https://localhost:7239/api/Auth/LoginByGoogle';
+            const frontendUrl = 'http://localhost:3000/';
+
+            window.location.href = `${backendUrl}?returnUrl=${encodeURIComponent(frontendUrl)}`;
+        },
         logo: <GoogleColor width={LOGO_SIZE} height={LOGO_SIZE} />,
     },
     {

@@ -121,6 +121,7 @@ const Login = memo(() => {
                         <div className="mt-6 text-[14px] font-bold text-slate-400">Others:</div>
                         {loginLogoList.map((item, index) => (
                             <div
+                                onClick={item?.handle}
                                 key={index}
                                 className="h-10 w-full flex justify-center items-center gap-2 border-[1px] border-[#8590A2] border-solid cursor-pointer hover:bg-slate-50 mb-4 rounded-sm"
                             >
