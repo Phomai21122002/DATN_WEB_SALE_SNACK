@@ -22,11 +22,12 @@ function BoardCancelOrder() {
         }
     }, [status, userData]);
 
-    const editOrder = (id) => {
-        navigate(routes.adminUpdateOrder.replace(':id', id));
+    const editOrder = (data) => {
+        const url = routes.adminUpdateOrder.replace(':id', data.id);
+        navigate(`${url}?userId=${data?.user.id}`);
     };
-    const deleteOrder = async (orderId) => {
-        await RemoveOrder({ userId: userData.id, orderId });
+    const deleteOrder = async (data) => {
+        await RemoveOrder({ userId: data.user.id, orderId: data.id });
         setStatus(!status);
     };
     return (

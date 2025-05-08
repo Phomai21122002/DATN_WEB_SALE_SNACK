@@ -4,31 +4,35 @@ import ProductOrder from '~/components/ProductOrder';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { GetOrderById, UpdateOrderProduct } from '~/services/Order';
 import routes from '~/config/routes';
-import { useStorage } from '~/Contexts';
 import { getOrderStatusStyle, getOrderStatusText } from '~/components/BodyTabel/Constant';
 
 function UpdateOrder() {
     const { id } = useParams();
-    const { userData } = useStorage();
+    const [searchParams] = useSearchParams();
+    const userId = searchParams.get('userId');
     const navigate = useNavigate();
     const [order, setOrder] = useState({});
 
     useEffect(() => {
         const getData = async () => {
-            const res = await GetOrderById(id, userData?.id);
+            console.log(userId);
+            const res = await GetOrderById(id, userId);
             console.log(res);
             setOrder(res);
         };
         getData();
-    }, [id, userData]);
+    }, [id, userId]);
 
     const handleBack = () => {
         switch (order?.status) {
-            case 'Completed':
+            case 3:
                 navigate(routes.adminListBill);
                 break;
-            case 'Processing':
+            case 2:
                 navigate(routes.adminListConfirmOrder);
+                break;
+            case 4:
+                navigate(routes.adminListCancelOrder);
                 break;
             default:
                 navigate(routes.admin);
@@ -39,12 +43,11 @@ function UpdateOrder() {
     const handleSubmit = async () => {
         switch (order?.status) {
             case 1:
-                console.log(order?.status);
-                await UpdateOrderProduct(id, userData?.id);
+                await UpdateOrderProduct(id, userId);
                 navigate(routes.adminListConfirmOrder);
                 break;
             case 2:
-                await UpdateOrderProduct(id, userData?.id);
+                await UpdateOrderProduct(id, userId);
                 navigate(routes.adminListConfirmOrder);
                 break;
             default:

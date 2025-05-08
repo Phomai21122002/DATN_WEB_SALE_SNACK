@@ -38,7 +38,7 @@ export const GetOrderProductAdmin = async ({
     StartDate = '',
     EndDate = '',
 }) => {
-    const res = await request.get(`/order/orders`, {
+    const res = await request.get(`/order/admin/orders`, {
         params: { inputUserId: userId, inputStatus: Status },
     });
     return res.data;
