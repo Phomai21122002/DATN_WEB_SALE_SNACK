@@ -79,7 +79,25 @@ function UpdateOrder() {
                         <ProductOrder products={order?.products} date={order?.createOrder} />
                     </BackgroundCart>
                 </div>
-                <BackgroundCart className="flex flex-col w-full items-end mt-8 mb-12">
+                <BackgroundCart className="flex gap-16 w-full items-end mt-8 mb-12">
+                    <div className="text-[16px] font-medium w-full max-w-md">
+                        <div className="flex justify-between items-center mb-4">
+                            <span className="text-gray-700">Tên người mua:</span>
+                            <span className="text-black-500 font-semibold">
+                                {order?.user?.firstName + ' ' + order?.user.lastName}
+                            </span>
+                        </div>
+                        <div className="flex justify-between items-center mb-4">
+                            <span className="text-gray-700">Địa chỉ:</span>
+                            <span className="text-black-500 font-semibold">
+                                {order?.user.addresses.find((address) => address?.isDefault && address)}
+                            </span>
+                        </div>
+                        <div className="flex justify-between items-center mb-4">
+                            <span className="text-gray-700">Số điện thoại:</span>
+                            <span className="text-red-500 font-semibold">{order?.user?.phone}</span>
+                        </div>
+                    </div>
                     <div className="text-[16px] font-medium w-full max-w-md">
                         <div className="flex justify-between items-center mb-4">
                             <span className="text-gray-700">Tổng tiền hàng ({order?.countProduct || 0} sản phẩm):</span>

@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import AddAddress from '~/components/AddAddress';
+import { AddIcon } from '~/components/Icons';
 import routes from '~/config/routes';
 import { useStorage } from '~/Contexts';
-import { UpdateUserById } from '~/services/User';
+import { UpdateAddressByUserId, UpdateUserById } from '~/services/User';
 
 function ProfileAdmin() {
     const navigate = useNavigate();
@@ -19,18 +22,25 @@ function ProfileAdmin() {
             lastName: userData?.lastName,
             email: userData?.email,
             phone: userData?.phone,
+            addressId: userData?.addresses?.find((address) => address?.isDefault && address)?.id,
         },
     });
+    const [activeAddAddress, setActiveAddAddress] = useState(false);
 
     const handleSaveProfile = async (profile) => {
-        const { id, ...profileToDB } = profile;
-        const profileReq = {
-            ...profileToDB,
-            roles: ['Admin'],
+        const { id, addressId, ...reqProfile } = profile;
+        const updatedProfile = {
+            ...reqProfile,
+            url: 'image',
         };
+
         try {
-            await UpdateUserById(id, profileReq);
-            navigate(routes.admin);
+            await UpdateUserById(id, updatedProfile);
+            await UpdateAddressByUserId({
+                inputUserId: id,
+                addressId: Number(addressId),
+            });
+            navigate(routes.home);
         } catch (err) {
             console.error('Error saving profile:', err);
         }
@@ -106,20 +116,32 @@ function ProfileAdmin() {
                     {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
                 </div>
 
-                <div>
-                    <label className="block text-sm font-bold mb-1">Địa chỉ</label>
+                {activeAddAddress && (
+                    <AddAddress activeAddAddress={activeAddAddress} setActiveAddAddress={setActiveAddAddress} />
+                )}
+                <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                        <label className="block text-sm font-bold mb-1">Địa chỉ</label>
+                        <button
+                            type="button"
+                            className="bg-red-500 text-sm text-white p-1 rounded-md hover:bg-red-600"
+                            onClick={() => setActiveAddAddress(!activeAddAddress)}
+                        >
+                            <AddIcon />
+                        </button>
+                    </div>
                     <select
                         className="w-full text-sm p-2 border rounded-md"
-                        {...register('address', { required: 'Địa chỉ là bắt buộc' })}
+                        {...register('addressId', { required: 'Địa chỉ nhà là bắt buộc' })}
                     >
                         <option value="">Chọn địa chỉ</option>
-                        {userData?.addresses?.map((profile, index) => (
-                            <option key={index} value={profile.city}>
-                                {profile.city}
+                        {userData?.addresses?.map((address, index) => (
+                            <option key={index} value={address.id}>
+                                {address.name}
                             </option>
                         ))}
                     </select>
-                    {errors.address && <p className="text-red-500 text-sm">{errors.address.message}</p>}
+                    {errors.addressId && <p className="text-red-500 text-sm">{errors.addressId.message}</p>}
                 </div>
 
                 <div className="flex gap-4">
