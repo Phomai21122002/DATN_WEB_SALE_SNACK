@@ -2,15 +2,12 @@ import { useForm } from 'react-hook-form';
 import { uploadImageToCloudinary } from './Constant';
 import { useEffect, useState } from 'react';
 import { GetCategories } from '~/services/Category';
-import { Categories } from '~/components/MenuCategory/Constains';
 import { AddProduct } from '~/services/Product';
 import { useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
 import noImage from '~/assets/images/No-image.png';
 
 function CreateProduct() {
-    const [previewImages, setPreviewImages] = useState([]);
-    const [imageUrls, setImageUrls] = useState([]);
     const [images, setImages] = useState([]);
     const [categories, setCategories] = useState([]);
     const navigate = useNavigate();
@@ -52,6 +49,9 @@ function CreateProduct() {
         const { categoryId, ...prevProduct } = product;
         const newProduct = {
             ...prevProduct,
+            expiryDate: new Date(prevProduct.expiryDate).toISOString(),
+            quantity: Number(prevProduct.quantity),
+            price: Number(prevProduct.price),
             tag: '',
             urls: images.map((image) => image.url),
         };
@@ -70,6 +70,10 @@ function CreateProduct() {
     };
 
     const onSubmit = (data) => {
+        if (images.length === 0) {
+            alert('Vui lòng chọn ít nhất một hình ảnh');
+            return;
+        }
         handleSaveProduct(data);
     };
 
@@ -115,7 +119,7 @@ function CreateProduct() {
                 </div>
 
                 <div>
-                    <label className="block text-sm font-bold mb-1">Mô tả sản phẩm</label>
+                    <label className="block text-sm font-bold mb-1">Mô tả chi tiết sản phẩm</label>
                     <textarea
                         className="w-full text-sm p-2 border rounded-md min-h-[100px]"
                         {...register('descriptionDetail', { required: 'Mô tả về chi tiết sản phẩm là bắt buộc' })}

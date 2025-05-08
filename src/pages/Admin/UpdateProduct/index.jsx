@@ -3,8 +3,7 @@ import { useEffect, useState } from 'react';
 import { GetCategories } from '~/services/Category';
 import { useNavigate, useParams } from 'react-router-dom';
 import routes from '~/config/routes';
-import { AdminUpdateProduct, GetProduct, GetProductBySlug } from '~/services/Product';
-import { Categories } from '~/components/MenuCategory/Constains';
+import { AdminUpdateProduct, GetProductBySlug } from '~/services/Product';
 import AddIcon from '@mui/icons-material/Add';
 import noImage from '~/assets/images/No-image.png';
 import { uploadImageToCloudinary } from '../CreateProduct/Constant';
@@ -12,7 +11,6 @@ import { uploadImageToCloudinary } from '../CreateProduct/Constant';
 function UpdateProduct() {
     const { slug } = useParams();
 
-    const [previewImages, setPreviewImages] = useState([]);
     const [categories, setCategories] = useState([]);
     const [images, setImages] = useState([]);
     const navigate = useNavigate();
@@ -30,13 +28,17 @@ function UpdateProduct() {
                 setCategories(res);
                 const resProduct = await GetProductBySlug({ slug });
                 setImages(resProduct.urls?.map((img) => ({ url: img })) || []);
+                const formattedExpiryDate = resProduct.expiryDate
+                    ? new Date(resProduct.expiryDate).toLocaleDateString('en-CA')
+                    : '';
+                console.log(resProduct);
                 reset({
                     id: resProduct.id,
                     name: resProduct.name,
                     categoryId: resProduct.category?.id,
                     description: resProduct.description,
                     descriptionDetail: resProduct.descriptionDetail,
-                    // expiryDate: resProduct.expiryDate.slice(0, 10) || '',
+                    expiryDate: formattedExpiryDate,
                     quantity: resProduct.quantity,
                     price: resProduct.price,
                 });
@@ -51,6 +53,9 @@ function UpdateProduct() {
         const { categoryId, id, ...prevProduct } = product;
         const updateProduct = {
             ...prevProduct,
+            expiryDate: new Date(prevProduct.expiryDate).toISOString(),
+            quantity: Number(prevProduct.quantity),
+            price: Number(prevProduct.price),
             tag: '',
             urls: images.map((img) => img.url),
         };
@@ -136,7 +141,7 @@ function UpdateProduct() {
                 </div>
 
                 <div>
-                    <label className="block text-sm font-bold mb-1">Mô tả sản phẩm</label>
+                    <label className="block text-sm font-bold mb-1">Mô tả chi tiết sản phẩm</label>
                     <textarea
                         className="w-full text-sm p-2 border rounded-md min-h-[100px]"
                         {...register('descriptionDetail', { required: 'Mô tả về chi tiết sản phẩm là bắt buộc' })}

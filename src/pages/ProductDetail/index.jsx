@@ -90,7 +90,9 @@ function ProductDetail() {
                     </div>
 
                     {product.description && !loading ? (
-                        <p className="text-gray-600 font-small text-[20px]">{product.description}</p>
+                        <p className="whitespace-pre-line text-gray-600 font-small text-[20px]">
+                            {product.description}
+                        </p>
                     ) : (
                         <Skeleton variant="text" className="w-full" />
                     )}
@@ -113,7 +115,9 @@ function ProductDetail() {
                     </div>
                 </div>
             </div>
-
+            <div className="whitespace-pre-line text-gray-700 text-base leading-relaxed">
+                {product.descriptionDetail}
+            </div>
             <MenuProduct title={'Các sản phẩm liên quan'} />
         </div>
     );

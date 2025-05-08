@@ -4,7 +4,6 @@ import { getOrderStatusStyle, getOrderStatusText } from './Constant';
 
 const BodyTabel = ({ index, item = {}, onEdit, onDel, status = false }) => {
     const { userData } = useStorage();
-    console.log(item);
     return (
         <tr key={item.id} className="border-b hover:bg-gray-50 cursor-pointer">
             <td className="py-3 px-6">{index + 1}</td>
