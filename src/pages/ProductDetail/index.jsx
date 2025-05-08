@@ -12,6 +12,7 @@ import { GetProductBySlug } from '~/services/Product';
 import routes from '~/config/routes';
 import { useStorage } from '~/Contexts';
 import { AddCart } from '~/services/Cart';
+import noImage from '~/assets/images/No-image.png';
 
 function ProductDetail() {
     const { slug } = useParams();
@@ -117,6 +118,78 @@ function ProductDetail() {
             </div>
             <div className="whitespace-pre-line text-gray-700 text-base leading-relaxed">
                 {product.descriptionDetail}
+            </div>
+            <div className="bg-white w-full p-8">
+                <h2 className="uppercase">Đánh giá sản phẩm</h2>
+                <div className="mt-8 border-b-2 border-gray-300">
+                    <div className="flex items-center">
+                        <img className="w-16 h-16 rounded-full" src={'' || noImage} alt="" />
+                        <div className="mx-4 text-xl">
+                            <h4>phô mai</h4>
+                            <p className="text-gray-500">2023-07-18 06:07 | Phân loại hàng: Đen,L</p>
+                        </div>
+                    </div>
+                    <div className="mx-4 my-2">
+                        <p className="whitespace-pre-line text-justify py-4">
+                            Màu sắc: đen Vải đẹp lắm mn ơii mặc vừa mát vừa ấm nữa nèe Shop tư vấn rất nhiệt tình và rep
+                            cực nhanh nha chạy đơn cũn nhanh nữa, Mn có thể xem ở ảnh nha Mình mua tặng anh ny nma mặc
+                            thử cũn oce phết ý🥳 Chất lượng xuất sắc luôn đường may chắc đẹp và đặc biệt KHÔNG CÓ CHỈ
+                            THỪA nhaa 10 điểm cho sự chu đáo và dễ thuông nàyy Shop nên tặng kèm giấy thơm thì ocee hơn
+                            á:33 cảm ơn shopp nhiều ạ sẽ ủng hộ thêm
+                        </p>
+                        <div className="flex items-center py-2">
+                            <img className="w-32 h-32 mr-4" src={'' || noImage} alt="" />
+                            <img className="w-32 h-32 mr-4" src={'' || noImage} alt="" />
+                            <img className="w-32 h-32 mr-4" src={'' || noImage} alt="" />
+                        </div>
+                    </div>
+                </div>
+                <div className="mt-8 border-b-2 border-gray-300">
+                    <div className="flex items-center">
+                        <img className="w-16 h-16 rounded-full" src={'' || noImage} alt="" />
+                        <div className="mx-4 text-xl">
+                            <h4>phô mai</h4>
+                            <p className="text-gray-500">2023-07-18 06:07 | Phân loại hàng: Đen,L</p>
+                        </div>
+                    </div>
+                    <div className="mx-4 my-2">
+                        <p className="whitespace-pre-line text-justify py-4">
+                            Màu sắc: đen Vải đẹp lắm mn ơii mặc vừa mát vừa ấm nữa nèe Shop tư vấn rất nhiệt tình và rep
+                            cực nhanh nha chạy đơn cũn nhanh nữa, Mn có thể xem ở ảnh nha Mình mua tặng anh ny nma mặc
+                            thử cũn oce phết ý🥳 Chất lượng xuất sắc luôn đường may chắc đẹp và đặc biệt KHÔNG CÓ CHỈ
+                            THỪA nhaa 10 điểm cho sự chu đáo và dễ thuông nàyy Shop nên tặng kèm giấy thơm thì ocee hơn
+                            á:33 cảm ơn shopp nhiều ạ sẽ ủng hộ thêm
+                        </p>
+                        <div className="flex items-center py-2">
+                            <img className="w-32 h-32 mr-4" src={'' || noImage} alt="" />
+                            <img className="w-32 h-32 mr-4" src={'' || noImage} alt="" />
+                            <img className="w-32 h-32 mr-4" src={'' || noImage} alt="" />
+                        </div>
+                    </div>
+                </div>
+                <div className="mt-8 border-b-2 border-gray-300">
+                    <div className="flex items-center">
+                        <img className="w-16 h-16 rounded-full" src={'' || noImage} alt="" />
+                        <div className="mx-4 text-xl">
+                            <h4>phô mai</h4>
+                            <p className="text-gray-500">2023-07-18 06:07 | Phân loại hàng: Đen,L</p>
+                        </div>
+                    </div>
+                    <div className="mx-4 my-2">
+                        <p className="whitespace-pre-line text-justify py-4">
+                            Màu sắc: đen Vải đẹp lắm mn ơii mặc vừa mát vừa ấm nữa nèe Shop tư vấn rất nhiệt tình và rep
+                            cực nhanh nha chạy đơn cũn nhanh nữa, Mn có thể xem ở ảnh nha Mình mua tặng anh ny nma mặc
+                            thử cũn oce phết ý🥳 Chất lượng xuất sắc luôn đường may chắc đẹp và đặc biệt KHÔNG CÓ CHỈ
+                            THỪA nhaa 10 điểm cho sự chu đáo và dễ thuông nàyy Shop nên tặng kèm giấy thơm thì ocee hơn
+                            á:33 cảm ơn shopp nhiều ạ sẽ ủng hộ thêm
+                        </p>
+                        <div className="flex items-center py-2">
+                            <img className="w-32 h-32 mr-4" src={'' || noImage} alt="" />
+                            <img className="w-32 h-32 mr-4" src={'' || noImage} alt="" />
+                            <img className="w-32 h-32 mr-4" src={'' || noImage} alt="" />
+                        </div>
+                    </div>
+                </div>
             </div>
             <MenuProduct title={'Các sản phẩm liên quan'} />
         </div>
