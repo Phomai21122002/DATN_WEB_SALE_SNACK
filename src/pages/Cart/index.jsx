@@ -56,21 +56,21 @@ function Cart() {
         const selected = checkProduct.filter((item) => item.check);
         setCheckedCart(selected);
         navigate(routes.order);
-        // if (userData && Object.keys(userData).length > 0 && userData?.addresses?.length <= 0) {
-        //     navigate(routes.userProfile);
-        // } else if (userData && Object.keys(userData).length > 0 && userData?.addresses?.length > 0) {
-        //     const selectedProductIds = checkProduct
-        //         .filter((product) => product.check === true)
-        //         .map((product) => product.id);
-        //     console.log(selectedProductIds);
-        //     await OrderProduct(userData?.id, { cartsId: selectedProductIds });
-        //     setDataCart((prevDataCart) => prevDataCart.filter((product) => !selectedProductIds.includes(product.id)));
-        //     setCheckProduct((prevDataCart) =>
-        //         prevDataCart.filter((product) => !selectedProductIds.includes(product.id)),
-        //     );
-        // } else {
-        //     navigate(routes.login);
-        // }
+        if (userData && Object.keys(userData).length > 0 && userData?.addresses?.length <= 0) {
+            navigate(routes.userProfile);
+        } else if (userData && Object.keys(userData).length > 0 && userData?.addresses?.length > 0) {
+            const selectedProductIds = checkProduct
+                .filter((product) => product.check === true)
+                .map((product) => product.id);
+            console.log(selectedProductIds);
+            await OrderProduct(userData?.id, { cartsId: selectedProductIds });
+            setDataCart((prevDataCart) => prevDataCart.filter((product) => !selectedProductIds.includes(product.id)));
+            setCheckProduct((prevDataCart) =>
+                prevDataCart.filter((product) => !selectedProductIds.includes(product.id)),
+            );
+        } else {
+            navigate(routes.login);
+        }
     };
 
     const handleRemoveCart = async (userId, idCart) => {
@@ -81,15 +81,27 @@ function Cart() {
 
     const handlePay = async () => {
         try {
-            const res = await CreatePaymentVnpay({
-                orderType: 'other',
-                amount: 50000,
-                orderDescription: 'Thanh toán qua Vnpay tại PhôMaiStore',
-                name: 'Phomai',
-            });
-
-            if (res) {
-                window.location.href = res;
+            console.log(userData);
+            if (userData && Object.keys(userData).length > 0 && userData?.addresses?.length <= 0) {
+                navigate(routes.userProfile);
+            } else if (userData && Object.keys(userData).length > 0 && userData?.addresses?.length > 0) {
+                const selectedProductIds = checkProduct
+                    .filter((product) => product.check === true)
+                    .map((product) => product.id);
+                console.log(selectedProductIds);
+                const res = await OrderProduct(userData?.id, { cartsId: selectedProductIds });
+                console.log(res.paymentUrl);
+                if (res.paymentUrl) {
+                    window.location.href = res.paymentUrl;
+                }
+                setDataCart((prevDataCart) =>
+                    prevDataCart.filter((product) => !selectedProductIds.includes(product.id)),
+                );
+                setCheckProduct((prevDataCart) =>
+                    prevDataCart.filter((product) => !selectedProductIds.includes(product.id)),
+                );
+            } else {
+                navigate(routes.login);
             }
         } catch (err) {
             console.error('Payment error:', err);

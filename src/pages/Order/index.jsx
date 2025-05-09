@@ -75,29 +75,15 @@ import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 
 import BackgroundCart from '~/components/BackgroundCart';
 import { GetPaymentVnpay } from '~/services/Payment';
-import { useStorage } from '~/Contexts';
 
 function Order() {
     const [params] = useSearchParams();
     const [orderData, setOrderData] = useState(null);
-    const { userData, checkedCart } = useStorage();
 
     useEffect(() => {
         const fetchPaymentResult = async () => {
-            if (!userData?.id || !checkedCart?.length) return;
-
             try {
-                const selectedProductIds = checkedCart
-                    .filter((product) => product.check === true)
-                    .map((product) => product.id);
-
-                if (selectedProductIds.length === 0) return;
-
-                console.log(selectedProductIds);
-                console.log(checkedCart);
-                console.log(userData.id);
-
-                const res = await GetPaymentVnpay(params, userData.id, selectedProductIds);
+                const res = await GetPaymentVnpay(params);
                 console.log(res);
                 setOrderData(res);
             } catch (err) {
@@ -106,7 +92,7 @@ function Order() {
         };
 
         fetchPaymentResult();
-    }, [params, checkedCart, userData]);
+    }, [params]);
     console.log(orderData);
     if (!orderData) return <div>Đang xử lý thanh toán...</div>;
 

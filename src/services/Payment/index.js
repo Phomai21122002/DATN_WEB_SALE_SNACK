@@ -6,11 +6,7 @@ export const CreatePaymentVnpay = async (data) => {
     return res.data;
 };
 
-export const GetPaymentVnpay = async (params, userId, data) => {
-    const res = await request.get(`/payment?${params.toString()}`, data, {
-        params: {
-            inputUserId: userId,
-        },
-    });
+export const GetPaymentVnpay = async (params) => {
+    const res = await request.get(`/payment?${params.toString()}`);
     return res.data;
 };
