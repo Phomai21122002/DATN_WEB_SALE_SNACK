@@ -9,6 +9,7 @@ function GlobalStates({ children }) {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userData, setUserData] = useState({});
     const [dataCart, setDataCart] = useState([]);
+    const [checkedCart, setCheckedCart] = useState([]);
     const getDataCartNow = async () => {
         const token = Cookies.get('authToken');
         if (token && userData.id) {
@@ -38,6 +39,8 @@ function GlobalStates({ children }) {
         dataCart,
         setDataCart,
         getDataCartNow,
+        checkedCart,
+        setCheckedCart,
     };
 
     return <StorageContext.Provider value={states}>{children}</StorageContext.Provider>;
