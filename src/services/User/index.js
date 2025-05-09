@@ -38,9 +38,9 @@ export const UpdateUserById = async (id, data) => {
 
 export const DeleteUserById = async (id) => {
     try {
-        const res = await request.delete(`/User/${id}`, {
+        const res = await request.delete(`/user`, {
             params: {
-                id,
+                userId: id,
             },
         });
         return res.data;

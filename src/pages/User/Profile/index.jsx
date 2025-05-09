@@ -21,7 +21,7 @@ function Profile() {
     } = useForm();
     const { userData } = useStorage();
     const [activeAddAddress, setActiveAddAddress] = useState(false);
-    const [image, setImage] = useState('');
+    const [image, setImage] = useState(watch('url'));
 
     useEffect(() => {
         console.log('profile', userData);
@@ -36,6 +36,7 @@ function Profile() {
                         email: userData.email,
                         phone: userData.phone,
                         addressId: address?.id,
+                        url: userData.url,
                     });
                 }
             } catch (err) {

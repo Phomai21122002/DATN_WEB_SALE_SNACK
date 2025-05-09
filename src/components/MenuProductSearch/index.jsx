@@ -173,16 +173,6 @@ function MenuProductSearch() {
                                 <option value="Cao đến Thấp">Giá cao đến thấp</option>
                             </select>
                         </div>
-
-                        <div className="flex items-center">
-                            <Pagination
-                                count={totalPages}
-                                page={currentPage}
-                                onChange={handlePageChange}
-                                color="primary"
-                                size="small"
-                            />
-                        </div>
                     </div>
                 </div>
 
@@ -195,6 +185,15 @@ function MenuProductSearch() {
                             updateQuantity={updateQuantity}
                         />
                     ))}
+                </div>
+                <div className="flex justify-end mt-8 items-center">
+                    <Pagination
+                        count={totalPages}
+                        page={currentPage}
+                        onChange={handlePageChange}
+                        color="primary"
+                        size="small"
+                    />
                 </div>
             </div>
         </div>

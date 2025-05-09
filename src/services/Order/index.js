@@ -51,6 +51,7 @@ export const GetOrderById = async (orderId, userId) => {
             orderId: orderId,
         },
     });
+    console.log(res.data);
     return res.data;
 };
 

@@ -84,18 +84,22 @@ function UpdateOrder() {
                         <div className="flex justify-between items-center mb-4">
                             <span className="text-gray-700">Tên người mua:</span>
                             <span className="text-black-500 font-semibold">
-                                {order?.user?.firstName + ' ' + order?.user.lastName}
+                                {order?.user?.firstName + ' ' + order?.user?.lastName}
                             </span>
                         </div>
                         <div className="flex justify-between items-center mb-4">
                             <span className="text-gray-700">Địa chỉ:</span>
                             <span className="text-black-500 font-semibold">
-                                {order?.user.addresses.find((address) => address?.isDefault && address)}
+                                {order?.user?.addresses?.find((address) => address?.isDefault && address)}
                             </span>
                         </div>
                         <div className="flex justify-between items-center mb-4">
                             <span className="text-gray-700">Số điện thoại:</span>
                             <span className="text-red-500 font-semibold">{order?.user?.phone}</span>
+                        </div>
+                        <div className="flex justify-between items-center mb-4">
+                            <span className="text-gray-700">Thanh toán:</span>
+                            <span className="text-green-500 font-semibold">Đã thanh toán</span>
                         </div>
                     </div>
                     <div className="text-[16px] font-medium w-full max-w-md">

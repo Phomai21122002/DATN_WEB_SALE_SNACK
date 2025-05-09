@@ -30,6 +30,7 @@ function BoardUser() {
     };
     const deleteOrder = async (id) => {
         try {
+            console.log(id);
             await DeleteUserById(id);
             setUsers((prev) => prev.filter((User) => User.id !== id));
         } catch (error) {
@@ -53,7 +54,13 @@ function BoardUser() {
     const handleSearchUser = (title) => {
         if (idSort === 1) {
             title
-                ? setUsers(() => allUser.filter((User) => User.username?.toLowerCase().includes(title.toLowerCase())))
+                ? setUsers(() =>
+                      allUser.filter(
+                          (User) =>
+                              User.firstName?.toLowerCase().includes(title.toLowerCase()) ||
+                              User.lastName?.toLowerCase().includes(title.toLowerCase()),
+                      ),
+                  )
                 : setUsers(allUser);
         } else if (idSort === 2) {
             title
@@ -61,13 +68,17 @@ function BoardUser() {
                 : setUsers(allUser);
         } else if (idSort === 3) {
             title
-                ? setUsers(() =>
-                      allUser.filter((User) => User.phoneNumber?.toLowerCase().includes(title.toLowerCase())),
-                  )
+                ? setUsers(() => allUser.filter((User) => User.phone?.toLowerCase().includes(title.toLowerCase())))
                 : setUsers(allUser);
         } else {
             title
-                ? setUsers(() => allUser.filter((User) => User.roles[0]?.toLowerCase().includes(title.toLowerCase())))
+                ? setUsers(() =>
+                      allUser.filter(
+                          (User) =>
+                              User.firstName?.toLowerCase().includes(title.toLowerCase()) ||
+                              User.lastName?.toLowerCase().includes(title.toLowerCase()),
+                      ),
+                  )
                 : setUsers(allUser);
         }
     };

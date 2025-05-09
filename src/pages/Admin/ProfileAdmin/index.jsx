@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import AddAddress from '~/components/AddAddress';
-import { AddIcon } from '~/components/Icons';
+import { AddIcon, EditIcon } from '~/components/Icons';
 import routes from '~/config/routes';
 import { useStorage } from '~/Contexts';
 import { UpdateAddressByUserId, UpdateUserById } from '~/services/User';
+import noImage from '~/assets/images/No-image.png';
+import { uploadImageToCloudinary } from '../CreateProduct/Constant';
 
 function ProfileAdmin() {
     const navigate = useNavigate();
@@ -14,33 +16,49 @@ function ProfileAdmin() {
         register,
         handleSubmit,
         reset,
+        watch,
         formState: { errors },
-    } = useForm({
-        defaultValues: {
-            id: userData?.id,
-            firstName: userData?.firstName,
-            lastName: userData?.lastName,
-            email: userData?.email,
-            phone: userData?.phone,
-            addressId: userData?.addresses?.find((address) => address?.isDefault && address)?.id,
-        },
-    });
+    } = useForm();
     const [activeAddAddress, setActiveAddAddress] = useState(false);
+    const [image, setImage] = useState(watch('url'));
+
+    useEffect(() => {
+        console.log('profile', userData);
+        const getProfileOfAdmin = async () => {
+            try {
+                if (Object.keys(userData).length > 0) {
+                    const address = userData?.addresses?.find((address) => address?.isDefault && address);
+                    reset({
+                        id: userData.id,
+                        firstName: userData.firstName,
+                        lastName: userData.lastName,
+                        email: userData.email,
+                        phone: userData.phone,
+                        addressId: address?.id,
+                        url: userData.url,
+                    });
+                }
+            } catch (err) {
+                console.error('Error fetching profile or provinces:', err);
+            }
+        };
+        getProfileOfAdmin();
+        // eslint-disable-next-line
+    }, [userData]);
 
     const handleSaveProfile = async (profile) => {
         const { id, addressId, ...reqProfile } = profile;
         const updatedProfile = {
             ...reqProfile,
-            url: 'image',
+            url: image,
         };
-
         try {
             await UpdateUserById(id, updatedProfile);
             await UpdateAddressByUserId({
                 inputUserId: id,
                 addressId: Number(addressId),
             });
-            navigate(routes.home);
+            navigate(routes.admin);
         } catch (err) {
             console.error('Error saving profile:', err);
         }
@@ -55,10 +73,42 @@ function ProfileAdmin() {
         navigate(routes.admin);
     };
 
+    const handleAvatarChange = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            try {
+                const uploadedUrl = await uploadImageToCloudinary(file);
+                if (uploadedUrl) setImage(uploadedUrl);
+            } catch (err) {
+                console.error('Error uploading image:', err);
+            }
+        }
+    };
+
     return (
         <div className="bg-white p-4 shadow-md rounded-lg overflow-hidden">
             <h2 className="text-xl font-bold mb-4">Thông Tin Admin</h2>
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+                <div
+                    className="relative w-32 h-32 mb-4 mx-auto group cursor-pointer"
+                    onClick={() => document.getElementById('avatarInput')?.click()}
+                >
+                    <img
+                        src={image || userData?.url || noImage}
+                        alt="Avatar"
+                        className="w-full h-full object-cover rounded-full border-2 border-gray-400 group-hover:border-blue-500 transition-all duration-300"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-30 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <EditIcon className="text-white w-6 h-6" />
+                    </div>
+                    <input
+                        type="file"
+                        id="avatarInput"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleAvatarChange}
+                    />
+                </div>
                 <div className="flex items-center">
                     <div className="flex-1">
                         <label className="block text-sm font-bold mb-1">Tên người dùng</label>

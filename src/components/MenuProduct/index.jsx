@@ -56,18 +56,7 @@ function MenuProduct({ title }) {
 
     return (
         <div className="py-4">
-            <div className="flex items-center justify-between">
-                <div className="flex text-xl text-gray-500 font-medium mb-4 uppercase">{title}</div>
-                <div className="flex items-center">
-                    <Pagination
-                        count={totalPages}
-                        page={currentPage}
-                        onChange={handlePageChange}
-                        color="primary"
-                        size="small"
-                    />
-                </div>
-            </div>
+            <div className="flex text-xl text-gray-500 font-medium mb-4 uppercase">{title}</div>
             <div className="relative">
                 <div className="overflow-hidden">
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 transition-all duration-500 p-1">
@@ -81,6 +70,15 @@ function MenuProduct({ title }) {
                         ))}
                     </div>
                 </div>
+            </div>
+            <div className="flex justify-end items-center">
+                <Pagination
+                    count={totalPages}
+                    page={currentPage}
+                    onChange={handlePageChange}
+                    color="primary"
+                    size="small"
+                />
             </div>
         </div>
     );

@@ -16,6 +16,7 @@ function Category() {
         const getAllCategory = async () => {
             try {
                 const res = await GetCategories();
+                console.log(res);
                 setCategories(res);
                 setAllCategories(res);
             } catch (err) {
@@ -42,9 +43,9 @@ function Category() {
         if (Number(id) === 1) {
             setCategories(() => [...allcategories].sort((a, b) => a.name.localeCompare(b.name)));
         } else if (Number(id) === 2) {
-            setCategories(() => [...allcategories].sort((a, b) => a.productCount - b.productCount));
+            setCategories(() => [...allcategories].sort((a, b) => a.countProduct - b.countProduct));
         } else if (Number(id) === 3) {
-            setCategories(() => [...allcategories].sort((a, b) => b.productCount - a.productCount));
+            setCategories(() => [...allcategories].sort((a, b) => b.countProduct - a.countProduct));
         } else {
             setCategories(allcategories);
         }
@@ -92,7 +93,7 @@ function Category() {
                                         {category.description}
                                     </p>
                                 </td>
-                                <td className="py-3 px-6">{category.productCount}</td>
+                                <td className="py-3 px-6">{category.countProduct}</td>
                                 <td className="py-3 px-6">
                                     <button
                                         className="text-blue-600 hover:underline mr-2"
