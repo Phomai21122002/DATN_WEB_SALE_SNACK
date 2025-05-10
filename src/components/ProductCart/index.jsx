@@ -5,49 +5,53 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import routes from '~/config/routes';
 import QuantitySelector from '~/components/QuantitySelector';
 import { useStorage } from '~/Contexts';
+import { UpdateCartsOrder } from '~/services/Cart';
 
 function ProductCart({ product, onUpdateQuantity, setChecked, setChooseRemove }) {
-    const { dataCart } = useStorage();
+    const { userData, dataCart } = useStorage();
     const handleDelProduct = async (idCart) => {
         const cart = dataCart.find((cart) => cart.id === idCart);
         setChooseRemove(cart);
     };
 
     const handleCheckedProduct = async (idProduct) => {
-        setChecked((prev) =>
-            prev.map((product) => {
-                if (product.id === idProduct) {
-                    return {
-                        ...product,
-                        check: !product?.check,
-                    };
-                }
-                return product;
-            }),
-        );
+        const resUpdateCart = await UpdateCartsOrder({ userId: userData.id, cartsId: [idProduct] });
+        if (resUpdateCart) {
+            setChecked((prev) =>
+                prev.map((product) => {
+                    if (product.id === idProduct) {
+                        return {
+                            ...product,
+                            isSelectedForOrder: !product?.isSelectedForOrder,
+                        };
+                    }
+                    return product;
+                }),
+            );
+        }
     };
     return (
         <>
             <input
-                checked={product.check}
+                checked={product.isSelectedForOrder}
                 onChange={() => handleCheckedProduct(product.id)}
                 type="checkbox"
                 className="w-4 h-4 mr-4 cursor-pointer"
             />
             <Link
-                to={routes.product.replace(':slug', product?.products.slug)}
+                to={routes.product.replace(':slug', product?.product.slug)}
                 className="flex items-center flex-grow space-x-4 w-[20%]"
             >
-                <img src={product?.products.urls[0]} alt="Sản phẩm" className="w-16 h-16 object-cover rounded" />
-                <div className="text-sm font-medium">{product?.products.name}</div>
+                <img src={product?.product.urls[0]} alt="Sản phẩm" className="w-16 h-16 object-cover rounded" />
+                <div className="text-sm font-medium">{product?.product.name}</div>
             </Link>
             <div className="w-32 text-center text-black text-sm font-medium">
-                {product?.products.price.toLocaleString()}₫
+                {product?.product.price.toLocaleString()}₫
             </div>
             <div className="w-32 flex justify-center">
                 <QuantitySelector
-                    product={product.products}
-                    quantity={product.products.quantity}
+                    product={product.product}
+                    quantity={product.product.quantity}
                     onUpdateQuantity={onUpdateQuantity}
                 />
             </div>

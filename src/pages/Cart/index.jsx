@@ -1,5 +1,4 @@
-import axios from 'axios';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BackgroundCart from '~/components/BackgroundCart';
 import MenuProduct from '~/components/MenuProduct';
@@ -7,7 +6,7 @@ import PopUpRemove from '~/components/PopUpRemove';
 import ProductCart from '~/components/ProductCart';
 import routes from '~/config/routes';
 import { useStorage } from '~/Contexts';
-import { DeleteCart } from '~/services/Cart';
+import { DeleteCart, UpdateCartsOrder } from '~/services/Cart';
 import { OrderProduct } from '~/services/Order';
 import { CreatePaymentVnpay } from '~/services/Payment';
 
@@ -16,22 +15,13 @@ function Cart() {
     const { userData, dataCart, setDataCart, checkedCart, setCheckedCart } = useStorage();
     const [checkProduct, setCheckProduct] = useState([]);
     const [chooseRemove, setChooseRemove] = useState({});
-
+    console.log(dataCart);
     const uniqueCategories = useMemo(() => {
         const map = new Map();
         dataCart.forEach((item) => {
             map.set(item.category.id, item.category);
         });
         return [...map.values()];
-    }, [dataCart]);
-
-    useEffect(() => {
-        setCheckProduct(
-            dataCart.map((product) => ({
-                ...product,
-                check: true,
-            })),
-        );
     }, [dataCart]);
 
     const updateQuantity = useCallback((id, newQuantity) => {
@@ -52,22 +42,24 @@ function Cart() {
         // eslint-disable-next-line
     }, []);
 
+    const handleChangeCheckCart = async (e, category) => {
+        const isChecked = e.target.checked;
+        const cartsId = dataCart.filter((product) => product.category.id === category.id).map((product) => product.id);
+        const resUpdateCart = await UpdateCartsOrder({ userId: userData.id, cartsId: cartsId });
+        if (resUpdateCart) {
+            setDataCart((prev) =>
+                prev.map((product) =>
+                    product.category.id === category.id ? { ...product, isSelectedForOrder: isChecked } : product,
+                ),
+            );
+        }
+    };
+
     const HandlePurchase = async () => {
-        const selected = checkProduct.filter((item) => item.check);
-        setCheckedCart(selected);
-        navigate(routes.order);
         if (userData && Object.keys(userData).length > 0 && userData?.addresses?.length <= 0) {
             navigate(routes.userProfile);
         } else if (userData && Object.keys(userData).length > 0 && userData?.addresses?.length > 0) {
-            const selectedProductIds = checkProduct
-                .filter((product) => product.check === true)
-                .map((product) => product.id);
-            console.log(selectedProductIds);
-            await OrderProduct(userData?.id, { cartsId: selectedProductIds });
-            setDataCart((prevDataCart) => prevDataCart.filter((product) => !selectedProductIds.includes(product.id)));
-            setCheckProduct((prevDataCart) =>
-                prevDataCart.filter((product) => !selectedProductIds.includes(product.id)),
-            );
+            navigate(routes.order);
         } else {
             navigate(routes.login);
         }
@@ -79,34 +71,34 @@ function Cart() {
         setDataCart((prev) => prev.filter((product) => product.id !== idCart));
     };
 
-    const handlePay = async () => {
-        try {
-            console.log(userData);
-            if (userData && Object.keys(userData).length > 0 && userData?.addresses?.length <= 0) {
-                navigate(routes.userProfile);
-            } else if (userData && Object.keys(userData).length > 0 && userData?.addresses?.length > 0) {
-                const selectedProductIds = checkProduct
-                    .filter((product) => product.check === true)
-                    .map((product) => product.id);
-                console.log(selectedProductIds);
-                const res = await OrderProduct(userData?.id, { cartsId: selectedProductIds });
-                console.log(res.paymentUrl);
-                if (res.paymentUrl) {
-                    window.location.href = res.paymentUrl;
-                }
-                setDataCart((prevDataCart) =>
-                    prevDataCart.filter((product) => !selectedProductIds.includes(product.id)),
-                );
-                setCheckProduct((prevDataCart) =>
-                    prevDataCart.filter((product) => !selectedProductIds.includes(product.id)),
-                );
-            } else {
-                navigate(routes.login);
-            }
-        } catch (err) {
-            console.error('Payment error:', err);
-        }
-    };
+    // const handlePay = async () => {
+    //     try {
+    //         console.log(userData);
+    //         if (userData && Object.keys(userData).length > 0 && userData?.addresses?.length <= 0) {
+    //             navigate(routes.userProfile);
+    //         } else if (userData && Object.keys(userData).length > 0 && userData?.addresses?.length > 0) {
+    //             const selectedProductIds = checkProduct
+    //                 .filter((product) => product.check === true)
+    //                 .map((product) => product.id);
+    //             console.log(selectedProductIds);
+    //             const res = await OrderProduct(userData?.id, { cartsId: selectedProductIds, paymentMethod: 'VnPay' });
+    //             console.log(res.paymentUrl);
+    //             if (res.paymentUrl) {
+    //                 window.location.href = res.paymentUrl;
+    //             }
+    //             setDataCart((prevDataCart) =>
+    //                 prevDataCart.filter((product) => !selectedProductIds.includes(product.id)),
+    //             );
+    //             setCheckProduct((prevDataCart) =>
+    //                 prevDataCart.filter((product) => !selectedProductIds.includes(product.id)),
+    //             );
+    //         } else {
+    //             navigate(routes.login);
+    //         }
+    //     } catch (err) {
+    //         console.error('Payment error:', err);
+    //     }
+    // };
 
     return (
         <div className="max-w-[1100px] mx-auto py-8 mt-[64px]">
@@ -123,19 +115,10 @@ function Cart() {
                     <BackgroundCart className="w-full items-center justify-between">
                         <div className="flex items-center space-x-4">
                             <input
-                                checked={checkProduct
+                                checked={dataCart
                                     .filter((item) => item.category.id === category.id)
-                                    .every((item) => item.check)}
-                                onChange={(e) => {
-                                    const isChecked = e.target.checked;
-                                    setCheckProduct((prev) =>
-                                        prev.map((product) =>
-                                            product.category.id === category.id
-                                                ? { ...product, check: isChecked }
-                                                : product,
-                                        ),
-                                    );
-                                }}
+                                    .every((item) => item.isSelectedForOrder)}
+                                onChange={(e) => handleChangeCheckCart(e, category)}
                                 type="checkbox"
                                 className="w-4 h-4 cursor-pointer"
                             />
@@ -143,14 +126,14 @@ function Cart() {
                         </div>
                     </BackgroundCart>
 
-                    {checkProduct
+                    {dataCart
                         .filter((item) => item.category.id === category.id)
                         .map((item) => (
                             <BackgroundCart key={item.id} className="w-full items-center">
                                 <ProductCart
                                     product={item}
                                     onUpdateQuantity={updateQuantity}
-                                    setChecked={setCheckProduct}
+                                    setChecked={setDataCart}
                                     setChooseRemove={setChooseRemove}
                                 />
                             </BackgroundCart>
@@ -163,8 +146,8 @@ function Cart() {
                     <input type="checkbox" className="w-4 h-4 cursor-pointer" />
                     <span className="text-[16px] font-medium">
                         Chọn tất cả (
-                        {checkProduct.reduce(
-                            (count, item) => (item.check === true ? count + item.products.quantity : count),
+                        {dataCart.reduce(
+                            (count, item) => (item.isSelectedForOrder === true ? count + item.product.quantity : count),
                             0,
                         )}{' '}
                         sản phẩm)
@@ -175,15 +158,20 @@ function Cart() {
                     <div className="flex items-center justify-center mr-4">
                         Tổng thanh toán (
                         <span className="mx-1">
-                            {checkProduct.reduce(
-                                (count, item) => (item.check === true ? count + item.products.quantity : count),
+                            {dataCart.reduce(
+                                (count, item) =>
+                                    item.isSelectedForOrder === true ? count + item.product.quantity : count,
                                 0,
                             )}
                         </span>{' '}
                         sản phẩm)
                         <span className="text-red-500 ml-2">
-                            {checkProduct
-                                .reduce((count, item) => (item.check === true ? count + (item?.total || 0) : count), 0)
+                            {dataCart
+                                .reduce(
+                                    (count, item) =>
+                                        item.isSelectedForOrder === true ? count + (item?.total || 0) : count,
+                                    0,
+                                )
                                 .toLocaleString()}
                             ₫
                         </span>
@@ -194,12 +182,12 @@ function Cart() {
                     >
                         Mua hàng
                     </button>
-                    <button
+                    {/* <button
                         onClick={handlePay}
                         className="px-8 py-2 bg-yellow-400 text-white text-sm font-bold rounded hover:bg-yellow-500"
                     >
                         Thanh toán
-                    </button>
+                    </button> */}
                 </div>
             </BackgroundCart>
 

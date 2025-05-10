@@ -44,3 +44,12 @@ export const DeleteCart = async (userId, cartId) => {
         throw error;
     }
 };
+
+export const UpdateCartsOrder = async (data) => {
+    try {
+        const res = await request.patch(`/cart/UpdateCartsOrder`, data);
+        return res.data;
+    } catch (error) {
+        throw error;
+    }
+};
