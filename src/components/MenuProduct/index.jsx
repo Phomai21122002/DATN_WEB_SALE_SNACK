@@ -1,44 +1,42 @@
-import { useEffect, useState } from 'react';
-import Product from '../Product';
-import { GetProducts } from '~/services/Product';
-import { updatedProducts } from './Constains';
-import { useStorage } from '~/Contexts';
 import { useNavigate } from 'react-router-dom';
-import routes from '~/config/routes';
-import { AddCart } from '~/services/Cart';
 import { Pagination } from '@mui/material';
+import { useStorage } from '~/Contexts';
+import { AddCart } from '~/services/Cart';
+import Product from '../Product';
+import { updatedProducts } from './Constains';
+import useGetProducts from '~/hooks/useGetProducts'; // nơi chứa useInfiniteQuery
+import routes from '~/config/routes';
+import { useState, useEffect } from 'react';
+import { useQueryString } from '~/utils/searchParams';
 
 function MenuProduct({ title }) {
-    const [products, setProducts] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const { userData, getDataCartNow } = useStorage();
     const navigate = useNavigate();
-    const productsPerPage = 10;
+    const queryString = useQueryString();
+    const page = Number(queryString.page) || 1;
+    const { userData, getDataCartNow } = useStorage();
+    const filters = { PageNumber: page };
+    const [allProducts, setAllProducts] = useState([]);
+    const { data, isLoading } = useGetProducts(filters);
 
     useEffect(() => {
-        const getAllProduct = async () => {
-            try {
-                const res = await GetProducts();
-                const resultRes = updatedProducts(res);
-                setProducts(resultRes);
-            } catch (err) {
-                console.error('Error fetching product data: ', err);
-            }
-        };
-        getAllProduct();
-    }, []);
+        setAllProducts(updatedProducts(data?.datas || []));
+    }, [data]);
+
+    const totalCount = data?.totalCount || 0;
+    const pageSize = data?.pageSize || 10;
+    const totalPages = totalCount ? Math.ceil(totalCount / pageSize) : 0;
 
     const handlePageChange = (event, value) => {
-        setCurrentPage(value);
+        navigate(`${routes.home}?page=${value}`);
     };
-    const totalPages = Math.ceil(products.length / productsPerPage);
 
     const addToCart = async (productId, quantity) => {
+        console.log(productId, quantity);
         if (userData && Object.keys(userData).length > 0) {
             const res = await AddCart({
-                quantity: quantity,
-                userId: userData?.id,
-                productId: productId,
+                quantity,
+                userId: userData.id,
+                productId,
             });
             res && getDataCartNow();
         } else {
@@ -47,10 +45,8 @@ function MenuProduct({ title }) {
     };
 
     const updateQuantity = (id, newQuantity) => {
-        setProducts((prevProducts) =>
-            prevProducts.map((product) =>
-                product.id === id && product.quantity >= newQuantity ? { ...product, count: newQuantity } : product,
-            ),
+        setAllProducts((prev) =>
+            prev.map((product) => (product.id === id ? { ...product, count: newQuantity } : product)),
         );
     };
 
@@ -60,7 +56,7 @@ function MenuProduct({ title }) {
             <div className="relative">
                 <div className="overflow-hidden">
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 transition-all duration-500 p-1">
-                        {products?.map((product) => (
+                        {allProducts.map((product) => (
                             <Product
                                 key={product.id}
                                 product={product}
@@ -73,8 +69,8 @@ function MenuProduct({ title }) {
             </div>
             <div className="flex justify-end items-center">
                 <Pagination
-                    count={totalPages}
-                    page={currentPage}
+                    count={totalPages || 0}
+                    page={page}
                     onChange={handlePageChange}
                     color="primary"
                     size="small"

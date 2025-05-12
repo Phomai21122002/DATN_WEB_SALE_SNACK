@@ -1,16 +1,21 @@
 import request from '../request';
 
-export const GetProducts = async ({ Name, SortBy, isDecsending = false, PageNumber = 1, PageSize = 10 } = {}) => {
-    // , {
-    //     params: {
-    //         Name,
-    //         SortBy,
-    //         isDecsending,
-    //         PageNumber,
-    //         PageSize,
-    //     },
-    // }
-    const res = await request.get('/product/products');
+export const GetProducts = async ({
+    Name,
+    SortBy = null,
+    isDecsending = false,
+    PageNumber = 1,
+    PageSize = 10,
+} = {}) => {
+    const res = await request.get('/product/products', {
+        params: {
+            Name,
+            SortBy,
+            isDecsending,
+            PageNumber,
+            PageSize,
+        },
+    });
     return res.data;
 };
 

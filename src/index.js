@@ -5,15 +5,19 @@ import reportWebVitals from './reportWebVitals';
 import './index.css';
 import Storage from '~/Contexts/Storage';
 import { ToastProvider } from './Contexts/ToastProvider';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+const queryClient = new QueryClient();
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     // <React.StrictMode>
-    <Storage>
-        <ToastProvider>
-            <App />
-        </ToastProvider>
-    </Storage>,
+    <QueryClientProvider client={queryClient}>
+        <Storage>
+            <ToastProvider>
+                <App />
+            </ToastProvider>
+        </Storage>
+    </QueryClientProvider>,
     // </React.StrictMode>,
 );
 
