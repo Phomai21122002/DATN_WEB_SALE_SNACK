@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import routes from '~/config/routes';
 import { AdminUpdateCategory, GetCategory } from '~/services/Category';
 import noImage from '~/assets/images/No-image.png';
-import { uploadImageToCloudinary } from '../CreateProduct/Constant';
+import { uploadMediaToCloudinary } from '../CreateProduct/Constant';
 import AddIcon from '@mui/icons-material/Add';
 
 function UpdateCategory() {
@@ -67,7 +67,7 @@ function UpdateCategory() {
             const newImages = [];
             for (const file of files) {
                 try {
-                    const uploadedUrl = await uploadImageToCloudinary(file);
+                    const uploadedUrl = await uploadMediaToCloudinary(file);
                     if (uploadedUrl) newImages.push({ url: uploadedUrl });
                 } catch (err) {
                     console.error('Error uploading image:', err);

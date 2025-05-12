@@ -38,14 +38,11 @@ function ImageSlider({ images = [] }) {
                     {images.map((step, index) => (
                         <div className="flex-shrink-0 w-full h-[300px] overflow-hidden" key={index}>
                             <Image
-                                src={
-                                    step?.url ||
-                                    'https://bizweb.dktcdn.net/100/229/172/products/bow-wow-pho-mai-cuon-ga-1709195207055.jpg?v=1709440731433'
-                                }
+                                src={step || ''}
                                 alt=""
                                 className="w-full h-full object-cover"
                                 style={{
-                                    imageRendering: 'auto', // Ensure image sharpness
+                                    imageRendering: 'auto',
                                 }}
                             />
                         </div>

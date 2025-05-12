@@ -7,7 +7,7 @@ import routes from '~/config/routes';
 import { useStorage } from '~/Contexts';
 import { UpdateAddressByUserId, UpdateUserById } from '~/services/User';
 import noImage from '~/assets/images/No-image.png';
-import { uploadImageToCloudinary } from '../CreateProduct/Constant';
+import { uploadMediaToCloudinary } from '../CreateProduct/Constant';
 
 function ProfileAdmin() {
     const navigate = useNavigate();
@@ -77,7 +77,7 @@ function ProfileAdmin() {
         const file = e.target.files[0];
         if (file) {
             try {
-                const uploadedUrl = await uploadImageToCloudinary(file);
+                const uploadedUrl = await uploadMediaToCloudinary(file);
                 if (uploadedUrl) setImage(uploadedUrl);
             } catch (err) {
                 console.error('Error uploading image:', err);

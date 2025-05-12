@@ -6,7 +6,7 @@ import routes from '~/config/routes';
 import { AdminUpdateProduct, GetProductBySlug } from '~/services/Product';
 import AddIcon from '@mui/icons-material/Add';
 import noImage from '~/assets/images/No-image.png';
-import { uploadImageToCloudinary } from '../CreateProduct/Constant';
+import { uploadMediaToCloudinary } from '../CreateProduct/Constant';
 
 function UpdateProduct() {
     const { slug } = useParams();
@@ -73,7 +73,7 @@ function UpdateProduct() {
             const newImages = [];
             for (const file of files) {
                 try {
-                    const uploadedUrl = await uploadImageToCloudinary(file);
+                    const uploadedUrl = await uploadMediaToCloudinary(file);
                     if (uploadedUrl) newImages.push({ url: uploadedUrl });
                 } catch (err) {
                     console.error('Error uploading image:', err);

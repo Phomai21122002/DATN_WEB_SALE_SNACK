@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { uploadImageToCloudinary } from './Constant';
+import { uploadMediaToCloudinary } from './Constant';
 import { useEffect, useState } from 'react';
 import { GetCategories } from '~/services/Category';
 import { AddProduct } from '~/services/Product';
@@ -35,7 +35,7 @@ function CreateProduct() {
             const newImages = [];
             for (const file of files) {
                 try {
-                    const uploadedUrl = await uploadImageToCloudinary(file);
+                    const uploadedUrl = await uploadMediaToCloudinary(file);
                     if (uploadedUrl) newImages.push({ url: uploadedUrl });
                 } catch (err) {
                     console.error('Error uploading image:', err);

@@ -1,6 +1,6 @@
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import { useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import BackgroundCart from '~/components/BackgroundCart';
 import ProductOrder from '~/components/ProductOrder';
@@ -11,10 +11,12 @@ import { GetPaymentVnpay } from '~/services/Payment';
 import { listPaymentByAcount } from './Constains';
 
 function Order() {
+    const navigate = useNavigate();
     const { userData, dataCart } = useStorage();
     const [params] = useSearchParams();
     const [orderData, setOrderData] = useState(null);
-    const [listPayMethod, setListPayMethod] = useState([]);
+    const [listPayMethod, setListPayMethod] = useState(listPaymentByAcount);
+    const [isActivePay, setIsActivePay] = useState(false);
 
     const productsOrder = useMemo(() => {
         return dataCart.filter((cart) => cart.isSelectedForOrder).map((cart) => cart.product);
@@ -23,7 +25,7 @@ function Order() {
         return dataCart.filter((cart) => cart.isSelectedForOrder).map((cart) => cart.id);
     }, [dataCart]);
     const totalProductCost = useMemo(() => {
-        return dataCart.reduce((sum, item) => sum + (item.total || 0), 0);
+        return dataCart.filter((cart) => cart.isSelectedForOrder).reduce((sum, item) => sum + (item.total || 0), 0);
     }, [dataCart]);
 
     const shippingFee = 30000;
@@ -51,6 +53,8 @@ function Order() {
             });
             if (res.paymentUrl) {
                 window.location.href = res.paymentUrl;
+            } else {
+                navigate(routes.cart);
             }
         } catch (err) {
             console.error('Payment error:', err);
@@ -83,12 +87,9 @@ function Order() {
                 </div>
             </BackgroundCart>
             {orderData && (
-                <div className="max-w-[1100px] mx-auto py-8 mt-[64px]">
+                <div className="max-w-[1100px] mx-auto py-8">
                     <BackgroundCart className="flex-col justify-end">
-                        <div className="text-red-500">
-                            <AddLocationAltIcon style={{ fontSize: 20, marginRight: 8 }} />
-                            <span className="text-[20px] font-medium">Kết quả thanh toán</span>
-                        </div>
+                        <span className="text-green-500 text-[20px] font-medium">Kết quả thanh toán</span>
                         <div className="flex items-center text-black-400 space-x-4">
                             <div className="text-[16px] font-medium">
                                 {orderData.success ? 'Thanh toán thành công!' : 'Thanh toán thất bại'}
@@ -119,17 +120,7 @@ function Order() {
             <BackgroundCart className="flex flex-col w-full items-end mt-8 mb-12">
                 <div className="flex w-full items-center justify-between py-8 border-b">
                     <h3 className="text-2xl max-w-[400px] mr-8">Phương thức thanh toán</h3>
-                    {listPayMethod.length === 0 ? (
-                        <div className="flex items-center max-w-md w-full justify-between">
-                            <p className="text-lg">Thanh toán khi nhận hàng</p>
-                            <span
-                                onClick={() => setListPayMethod(listPaymentByAcount)}
-                                className="uppercase text-xl text-blue-500 cursor-pointer"
-                            >
-                                Thay đổi
-                            </span>
-                        </div>
-                    ) : (
+                    {isActivePay ? (
                         <div className="flex items-center flex-1">
                             {listPayMethod.map((item) => (
                                 <p
@@ -144,6 +135,16 @@ function Order() {
                                     {item.title}
                                 </p>
                             ))}
+                        </div>
+                    ) : (
+                        <div className="flex items-center max-w-md w-full justify-between">
+                            <p className="text-lg">Thanh toán khi nhận hàng</p>
+                            <span
+                                onClick={() => setIsActivePay(true)}
+                                className="uppercase text-xl text-blue-500 cursor-pointer"
+                            >
+                                Thay đổi
+                            </span>
                         </div>
                     )}
                 </div>

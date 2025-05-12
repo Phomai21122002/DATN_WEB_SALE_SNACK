@@ -7,7 +7,7 @@ import { UpdateUserById, AddAddressByUserId, UpdateAddressByUserId } from '~/ser
 import { useStorage } from '~/Contexts';
 import AddAddress from '~/components/AddAddress';
 import noImage from '~/assets/images/No-image.png';
-import { uploadImageToCloudinary } from '~/pages/Admin/CreateProduct/Constant';
+import { uploadMediaToCloudinary } from '~/pages/Admin/CreateProduct/Constant';
 import EditIcon from '@mui/icons-material/Edit';
 
 function Profile() {
@@ -74,7 +74,7 @@ function Profile() {
         const file = e.target.files[0];
         if (file) {
             try {
-                const uploadedUrl = await uploadImageToCloudinary(file);
+                const uploadedUrl = await uploadMediaToCloudinary(file);
                 if (uploadedUrl) setImage(uploadedUrl);
             } catch (err) {
                 console.error('Error uploading image:', err);

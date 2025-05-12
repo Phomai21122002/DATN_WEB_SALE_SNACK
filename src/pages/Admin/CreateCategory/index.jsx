@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { uploadImageToCloudinary } from '../CreateProduct/Constant';
+import { uploadMediaToCloudinary } from '../CreateProduct/Constant';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
@@ -36,7 +36,7 @@ function CreateCategory() {
             const newImages = [];
             for (const file of files) {
                 try {
-                    const uploadedUrl = await uploadImageToCloudinary(file);
+                    const uploadedUrl = await uploadMediaToCloudinary(file);
                     if (uploadedUrl) newImages.push({ url: uploadedUrl });
                 } catch (err) {
                     console.error('Error uploading image:', err);

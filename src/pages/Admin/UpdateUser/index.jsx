@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { EditIcon } from '~/components/Icons';
 import routes from '~/config/routes';
 import { GetUserById, UpdateUserById } from '~/services/User';
-import { uploadImageToCloudinary } from '../CreateProduct/Constant';
+import { uploadMediaToCloudinary } from '../CreateProduct/Constant';
 import noImage from '~/assets/images/No-image.png';
 import { GetRoles } from '~/services/Role';
 
@@ -74,7 +74,7 @@ function UpdateUser() {
         const file = e.target.files[0];
         if (file) {
             try {
-                const uploadedUrl = await uploadImageToCloudinary(file);
+                const uploadedUrl = await uploadMediaToCloudinary(file);
                 if (uploadedUrl) setValue('url', uploadedUrl);
             } catch (err) {
                 console.error('Error uploading image:', err);

@@ -13,17 +13,21 @@ import routes from '~/config/routes';
 import { useStorage } from '~/Contexts';
 import { AddCart } from '~/services/Cart';
 import noImage from '~/assets/images/No-image.png';
+import Image from '~/components/Image';
+import { uploadMediaToCloudinary } from '../Admin/CreateProduct/Constant';
+import { CreateFeedBack } from '~/services/Feedback';
+import useGetFeedBacks from '~/hooks/useGetFeedBacks';
+import { useQueryClient } from '@tanstack/react-query';
+import { EQueryKeys } from '~/constants';
 
 function ProductDetail() {
     const { slug } = useParams();
     const navigate = useNavigate();
-    const { userData, getDataCartNow } = useStorage();
-    const [loading, setLoading] = useState(false);
-    const [product, setProduct] = useState({});
+    const queryClient = useQueryClient();
 
-    const updateQuantity = (id, newQuantity) => {
-        setProduct((prevProducts) => ({ ...prevProducts, count: newQuantity }));
-    };
+    const { userData, getDataCartNow } = useStorage();
+    const [product, setProduct] = useState({});
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const getProductById = () => {
@@ -45,6 +49,50 @@ function ProductDetail() {
         };
         getProductById();
     }, [slug]);
+
+    const { data: feedbacks } = useGetFeedBacks({ userId: userData.id, productId: product.id });
+
+    const [reviewContent, setReviewContent] = useState('');
+    const [reviewMedia, setReviewMedia] = useState([]);
+    const [chooseAddComment, setChooseAddComment] = useState(false);
+
+    const handleMediaUpload = async (e) => {
+        const files = Array.from(e.target.files);
+        for (const file of files) {
+            try {
+                const uploadedUrl = await uploadMediaToCloudinary(file);
+                if (uploadedUrl) {
+                    setReviewMedia((prev) => [...prev, uploadedUrl]);
+                }
+            } catch (err) {
+                console.error('Error uploading file:', err);
+            }
+        }
+    };
+    const handleRemoveMedia = (index) => {
+        setReviewMedia((prev) => prev.filter((_, i) => i !== index));
+    };
+    const handleAddReview = async () => {
+        try {
+            await CreateFeedBack(userData.id, {
+                productId: product?.id,
+                content: reviewContent,
+                urls: reviewMedia,
+            });
+            queryClient.invalidateQueries({
+                queryKey: [EQueryKeys.GET_LIST_FEEDBACK, { userId: userData.id, productId: product.id }],
+            });
+            setReviewContent('');
+            setReviewMedia([]);
+            setChooseAddComment((prev) => !prev);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const updateQuantity = (id, newQuantity) => {
+        setProduct((prevProducts) => ({ ...prevProducts, count: newQuantity }));
+    };
 
     const handlePurchase = async (productId, quantity) => {
         console.log(productId, quantity, userData);
@@ -121,75 +169,106 @@ function ProductDetail() {
             </div>
             <div className="bg-white w-full p-8">
                 <h2 className="uppercase">Đánh giá sản phẩm</h2>
-                <div className="mt-8 border-b-2 border-gray-300">
-                    <div className="flex items-center">
-                        <img className="w-16 h-16 rounded-full" src={'' || noImage} alt="" />
-                        <div className="mx-4 text-xl">
-                            <h4>phô mai</h4>
-                            <p className="text-gray-500">2023-07-18 06:07 | Phân loại hàng: Đen,L</p>
+                {feedbacks &&
+                    feedbacks.map((feedback, index) => (
+                        <div key={index} className="mt-6 border-b-2 border-gray-300">
+                            <div className="flex items-center">
+                                <img
+                                    className="w-16 h-16 rounded-full"
+                                    src={feedback.user.url || noImage}
+                                    alt="avatar"
+                                />
+                                <div className="mx-4 text-xl">
+                                    <h4>{feedback.user.firstName + ' ' + feedback.user.lastName}</h4>
+                                    <p className="text-gray-500">{feedback.createdAt}</p>
+                                </div>
+                            </div>
+                            <div className="mx-4 my-2">
+                                <p className="whitespace-pre-line text-justify py-4">{feedback.content}</p>
+                                {feedback.imageFeedBacks?.length > 0 && (
+                                    <div className="flex items-center flex-wrap py-2 gap-4">
+                                        {feedback.imageFeedBacks.map((url, i) =>
+                                            url.url.match(/.(mp4|webm)$/) ? (
+                                                <video key={i} controls className="w-64 h-36">
+                                                    <source src={url.url} type="video/mp4" />
+                                                </video>
+                                            ) : (
+                                                <Image
+                                                    key={i}
+                                                    src={url.url}
+                                                    alt={`review-${i}`}
+                                                    className="w-36 h-36 object-cover"
+                                                />
+                                            ),
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                         </div>
+                    ))}
+                <span
+                    onClick={() => setChooseAddComment((prev) => !prev)}
+                    className="flex justify-end my-8 cursor-pointer text-xl hover:text-blue-500"
+                >
+                    Thêm đánh giá
+                </span>
+                {chooseAddComment && (
+                    <div className="bg-white w-full p-8 mt-8">
+                        <h2 className="uppercase mb-4">Đánh giá của bạn</h2>
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                handleAddReview();
+                            }}
+                            className="space-y-4"
+                        >
+                            <h4 className="text-xl">Mức độ đánh giá *</h4>
+                            <div>ngôi sao</div>
+                            <h4 className="text-xl">Nhận xét của bạn *</h4>
+                            <textarea
+                                placeholder="Nội dung đánh giá"
+                                className="border text-xl p-2 w-full rounded"
+                                rows={4}
+                                value={reviewContent}
+                                onChange={(e) => setReviewContent(e.target.value)}
+                                required
+                            />
+                            <h4 className="text-xl">Tải thêm hình ảnh hoặc video *</h4>
+                            <input
+                                type="file"
+                                accept="image/*,video/*"
+                                multiple
+                                onChange={(e) => handleMediaUpload(e)}
+                            />
+                            {reviewMedia.length > 0 && (
+                                <div className="flex gap-4 flex-wrap">
+                                    {reviewMedia.map((url, index) =>
+                                        url.match(/.(mp4|webm)$/) ? (
+                                            <video key={index} controls className="w-32 h-32">
+                                                <source src={url} type="video/mp4" />
+                                            </video>
+                                        ) : (
+                                            <div key={index} className="relative">
+                                                <Image src={url} className="w-32 h-32 object-cover rounded" />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleRemoveMedia(index)}
+                                                    className="absolute top-0 right-0 text-red-500"
+                                                >
+                                                    ✕
+                                                </button>
+                                            </div>
+                                        ),
+                                    )}
+                                </div>
+                            )}
+
+                            <button type="submit" className="w-full bg-blue-600 text-white px-4 py-2 rounded">
+                                Gửi đánh giá
+                            </button>
+                        </form>
                     </div>
-                    <div className="mx-4 my-2">
-                        <p className="whitespace-pre-line text-justify py-4">
-                            Màu sắc: đen Vải đẹp lắm mn ơii mặc vừa mát vừa ấm nữa nèe Shop tư vấn rất nhiệt tình và rep
-                            cực nhanh nha chạy đơn cũn nhanh nữa, Mn có thể xem ở ảnh nha Mình mua tặng anh ny nma mặc
-                            thử cũn oce phết ý🥳 Chất lượng xuất sắc luôn đường may chắc đẹp và đặc biệt KHÔNG CÓ CHỈ
-                            THỪA nhaa 10 điểm cho sự chu đáo và dễ thuông nàyy Shop nên tặng kèm giấy thơm thì ocee hơn
-                            á:33 cảm ơn shopp nhiều ạ sẽ ủng hộ thêm
-                        </p>
-                        <div className="flex items-center py-2">
-                            <img className="w-32 h-32 mr-4" src={'' || noImage} alt="" />
-                            <img className="w-32 h-32 mr-4" src={'' || noImage} alt="" />
-                            <img className="w-32 h-32 mr-4" src={'' || noImage} alt="" />
-                        </div>
-                    </div>
-                </div>
-                <div className="mt-8 border-b-2 border-gray-300">
-                    <div className="flex items-center">
-                        <img className="w-16 h-16 rounded-full" src={'' || noImage} alt="" />
-                        <div className="mx-4 text-xl">
-                            <h4>phô mai</h4>
-                            <p className="text-gray-500">2023-07-18 06:07 | Phân loại hàng: Đen,L</p>
-                        </div>
-                    </div>
-                    <div className="mx-4 my-2">
-                        <p className="whitespace-pre-line text-justify py-4">
-                            Màu sắc: đen Vải đẹp lắm mn ơii mặc vừa mát vừa ấm nữa nèe Shop tư vấn rất nhiệt tình và rep
-                            cực nhanh nha chạy đơn cũn nhanh nữa, Mn có thể xem ở ảnh nha Mình mua tặng anh ny nma mặc
-                            thử cũn oce phết ý🥳 Chất lượng xuất sắc luôn đường may chắc đẹp và đặc biệt KHÔNG CÓ CHỈ
-                            THỪA nhaa 10 điểm cho sự chu đáo và dễ thuông nàyy Shop nên tặng kèm giấy thơm thì ocee hơn
-                            á:33 cảm ơn shopp nhiều ạ sẽ ủng hộ thêm
-                        </p>
-                        <div className="flex items-center py-2">
-                            <img className="w-32 h-32 mr-4" src={'' || noImage} alt="" />
-                            <img className="w-32 h-32 mr-4" src={'' || noImage} alt="" />
-                            <img className="w-32 h-32 mr-4" src={'' || noImage} alt="" />
-                        </div>
-                    </div>
-                </div>
-                <div className="mt-8 border-b-2 border-gray-300">
-                    <div className="flex items-center">
-                        <img className="w-16 h-16 rounded-full" src={'' || noImage} alt="" />
-                        <div className="mx-4 text-xl">
-                            <h4>phô mai</h4>
-                            <p className="text-gray-500">2023-07-18 06:07 | Phân loại hàng: Đen,L</p>
-                        </div>
-                    </div>
-                    <div className="mx-4 my-2">
-                        <p className="whitespace-pre-line text-justify py-4">
-                            Màu sắc: đen Vải đẹp lắm mn ơii mặc vừa mát vừa ấm nữa nèe Shop tư vấn rất nhiệt tình và rep
-                            cực nhanh nha chạy đơn cũn nhanh nữa, Mn có thể xem ở ảnh nha Mình mua tặng anh ny nma mặc
-                            thử cũn oce phết ý🥳 Chất lượng xuất sắc luôn đường may chắc đẹp và đặc biệt KHÔNG CÓ CHỈ
-                            THỪA nhaa 10 điểm cho sự chu đáo và dễ thuông nàyy Shop nên tặng kèm giấy thơm thì ocee hơn
-                            á:33 cảm ơn shopp nhiều ạ sẽ ủng hộ thêm
-                        </p>
-                        <div className="flex items-center py-2">
-                            <img className="w-32 h-32 mr-4" src={'' || noImage} alt="" />
-                            <img className="w-32 h-32 mr-4" src={'' || noImage} alt="" />
-                            <img className="w-32 h-32 mr-4" src={'' || noImage} alt="" />
-                        </div>
-                    </div>
-                </div>
+                )}
             </div>
             <MenuProduct title={'Các sản phẩm liên quan'} />
         </div>
