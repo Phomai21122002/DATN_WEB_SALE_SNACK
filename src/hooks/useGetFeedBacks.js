@@ -12,14 +12,15 @@ const useGetFeedBacks = (params) => {
         fetchNextPage,
         hasNextPage,
     } = useQuery({
-        queryKey: [EQueryKeys.GET_LIST_FEEDBACK, params],
+        queryKey: [EQueryKeys.GET_LIST_FEEDBACK, { ...params }],
         queryFn: async () => {
             const response = await GetFeedBacks(params);
             console.log(response);
             return response;
         },
         refetchOnWindowFocus: false,
-        enabled: !!params,
+        enabled: !!params.userId && !!params.productId,
+        keepPreviousData: true,
     });
 
     return {

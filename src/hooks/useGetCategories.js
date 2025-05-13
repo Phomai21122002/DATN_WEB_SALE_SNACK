@@ -19,6 +19,7 @@ const useGetCategories = () => {
             return response;
         },
         refetchOnWindowFocus: false,
+        keepPreviousData: true,
     });
 
     return {

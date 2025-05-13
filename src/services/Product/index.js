@@ -60,3 +60,14 @@ export const AdminDeleteProduct = async (id) => {
     const res = await request.delete(`/Products/admin/${id}`);
     return res.data;
 };
+
+export const RemoveProductOrder = async ({ userId, orderId, productId }) => {
+    const res = await request.patch('/order/CancelProductOrder', null, {
+        params: {
+            inputUserId: userId,
+            inputOrderId: orderId,
+            inputProductId: productId,
+        },
+    });
+    return res.data;
+};

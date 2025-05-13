@@ -19,6 +19,7 @@ const useGetProfile = (options = {}) => {
         },
         ...options,
         refetchOnWindowFocus: false,
+        keepPreviousData: true,
     });
 
     return {

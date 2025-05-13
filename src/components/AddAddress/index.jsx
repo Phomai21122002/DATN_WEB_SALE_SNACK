@@ -9,7 +9,7 @@ function AddAddress({ activeAddAddress, setActiveAddAddress }) {
         watch,
         formState: { errors },
     } = useForm();
-    const { userData } = useStorage();
+    const { userData, refetchProfile } = useStorage();
     const [dataProvinces, setDataProvinces] = useState([]);
     const [dataDistrict, setDataDistrict] = useState([]);
     const [dataWard, setDataWard] = useState([]);
@@ -69,6 +69,7 @@ function AddAddress({ activeAddAddress, setActiveAddAddress }) {
             name: selectedHomeNumber + ', ' + selectedWardObj.path_with_type,
             code: Number(selectedWard),
         });
+        await refetchProfile();
         setActiveAddAddress(!activeAddAddress);
     };
 

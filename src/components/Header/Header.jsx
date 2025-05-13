@@ -90,7 +90,7 @@ const Header = () => {
                     </div>
                 </div>
 
-                <div className="flex items-center space-x-6 text-lg font-bold text-[12px] uppercase">
+                <div className="flex items-center space-x-6 text-lg font-bold text-[12px]">
                     <div className="flex relative items-center border border-gray-300 rounded-md pl-2 hover:border-gray-400 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition duration-200">
                         <input
                             type="text"
@@ -103,7 +103,7 @@ const Header = () => {
                             <SearchOutlinedIcon sx={{ fontSize: '20px' }} className="text-gray-500" />
                         </div>
                         {filteredResults.length > 0 && (
-                            <ul className="absolute top-[40px] left-0 w-full bg-white border border-gray-300 rounded-md shadow-md z-10">
+                            <ul className="absolute max-h-[200px] overflow-y-auto top-[40px] left-0 w-full bg-white border border-gray-300 rounded-md shadow-md z-10">
                                 {filteredResults.map((product, index) => (
                                     <li
                                         onClick={() => handleSearchProduct(product)}

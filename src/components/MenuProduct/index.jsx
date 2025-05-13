@@ -4,21 +4,21 @@ import { useStorage } from '~/Contexts';
 import { AddCart } from '~/services/Cart';
 import Product from '../Product';
 import { updatedProducts } from './Constains';
-import useGetProducts from '~/hooks/useGetProducts'; // nơi chứa useInfiniteQuery
+import useGetProducts from '~/hooks/useGetProducts';
 import routes from '~/config/routes';
-import { useState, useEffect } from 'react';
-import { useQueryString } from '~/utils/searchParams';
+import { useState, useEffect, memo, useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { EQueryKeys } from '~/constants';
 
 function MenuProduct({ title }) {
     const navigate = useNavigate();
-    const queryString = useQueryString();
     const queryClient = useQueryClient();
-    const page = Number(queryString.page) || 1;
+    const [page, setPage] = useState(1);
     const { userData } = useStorage();
-    const filters = { PageNumber: page };
+
+    const filters = useMemo(() => ({ PageNumber: page }), [page]);
     const [allProducts, setAllProducts] = useState([]);
+    console.log('MenuProduct');
     const { data, isLoading } = useGetProducts(filters);
 
     useEffect(() => {
@@ -30,7 +30,7 @@ function MenuProduct({ title }) {
     const totalPages = totalCount ? Math.ceil(totalCount / pageSize) : 0;
 
     const handlePageChange = (event, value) => {
-        navigate(`${routes.home}?page=${value}`);
+        setPage(value);
     };
 
     const addToCart = async (productId, quantity) => {
@@ -86,4 +86,4 @@ function MenuProduct({ title }) {
     );
 }
 
-export default MenuProduct;
+export default memo(MenuProduct);

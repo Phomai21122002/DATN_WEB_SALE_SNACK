@@ -9,20 +9,16 @@ function GlobalStates({ children }) {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [checkedCart, setCheckedCart] = useState([]);
     const token = Cookies.get('authToken');
-    const {
-        data: userData,
-        isSuccess: isUserLoaded,
-        refetchProfile,
-    } = useGetProfile({
+    const { data: userData, refetchProfile } = useGetProfile({
         enabled: !!token && !!isLoggedIn,
     });
     const { data: dataCart } = useGetCarts(userData?.id);
 
     useEffect(() => {
-        if (token && isUserLoaded) {
+        if (token) {
             setIsLoggedIn(true);
         }
-    }, [token, isUserLoaded]);
+    }, [token]);
 
     const states = {
         token,

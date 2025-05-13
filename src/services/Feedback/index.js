@@ -10,11 +10,14 @@ export const CreateFeedBack = async (userId, data) => {
     return res.data;
 };
 
-export const GetFeedBacks = async ({ userId, productId }) => {
+export const GetFeedBacks = async ({ userId, productId, PageNumber = 1, PageSize = 10 }) => {
+    console.log(userId, productId);
     const res = await request.get(`/feedback/feedbacks`, {
         params: {
             inputUserId: userId,
             productId: productId,
+            PageNumber,
+            PageSize,
         },
     });
     console.log(res.data);

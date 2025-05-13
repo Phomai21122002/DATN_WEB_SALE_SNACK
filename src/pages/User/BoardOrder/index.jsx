@@ -47,7 +47,7 @@ function BoardOrder() {
         selectedStatus,
         expandedOrderId,
         toggleExpand,
-        userId: userData.id,
+        userId: userData?.id,
     };
 
     return (

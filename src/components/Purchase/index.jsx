@@ -10,6 +10,7 @@ import { AddCart } from '~/services/Cart';
 import { useStorage } from '~/Contexts';
 import { useQueryClient } from '@tanstack/react-query';
 import { EQueryKeys } from '~/constants';
+import { RemoveProductOrder } from '~/services/Product';
 
 function Purchase({ product, date = null }) {
     const queryClient = useQueryClient();
@@ -17,11 +18,11 @@ function Purchase({ product, date = null }) {
     const navigate = useNavigate();
 
     const handlePurchaseAgain = async () => {
-        if (userData && Object.keys(userData).length > 0 && product) {
+        if (userData && Object.keys(userData).length > 0 && product.product) {
             const res = await AddCart({
-                quantity: product?.quantity,
+                quantity: product?.product?.quantity,
                 userId: userData?.id,
-                productId: product?.id,
+                productId: product?.product?.id,
             });
             res &&
                 queryClient.invalidateQueries({
@@ -33,15 +34,31 @@ function Purchase({ product, date = null }) {
         }
     };
 
+    const RemoveProduct = async () => {
+        // if (userData && Object.keys(userData).length > 0 && product.product) {
+        //     const res = await RemoveProductOrder({
+        //         userId: userData?.id,
+        //         orderId: product.id,
+        //         productId: product?.product.id,
+        //     });
+        //     res &&
+        //         queryClient.invalidateQueries({
+        //             queryKey: [EQueryKeys.GET_LIST_CART, userData?.id],
+        //         });
+        // } else {
+        //     navigate(routes.login);
+        // }
+    };
+
     return (
         <div className="w-full mb-16 shadow-lg rounded-lg overflow-hidden">
             <div className="flex flex-col pt-4 px-8 text-lg font-medium text-gray-700 bg-[#fffefb]">
                 <div className="flex items-center py-2 justify-between border-b border-gray-200">
                     <ul className="text-lg font-medium">
-                        <li className="">{product?.category.name}</li>
+                        <li className="">{product?.product?.category.name}</li>
                     </ul>
-                    <div className={`uppercase ${getOrderStatusStyleText(product.status)}`}>
-                        {getOrderStatusText(product.status)}
+                    <div className={`uppercase ${getOrderStatusStyleText(product?.product.status)}`}>
+                        {getOrderStatusText(product?.product.status)}
                     </div>
                 </div>
                 <Link
@@ -50,18 +67,18 @@ function Purchase({ product, date = null }) {
                 >
                     <div className="flex items-center gap-4 w-2/3">
                         <img
-                            src={product?.urls?.[0] || NoImage}
+                            src={product?.product?.urls?.[0] || NoImage}
                             alt="Sản phẩm"
                             className="w-24 h-24 object-cover rounded border flex-shrink-0"
                         />
                         <div>
-                            <div className="font-medium text-gray-800">{product?.name}</div>
-                            <div className="text-sm text-gray-500">x{product?.quantity}</div>
+                            <div className="font-medium text-gray-800">{product?.product?.name}</div>
+                            <div className="text-sm text-gray-500">x{product?.product?.quantity}</div>
                         </div>
                     </div>
 
                     <div className="text-right text-red-500 font-semibold w-1/3 whitespace-nowrap">
-                        {product?.price.toLocaleString()}đ
+                        {product?.product?.price.toLocaleString()}đ
                     </div>
                 </Link>
             </div>
@@ -69,15 +86,32 @@ function Purchase({ product, date = null }) {
                 <div className="w-full max-w-md ">
                     <div className="flex items-center justify-end gap-x-4 mb-4 text-[20px] font-semibold text-gray-700">
                         <span>Thành tiền:</span>
-                        <span className="text-red-500">{(product?.quantity * product?.price).toLocaleString()}đ</span>
+                        <span className="text-red-500">
+                            {(product?.product?.quantity * product?.product?.price).toLocaleString()}đ
+                        </span>
                     </div>
-                    <div className="flex justify-end">
-                        <Button
-                            handle={handlePurchaseAgain}
-                            classNameButton={'bg-red-400 hover:bg-red-500 text-white'}
-                            title="Mua Lại"
-                        />
-                    </div>
+                    {product?.product.status === 1 || product?.product.status === 2 ? (
+                        <div className="flex justify-end">
+                            <Button
+                                handle={handlePurchaseAgain}
+                                classNameButton={'bg-yellow-400 hover:bg-yellow-500 text-white ml-4'}
+                                title="Mua Lại"
+                            />
+                            <Button
+                                handle={RemoveProduct}
+                                classNameButton={'bg-red-400 hover:bg-red-500 text-white ml-4'}
+                                title="Hủy"
+                            />
+                        </div>
+                    ) : (
+                        <div className="flex justify-end">
+                            <Button
+                                handle={handlePurchaseAgain}
+                                classNameButton={'bg-yellow-400 hover:bg-yellow-500 text-white ml-4'}
+                                title="Mua Lại"
+                            />
+                        </div>
+                    )}
                 </div>
             </BackgroundCart>
         </div>

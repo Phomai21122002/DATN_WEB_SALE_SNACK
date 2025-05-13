@@ -18,6 +18,7 @@ const useGetCarts = (userId) => {
         },
         enabled: !!userId,
         refetchOnWindowFocus: false,
+        keepPreviousData: true,
     });
 
     return {

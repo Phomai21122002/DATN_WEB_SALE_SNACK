@@ -18,7 +18,7 @@ function BoardOrderProduct({ selectedStatus, selectedOrder, expandedOrderId, use
     return (
         <div className="flex flex-col justify-center overflow-hidden">
             {orderProducts?.map((product, index) => (
-                <Purchase key={index} product={product.product} date={product?.createOrder || ''} />
+                <Purchase key={index} product={product} date={product?.createOrder || ''} />
             ))}
         </div>
     );

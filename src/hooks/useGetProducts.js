@@ -19,6 +19,7 @@ const useGetProducts = (filters) => {
         },
         enabled: !!filters,
         refetchOnWindowFocus: false,
+        keepPreviousData: true,
     });
 
     return {
