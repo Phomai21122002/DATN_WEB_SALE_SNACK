@@ -83,7 +83,7 @@ function PopperCart({ id, open, anchorEl, dataCart, onClose }) {
                                             }}
                                         >
                                             <img
-                                                src={cart?.urls?.[0]}
+                                                src={cart?.product?.urls[0]}
                                                 alt={cart?.product?.name}
                                                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                             />

@@ -8,9 +8,12 @@ import Button from '../Button';
 import { getOrderStatusStyleText, getOrderStatusText } from '../BodyTabel/Constant';
 import { AddCart } from '~/services/Cart';
 import { useStorage } from '~/Contexts';
+import { useQueryClient } from '@tanstack/react-query';
+import { EQueryKeys } from '~/constants';
 
 function Purchase({ product, date = null }) {
-    const { userData, getDataCartNow } = useStorage();
+    const queryClient = useQueryClient();
+    const { userData } = useStorage();
     const navigate = useNavigate();
 
     const handlePurchaseAgain = async () => {
@@ -20,7 +23,10 @@ function Purchase({ product, date = null }) {
                 userId: userData?.id,
                 productId: product?.id,
             });
-            res && getDataCartNow();
+            res &&
+                queryClient.invalidateQueries({
+                    queryKey: [EQueryKeys.GET_LIST_CART, userData?.id],
+                });
             navigate(routes.cart);
         } else {
             navigate(routes.login);

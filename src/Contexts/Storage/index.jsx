@@ -1,46 +1,38 @@
 import Cookies from 'js-cookie';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { GetCarts } from '~/services/Cart';
-import { GetProfile } from '~/services/User';
+import useGetCarts from '~/hooks/useGetCarts';
+import useGetProfile from '~/hooks/useGetProfile';
 
 export const StorageContext = createContext();
 
 function GlobalStates({ children }) {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [userData, setUserData] = useState({});
-    const [dataCart, setDataCart] = useState([]);
     const [checkedCart, setCheckedCart] = useState([]);
-    const getDataCartNow = async () => {
-        const token = Cookies.get('authToken');
-        if (token && userData.id) {
-            const res = await GetCarts(userData.id);
-            setDataCart(res);
-        }
-    };
+    const token = Cookies.get('authToken');
+    const {
+        data: userData,
+        isSuccess: isUserLoaded,
+        refetchProfile,
+    } = useGetProfile({
+        enabled: !!token && !!isLoggedIn,
+    });
+    const { data: dataCart } = useGetCarts(userData?.id);
 
     useEffect(() => {
-        const getData = async () => {
-            const token = Cookies.get('authToken');
-            if (token) {
-                console.log('globalstates');
-                const res = await GetProfile();
-                setUserData(res);
-                setIsLoggedIn(true);
-            }
-        };
-        getData();
-    }, []);
+        if (token && isUserLoaded) {
+            setIsLoggedIn(true);
+        }
+    }, [token, isUserLoaded]);
 
     const states = {
+        token,
         isLoggedIn,
         setIsLoggedIn,
         userData,
-        setUserData,
         dataCart,
-        setDataCart,
-        getDataCartNow,
         checkedCart,
         setCheckedCart,
+        refetchProfile,
     };
 
     return <StorageContext.Provider value={states}>{children}</StorageContext.Provider>;

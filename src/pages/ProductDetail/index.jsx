@@ -25,7 +25,7 @@ function ProductDetail() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
-    const { userData, getDataCartNow } = useStorage();
+    const { userData } = useStorage();
     const [product, setProduct] = useState({});
     const [loading, setLoading] = useState(false);
 
@@ -102,7 +102,10 @@ function ProductDetail() {
                 userId: userData?.id,
                 productId: productId,
             });
-            res && getDataCartNow();
+            res &&
+                queryClient.invalidateQueries({
+                    queryKey: [EQueryKeys.GET_LIST_CART, userData?.id],
+                });
             navigate(routes.cart);
         } else {
             navigate(routes.login);

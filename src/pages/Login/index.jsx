@@ -42,13 +42,11 @@ const Login = memo(() => {
                     setLoginEmail(email);
                     setShowCodePopup(true);
                 } else {
-                    setIsLoggedIn(true);
                     Cookies.set('authToken', res.token, {
                         expires: 7,
                         path: '/',
                     });
-                    const profile = await GetProfile();
-                    setUserData(profile);
+                    setIsLoggedIn(true);
                     toast.success('Login successfully');
                     navigate(routes.home);
                 }

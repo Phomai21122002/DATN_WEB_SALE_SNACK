@@ -9,12 +9,15 @@ import { AddCart } from '~/services/Cart';
 import { FilterList } from '@mui/icons-material';
 import { Pagination } from '@mui/material';
 import { GetCategories } from '~/services/Category';
+import { EQueryKeys } from '~/constants';
+import { useQueryClient } from '@tanstack/react-query';
 
 function MenuProductSearch() {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
-    const { userData, getDataCartNow } = useStorage();
+    const { userData } = useStorage();
     const [currentPage, setCurrentPage] = useState(1);
     const productsPerPage = 9;
     const [paginatedProducts, setPaginatedProducts] = useState([]);
@@ -81,7 +84,10 @@ function MenuProductSearch() {
                 userId: userData?.id,
                 productId: productId,
             });
-            res && getDataCartNow();
+            res &&
+                queryClient.invalidateQueries({
+                    queryKey: [EQueryKeys.GET_LIST_CART, userData?.id],
+                });
         } else {
             navigate(routes.login);
         }

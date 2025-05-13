@@ -9,6 +9,8 @@ import AddAddress from '~/components/AddAddress';
 import noImage from '~/assets/images/No-image.png';
 import { uploadMediaToCloudinary } from '~/pages/Admin/CreateProduct/Constant';
 import EditIcon from '@mui/icons-material/Edit';
+import { EQueryKeys } from '~/constants';
+import { useQueryClient } from '@tanstack/react-query';
 
 function Profile() {
     const navigate = useNavigate();
@@ -19,15 +21,15 @@ function Profile() {
         watch,
         formState: { errors },
     } = useForm();
-    const { userData } = useStorage();
+    const { userData, token, refetchProfile } = useStorage();
+    const queryClient = useQueryClient();
     const [activeAddAddress, setActiveAddAddress] = useState(false);
     const [image, setImage] = useState(watch('url'));
 
     useEffect(() => {
-        console.log('profile', userData);
         const getProfileOfUser = async () => {
             try {
-                if (Object.keys(userData).length > 0) {
+                if (userData && Object.keys(userData).length > 0) {
                     const address = userData?.addresses?.find((address) => address?.isDefault && address);
                     reset({
                         id: userData.id,
@@ -60,6 +62,7 @@ function Profile() {
                 inputUserId: id,
                 addressId: Number(addressId),
             });
+            await refetchProfile();
             navigate(routes.home);
         } catch (err) {
             console.error('Error saving profile:', err);

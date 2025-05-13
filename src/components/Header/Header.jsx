@@ -5,7 +5,7 @@ import { Badge, Divider } from '@mui/material';
 
 import logoSale from '~/assets/images/Logo-sales.png';
 import { menuHeader } from './Constains';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
 import { useStorage } from '~/Contexts';
 import AvatarUser from '../AvatarUser';
@@ -13,21 +13,41 @@ import PopperProfile from '../PopperProfile';
 import { options, optionsUser } from '../PopperProfile/Constains';
 import PopperCart from '../PopperCart';
 import { GetCarts } from '~/services/Cart';
+import useGetProducts from '~/hooks/useGetProducts';
 
 const Header = () => {
-    const { userData, dataCart, setDataCart, isLoggedIn } = useStorage();
+    const { userData, dataCart } = useStorage();
+    const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
     const [anchorElCart, setAnchorElCart] = useState(null);
+    const [allNameProducts, setAllNameProducts] = useState([]);
+    const [searchQuery, setSearchQuery] = useState(''); // Từ khóa tìm kiếm
+    const [filteredResults, setFilteredResults] = useState([]);
+    const filters = { PageSize: 1000 };
+    const { data, isLoading } = useGetProducts(filters);
     useEffect(() => {
-        const getDataCart = async () => {
-            if (isLoggedIn && userData.id) {
-                const res = await GetCarts(userData.id);
-                setDataCart(res);
-            }
-        };
-        getDataCart();
-        // eslint-disable-next-line
-    }, [userData]);
+        setAllNameProducts(data?.datas);
+    }, [data]);
+
+    useEffect(() => {
+        if (searchQuery === '') {
+            setFilteredResults([]); // Nếu không có từ khóa tìm kiếm, không hiển thị gợi ý
+        } else {
+            const results = allNameProducts.filter(
+                (product) => product.name.toLowerCase().includes(searchQuery.toLowerCase()), // Tìm kiếm không phân biệt chữ hoa/thường
+            );
+            setFilteredResults(results);
+        }
+    }, [searchQuery, allNameProducts]);
+
+    const handleSearchInputChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
+    const handleSearchProduct = (product) => {
+        navigate(routes.product.replace(':slug', product.slug));
+        setFilteredResults([]);
+    };
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -71,16 +91,32 @@ const Header = () => {
                 </div>
 
                 <div className="flex items-center space-x-6 text-lg font-bold text-[12px] uppercase">
-                    <div className="flex items-center border border-gray-300 rounded-md pl-2 hover:border-gray-400 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition duration-200">
+                    <div className="flex relative items-center border border-gray-300 rounded-md pl-2 hover:border-gray-400 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition duration-200">
                         <input
                             type="text"
                             placeholder="Tìm kiếm..."
+                            value={searchQuery}
+                            onChange={handleSearchInputChange}
                             className="ml-2 w-full outline-none text-sm text-gray-700"
                         />
                         <div className="rounded-tr-md rounded-br-md py-1 px-2 hover:bg-yellow-200 transition duration-200 cursor-pointer">
                             <SearchOutlinedIcon sx={{ fontSize: '20px' }} className="text-gray-500" />
                         </div>
+                        {filteredResults.length > 0 && (
+                            <ul className="absolute top-[40px] left-0 w-full bg-white border border-gray-300 rounded-md shadow-md z-10">
+                                {filteredResults.map((product, index) => (
+                                    <li
+                                        onClick={() => handleSearchProduct(product)}
+                                        key={index}
+                                        className="p-2 text-sm hover:bg-gray-200 cursor-pointer"
+                                    >
+                                        {product.name}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
                     </div>
+
                     <Link to={routes.cart} className="flex items-center space-x-2 hover:text-yellow-400 cursor-pointer">
                         <div
                             onMouseEnter={handleClickCart}
@@ -88,7 +124,7 @@ const Header = () => {
                             className="flex items-center space-x-2"
                         >
                             <button aria-describedby={idCart} variant="contained">
-                                <Badge badgeContent={dataCart.length} color="primary">
+                                <Badge badgeContent={dataCart?.length} color="primary">
                                     <ShoppingCartOutlinedIcon sx={{ fontSize: '16px' }} />
                                 </Badge>
                             </button>

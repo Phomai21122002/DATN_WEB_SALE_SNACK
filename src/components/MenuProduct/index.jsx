@@ -8,12 +8,15 @@ import useGetProducts from '~/hooks/useGetProducts'; // nơi chứa useInfiniteQ
 import routes from '~/config/routes';
 import { useState, useEffect } from 'react';
 import { useQueryString } from '~/utils/searchParams';
+import { useQueryClient } from '@tanstack/react-query';
+import { EQueryKeys } from '~/constants';
 
 function MenuProduct({ title }) {
     const navigate = useNavigate();
     const queryString = useQueryString();
+    const queryClient = useQueryClient();
     const page = Number(queryString.page) || 1;
-    const { userData, getDataCartNow } = useStorage();
+    const { userData } = useStorage();
     const filters = { PageNumber: page };
     const [allProducts, setAllProducts] = useState([]);
     const { data, isLoading } = useGetProducts(filters);
@@ -38,7 +41,10 @@ function MenuProduct({ title }) {
                 userId: userData.id,
                 productId,
             });
-            res && getDataCartNow();
+            res &&
+                queryClient.invalidateQueries({
+                    queryKey: [EQueryKeys.GET_LIST_CART, userData?.id],
+                });
         } else {
             navigate(routes.login);
         }
