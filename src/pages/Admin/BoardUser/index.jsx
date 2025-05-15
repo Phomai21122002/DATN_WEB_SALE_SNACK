@@ -1,29 +1,34 @@
 import HeaderTable from '~/components/HeaderTabel';
 import SearchSortListOfAdmin from '~/components/SearchSortListOfAdmin';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import routes from '~/config/routes';
 import { useNavigate } from 'react-router-dom';
 import { DeleteUserById, GetUsers } from '~/services/User';
 import { listTitle, sorts } from './Constant';
+import useGetUsers from '~/hooks/useGetUsers';
+import Pagination from '~/components/Pagination';
+import SkeletonRow from '~/components/SkeletonRow';
 
 function BoardUser() {
     const navigate = useNavigate();
     const [users, setUsers] = useState([]);
+    const [page, setPage] = useState(1);
     const [allUser, setAllUser] = useState([]);
     const [idSort, setIdSort] = useState(null);
+    const params = useMemo(() => {
+        return { PageNumber: page };
+    }, [page]);
+    const { data, isLoading } = useGetUsers(params);
+
+    const totalPages = useMemo(() => {
+        const totalCount = data?.totalCount || 0;
+        return totalCount ? Math.ceil(totalCount / data?.pageSize) : 0;
+    }, [data]);
 
     useEffect(() => {
-        const getAllUser = async () => {
-            try {
-                const res = await GetUsers();
-                setUsers(res);
-                setAllUser(res);
-            } catch (err) {
-                console.error('Error fetching User data: ', err);
-            }
-        };
-        getAllUser();
-    }, []);
+        setAllUser(data?.datas || []);
+        setUsers(data?.datas || []);
+    }, [data]);
 
     const editOrder = (id) => {
         navigate(routes.adminUpdateUser.replace(':id', id));
@@ -94,32 +99,42 @@ function BoardUser() {
                 <table className="min-w-full text-left text-sm">
                     <HeaderTable listTitle={listTitle} />
                     <tbody>
-                        {users?.map((User, index) => (
-                            <tr key={User.id} className="border-b hover:bg-gray-50">
-                                <td className="py-3 px-6">{index + 1}</td>
-                                <td className="py-3 px-6">{User.firstName + ' ' + User.lastName}</td>
-                                <td className="py-3 px-6">{User.email}</td>
-                                <td className="py-3 px-6">{User.phone}</td>
-                                <td className="py-3 px-6">{User.role.name}</td>
-                                <td className="py-3 px-6">
-                                    <button
-                                        className="text-blue-600 hover:underline mr-2"
-                                        onClick={() => editOrder(User.id)}
-                                    >
-                                        Chỉnh sửa
-                                    </button>
-                                    <button
-                                        className="text-red-600 hover:underline"
-                                        onClick={() => deleteOrder(User.id)}
-                                    >
-                                        Xóa
-                                    </button>
+                        {isLoading ? (
+                            Array.from({ length: 5 }).map((_, idx) => <SkeletonRow key={idx} col={listTitle.length} />)
+                        ) : users?.length > 0 ? (
+                            users.map((User, index) => (
+                                <tr key={User.id} className="border-b hover:bg-gray-50">
+                                    <td className="py-3 px-6">{index + 1}</td>
+                                    <td className="py-3 px-6">{User.firstName + ' ' + User.lastName}</td>
+                                    <td className="py-3 px-6">{User.email}</td>
+                                    <td className="py-3 px-6">{User.phone}</td>
+                                    <td className="py-3 px-6">{User.role.name}</td>
+                                    <td className="py-3 px-6">
+                                        <button
+                                            className="text-blue-600 hover:underline mr-2"
+                                            onClick={() => editOrder(User.id)}
+                                        >
+                                            Chỉnh sửa
+                                        </button>
+                                        <button
+                                            className="text-red-600 hover:underline"
+                                            onClick={() => deleteOrder(User.id)}
+                                        >
+                                            Xóa
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan={listTitle.length} className="text-center py-6 text-gray-500">
+                                    Không có người dùng nào
                                 </td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </table>
-                {users.length === 0 && <div className="text-center py-6 text-gray-500">Không có đơn hàng nào</div>}
+                <Pagination className={'m-8 justify-end'} page={page} setPage={setPage} totalPages={totalPages} />
             </div>
         </>
     );

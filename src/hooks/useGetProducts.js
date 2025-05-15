@@ -5,7 +5,7 @@ import { GetProducts } from '~/services/Product';
 const useGetProducts = (filters) => {
     const {
         data,
-        isLoading: isLoadingListProduct,
+        isLoading,
         isFetching,
         isError,
         refetch: refetchListProduct,
@@ -23,8 +23,8 @@ const useGetProducts = (filters) => {
     });
 
     return {
-        data: data,
-        isLoadingListProduct,
+        data,
+        isLoading,
         isFetching,
         isError,
         refetchListProduct,

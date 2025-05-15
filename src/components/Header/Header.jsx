@@ -94,10 +94,12 @@ const Header = () => {
                     <div className="flex relative items-center border border-gray-300 rounded-md pl-2 hover:border-gray-400 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition duration-200">
                         <input
                             type="text"
+                            name="no-autocomplete"
                             placeholder="Tìm kiếm..."
                             value={searchQuery}
                             onChange={handleSearchInputChange}
                             className="ml-2 w-full outline-none text-sm text-gray-700"
+                            autoComplete="off"
                         />
                         <div className="rounded-tr-md rounded-br-md py-1 px-2 hover:bg-yellow-200 transition duration-200 cursor-pointer">
                             <SearchOutlinedIcon sx={{ fontSize: '20px' }} className="text-gray-500" />

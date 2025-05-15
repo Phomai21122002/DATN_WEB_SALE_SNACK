@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-function Pagination({ page, setPage, totalPages }) {
+function Pagination({ page, setPage, totalPages, className }) {
     if (totalPages <= 1) return null;
 
     const generatePageNumbers = () => {
@@ -26,7 +26,7 @@ function Pagination({ page, setPage, totalPages }) {
         setPage(p);
     };
     return (
-        <div className="flex justify-center items-center text-sm gap-2 mt-8">
+        <div className={`flex items-center text-sm gap-2 mt-8 ${className ? className : 'justify-center'}`}>
             <button
                 onClick={() => page > 1 && setPage(page - 1)}
                 disabled={page === 1}

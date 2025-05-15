@@ -53,6 +53,7 @@ function UpdateUser() {
             roles: [role],
             url: user.url,
         };
+        console.log(userReq);
         try {
             await UpdateUserById(id, userReq);
             navigate(routes.adminListUser);
@@ -133,6 +134,7 @@ function UpdateUser() {
                     <label className="block text-sm font-bold mb-1">Email</label>
                     <input
                         type="email"
+                        readOnly
                         className="w-full text-sm p-2 border rounded-md"
                         {...register('email', {
                             required: 'Email là bắt buộc',
@@ -183,6 +185,7 @@ function UpdateUser() {
                     <label className="block text-sm font-bold mb-1">Ngày tham gia</label>
                     <input
                         type="date"
+                        readOnly
                         className="max-w-[200px] text-sm p-2 border rounded-md"
                         {...register('joinDate', { required: 'Ngày tham gia là bắt buộc' })}
                     />

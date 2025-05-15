@@ -18,7 +18,6 @@ function MenuProduct({ title }) {
 
     const filters = useMemo(() => ({ PageNumber: page }), [page]);
     const [allProducts, setAllProducts] = useState([]);
-    console.log('MenuProduct');
     const { data, isLoading } = useGetProducts(filters);
 
     useEffect(() => {

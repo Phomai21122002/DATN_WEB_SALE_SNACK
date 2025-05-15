@@ -11,7 +11,7 @@ import { uploadMediaToCloudinary } from '../CreateProduct/Constant';
 
 function ProfileAdmin() {
     const navigate = useNavigate();
-    const { userData } = useStorage();
+    const { userData, refetchProfile } = useStorage();
     const {
         register,
         handleSubmit,
@@ -26,7 +26,7 @@ function ProfileAdmin() {
         console.log('profile', userData);
         const getProfileOfAdmin = async () => {
             try {
-                if (Object.keys(userData).length > 0) {
+                if (userData && Object.keys(userData).length > 0) {
                     const address = userData?.addresses?.find((address) => address?.isDefault && address);
                     reset({
                         id: userData.id,
@@ -37,6 +37,7 @@ function ProfileAdmin() {
                         addressId: address?.id,
                         url: userData.url,
                     });
+                    setImage(userData?.url);
                 }
             } catch (err) {
                 console.error('Error fetching profile or provinces:', err);
@@ -50,8 +51,9 @@ function ProfileAdmin() {
         const { id, addressId, ...reqProfile } = profile;
         const updatedProfile = {
             ...reqProfile,
-            url: image,
+            url: image || userData?.url || '',
         };
+        console.log(updatedProfile);
         try {
             await UpdateUserById(id, updatedProfile);
             await UpdateAddressByUserId({
@@ -59,6 +61,7 @@ function ProfileAdmin() {
                 addressId: Number(addressId),
             });
             navigate(routes.admin);
+            await refetchProfile();
         } catch (err) {
             console.error('Error saving profile:', err);
         }

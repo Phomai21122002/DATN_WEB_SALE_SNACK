@@ -19,11 +19,14 @@ export const UpdateOrderProduct = async (orderId, userId) => {
     return res.data;
 };
 
-export const GetOrdersProduct = async (userId, Status) => {
+export const GetOrdersProduct = async ({ userId, Status, Name, PageNumber = 1, PageSize = 10 }) => {
     const res = await request.get(`/order/orders`, {
         params: {
             inputUserId: userId,
             inputStatus: Status,
+            Name,
+            PageNumber,
+            PageSize,
         },
     });
     return res.data;
@@ -31,15 +34,17 @@ export const GetOrdersProduct = async (userId, Status) => {
 
 export const GetOrderProductAdmin = async ({
     userId,
-    isPriceDecsending,
     Status,
-    PageNumber,
-    PageSize,
+    Name,
+    isDecsending,
+    SortBy,
+    PageNumber = 1,
+    PageSize = 10,
     StartDate = '',
     EndDate = '',
 }) => {
     const res = await request.get(`/order/admin/orders`, {
-        params: { inputUserId: userId, inputStatus: Status },
+        params: { inputUserId: userId, inputStatus: Status, Name, SortBy, isDecsending, PageNumber, PageSize },
     });
     return res.data;
 };
@@ -65,7 +70,7 @@ export const GetOrderProductInOrder = async ({
     EndDate = '',
 }) => {
     const res = await request.get(`/order/ProductInOrders`, {
-        params: { inputUserId: userId, inputStatus: Status },
+        params: { inputUserId: userId, inputStatus: Status, PageNumber, PageSize },
     });
     return res.data;
 };

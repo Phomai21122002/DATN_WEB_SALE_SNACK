@@ -2,7 +2,15 @@ import request from '../request';
 
 export const GetUsers = async ({ Name, SortBy, isDecsending = false, PageNumber = 1, PageSize = 10 } = {}) => {
     try {
-        const res = await request.get(`/user/users`);
+        const res = await request.get(`/user/users`, {
+            params: {
+                Name,
+                SortBy,
+                isDecsending,
+                PageNumber,
+                PageSize,
+            },
+        });
         return res.data;
     } catch (error) {
         throw error;
@@ -24,7 +32,6 @@ export const GetUserById = async (id) => {
 
 export const UpdateUserById = async (id, data) => {
     try {
-        console.log(data);
         const res = await request.put(`/user/profile`, data, {
             params: {
                 userId: id,

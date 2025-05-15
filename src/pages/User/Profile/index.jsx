@@ -3,14 +3,12 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
 import routes from '~/config/routes';
-import { UpdateUserById, AddAddressByUserId, UpdateAddressByUserId } from '~/services/User';
+import { UpdateUserById, UpdateAddressByUserId } from '~/services/User';
 import { useStorage } from '~/Contexts';
 import AddAddress from '~/components/AddAddress';
 import noImage from '~/assets/images/No-image.png';
 import { uploadMediaToCloudinary } from '~/pages/Admin/CreateProduct/Constant';
 import EditIcon from '@mui/icons-material/Edit';
-import { EQueryKeys } from '~/constants';
-import { useQueryClient } from '@tanstack/react-query';
 
 function Profile() {
     const navigate = useNavigate();
@@ -21,8 +19,7 @@ function Profile() {
         watch,
         formState: { errors },
     } = useForm();
-    const { userData, token, refetchProfile } = useStorage();
-    const queryClient = useQueryClient();
+    const { userData, refetchProfile } = useStorage();
     const [activeAddAddress, setActiveAddAddress] = useState(false);
     const [image, setImage] = useState(watch('url'));
 
@@ -40,6 +37,7 @@ function Profile() {
                         addressId: address?.id,
                         url: userData.url,
                     });
+                    setImage(userData?.url);
                 }
             } catch (err) {
                 console.error('Error fetching profile or provinces:', err);
@@ -53,17 +51,16 @@ function Profile() {
         const { id, addressId, ...reqProfile } = profile;
         const updatedProfile = {
             ...reqProfile,
-            url: image,
+            url: image || userData?.url || '',
         };
-
         try {
             await UpdateUserById(id, updatedProfile);
             await UpdateAddressByUserId({
                 inputUserId: id,
                 addressId: Number(addressId),
             });
-            await refetchProfile();
             navigate(routes.home);
+            await refetchProfile();
         } catch (err) {
             console.error('Error saving profile:', err);
         }

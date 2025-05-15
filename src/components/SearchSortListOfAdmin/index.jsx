@@ -45,10 +45,6 @@ function SearchSortListOfAdmin({ title, categories, onSortChange, onSearch }) {
                     onChange={(e) => handleSearchProduct(e)}
                     className="ml-2 max-w-[300px] ring-2 ring-gray-300 rounded-lg p-[6px] text-sm text-gray-700"
                 />
-                <div className="flex items-center text-sm rounded-md py-2 px-3 ml-2 bg-gray-200 hover:bg-yellow-200 transition duration-200 cursor-pointer">
-                    <SearchOutlinedIcon sx={{ fontSize: '20px' }} className="text-gray-500" />
-                    Search
-                </div>
             </div>
         </div>
     );

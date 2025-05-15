@@ -16,7 +16,6 @@ function Purchase({ product, date = null }) {
     const queryClient = useQueryClient();
     const { userData } = useStorage();
     const navigate = useNavigate();
-
     const handlePurchaseAgain = async () => {
         if (userData && Object.keys(userData).length > 0 && product.product) {
             const res = await AddCart({
@@ -33,21 +32,20 @@ function Purchase({ product, date = null }) {
             navigate(routes.login);
         }
     };
-
     const RemoveProduct = async () => {
-        // if (userData && Object.keys(userData).length > 0 && product.product) {
-        //     const res = await RemoveProductOrder({
-        //         userId: userData?.id,
-        //         orderId: product.id,
-        //         productId: product?.product.id,
-        //     });
-        //     res &&
-        //         queryClient.invalidateQueries({
-        //             queryKey: [EQueryKeys.GET_LIST_CART, userData?.id],
-        //         });
-        // } else {
-        //     navigate(routes.login);
-        // }
+        if (userData && Object.keys(userData).length > 0 && product.product) {
+            console.log(product);
+            const res = await RemoveProductOrder({
+                userId: userData?.id,
+                orderId: product.id,
+                productId: product?.product.id,
+            });
+            if (res) {
+                await queryClient.invalidateQueries({
+                    queryKey: [EQueryKeys.GET_LIST_ORDER_PRODUCT_USER, { userId: userData?.id, Status: 0 }],
+                });
+            }
+        }
     };
 
     return (
@@ -57,9 +55,11 @@ function Purchase({ product, date = null }) {
                     <ul className="text-lg font-medium">
                         <li className="">{product?.product?.category.name}</li>
                     </ul>
-                    <div className={`uppercase ${getOrderStatusStyleText(product?.product.status)}`}>
-                        {getOrderStatusText(product?.product.status)}
-                    </div>
+                    {product?.product?.status !== undefined && (
+                        <div className={`uppercase ${getOrderStatusStyleText(product?.product.status)}`}>
+                            {getOrderStatusText(product?.product.status)}
+                        </div>
+                    )}
                 </div>
                 <Link
                     to={routes.home}
@@ -90,7 +90,7 @@ function Purchase({ product, date = null }) {
                             {(product?.product?.quantity * product?.product?.price).toLocaleString()}đ
                         </span>
                     </div>
-                    {product?.product.status === 1 || product?.product.status === 2 ? (
+                    {product?.product?.status === 1 || product?.product?.status === 2 ? (
                         <div className="flex justify-end">
                             <Button
                                 handle={handlePurchaseAgain}

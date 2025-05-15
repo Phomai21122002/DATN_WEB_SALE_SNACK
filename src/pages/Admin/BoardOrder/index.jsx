@@ -1,27 +1,36 @@
 import HeaderTable from '~/components/HeaderTabel';
 import { listTitle } from './Constant';
 import BodyTabel from '~/components/BodyTabel';
-import { useEffect, useState } from 'react';
-import { GetOrderProductAdmin, RemoveSoftOrder } from '~/services/Order';
+import { useEffect, useMemo, useState } from 'react';
+import { RemoveSoftOrder } from '~/services/Order';
 import { useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
 import { useStorage } from '~/Contexts';
+import useGetProductsInOrderInAdmin from '~/hooks/useGetProductsInOrderInAdmin';
+import Pagination from '~/components/Pagination';
+import SkeletonRow from '~/components/SkeletonRow';
 
 function BoardOrder() {
+    const navigate = useNavigate();
     const { userData } = useStorage();
+    const [page, setPage] = useState(1);
     const [orderList, setOrderList] = useState([]);
     const [status, setStatus] = useState(false);
-    const navigate = useNavigate();
+
+    const params = useMemo(() => {
+        if (!userData?.id) return null;
+        return { userId: userData.id, Status: 1, PageNumber: page };
+    }, [userData, page]);
+    const { data, isLoading } = useGetProductsInOrderInAdmin(params);
+
+    const totalPages = useMemo(() => {
+        const totalCount = data?.totalCount || 0;
+        return totalCount ? Math.ceil(totalCount / data?.pageSize) : 0;
+    }, [data]);
+
     useEffect(() => {
-        console.log(userData);
-        if (userData && userData.id) {
-            const getData = async () => {
-                const res = await GetOrderProductAdmin({ userId: userData.id, Status: 1 });
-                setOrderList(res);
-            };
-            getData();
-        }
-    }, [status, userData]);
+        setOrderList(data?.datas || []);
+    }, [data]);
 
     const editOrder = (data) => {
         const url = routes.adminUpdateOrder.replace(':id', data.id);
@@ -36,7 +45,9 @@ function BoardOrder() {
             <table className="min-w-full text-left text-sm">
                 <HeaderTable listTitle={listTitle} />
                 <tbody>
-                    {Array.isArray(orderList) && orderList.length > 0 ? (
+                    {isLoading ? (
+                        Array.from({ length: 10 }).map((_, idx) => <SkeletonRow key={idx} col={listTitle.length} />)
+                    ) : orderList.length > 0 ? (
                         orderList.map((order, index) => (
                             <BodyTabel
                                 key={order.id}
@@ -48,13 +59,14 @@ function BoardOrder() {
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="6" className="text-center py-6 text-gray-500">
+                            <td colSpan={listTitle.length} className="text-center py-6 text-gray-500">
                                 Không có đơn hàng nào
                             </td>
                         </tr>
                     )}
                 </tbody>
             </table>
+            <Pagination className={'m-8 justify-end'} page={page} setPage={setPage} totalPages={totalPages} />
         </div>
     );
 }

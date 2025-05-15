@@ -5,4 +5,8 @@ export const EQueryKeys = {
     GET_LIST_FEEDBACK: 'GetFeedBacks',
     GET_LIST_CART: 'GetCarts',
     GET_PROFILE: 'GetProfile',
+    GET_LIST_ORDER_USER: 'GetOrdersProduct',
+    GET_LIST_ORDER_PRODUCT_USER: 'GetOrderProductInOrder',
+    GET_LIST_ORDER_PRODUCT_ADMIN: 'GetOrderProductAdmin',
+    GET_LIST_USER: 'GetUsers',
 };
