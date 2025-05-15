@@ -59,7 +59,6 @@ export const DeleteUserById = async (id) => {
 export const GetProfile = async () => {
     try {
         const res = await request.get(`/user/profile`);
-        console.log(res.data);
         return res.data;
     } catch (error) {
         throw error;

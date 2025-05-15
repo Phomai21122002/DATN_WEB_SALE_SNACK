@@ -2,7 +2,6 @@ import request from '../request';
 
 export const CreatePaymentVnpay = async (data) => {
     const res = await request.post(`/payment/create`, data);
-    console.log(res.data);
     return res.data;
 };
 

@@ -15,7 +15,6 @@ const useGetFeedBacks = (params) => {
         queryKey: [EQueryKeys.GET_LIST_FEEDBACK, { ...params }],
         queryFn: async () => {
             const response = await GetFeedBacks(params);
-            console.log(response);
             return response;
         },
         refetchOnWindowFocus: false,

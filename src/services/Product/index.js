@@ -19,6 +19,19 @@ export const GetProducts = async ({
     return res.data;
 };
 
+export const GetProductsByIdCategory = async ({ categoryId, isDecsending, PageNumber = 1, PageSize = 10 } = {}) => {
+    console.log(isDecsending);
+    const res = await request.get('/product/productsByIdCategory', {
+        params: {
+            categoryId,
+            isDecsending,
+            PageNumber,
+            PageSize,
+        },
+    });
+    return res.data;
+};
+
 export const GetProduct = async ({ id }) => {
     const res = await request.get(`/product/products`, {
         params: {

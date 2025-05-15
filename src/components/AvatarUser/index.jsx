@@ -5,7 +5,6 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 function AvatarUser() {
     const { userData } = useStorage();
-    console.log(userData);
     return (
         <div className="flex items-center space-x-6 text-lg font-bold text-[12px] uppercase">
             <div className="relative flex items-center justify-center cursor-pointer">

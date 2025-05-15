@@ -9,6 +9,7 @@ import routes from '~/config/routes';
 import { useState, useEffect, memo, useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { EQueryKeys } from '~/constants';
+import SkeletonProduct from '../SkeletonProduct';
 
 function MenuProduct({ title }) {
     const navigate = useNavigate();
@@ -20,13 +21,14 @@ function MenuProduct({ title }) {
     const [allProducts, setAllProducts] = useState([]);
     const { data, isLoading } = useGetProducts(filters);
 
+    const totalPages = useMemo(() => {
+        const totalCount = data?.totalCount || 0;
+        return totalCount ? Math.ceil(totalCount / data?.pageSize) : 0;
+    }, [data]);
+
     useEffect(() => {
         setAllProducts(updatedProducts(data?.datas || []));
     }, [data]);
-
-    const totalCount = data?.totalCount || 0;
-    const pageSize = data?.pageSize || 10;
-    const totalPages = totalCount ? Math.ceil(totalCount / pageSize) : 0;
 
     const handlePageChange = (event, value) => {
         setPage(value);
@@ -61,14 +63,16 @@ function MenuProduct({ title }) {
             <div className="relative">
                 <div className="overflow-hidden">
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 transition-all duration-500 p-1">
-                        {allProducts.map((product) => (
-                            <Product
-                                key={product.id}
-                                product={product}
-                                addToCart={addToCart}
-                                updateQuantity={updateQuantity}
-                            />
-                        ))}
+                        {isLoading
+                            ? Array.from({ length: 10 }).map((_, index) => <SkeletonProduct key={index} />)
+                            : allProducts.map((product) => (
+                                  <Product
+                                      key={product.id}
+                                      product={product}
+                                      addToCart={addToCart}
+                                      updateQuantity={updateQuantity}
+                                  />
+                              ))}
                     </div>
                 </div>
             </div>

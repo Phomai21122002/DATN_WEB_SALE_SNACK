@@ -13,7 +13,6 @@ const useGetCarts = (userId) => {
         queryKey: [EQueryKeys.GET_LIST_CART, userId],
         queryFn: async () => {
             const response = await GetCarts(userId);
-            console.log(response);
             return response;
         },
         enabled: !!userId,

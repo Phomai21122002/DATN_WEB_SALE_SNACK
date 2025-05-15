@@ -16,7 +16,6 @@ export const GetCategory = async ({ categoryId }) => {
                 categoryId: categoryId,
             },
         });
-        console.log(res.data);
         return res.data;
     } catch (error) {
         throw error;

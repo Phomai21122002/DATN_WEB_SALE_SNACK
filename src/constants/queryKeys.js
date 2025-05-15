@@ -9,4 +9,5 @@ export const EQueryKeys = {
     GET_LIST_ORDER_PRODUCT_USER: 'GetOrderProductInOrder',
     GET_LIST_ORDER_PRODUCT_ADMIN: 'GetOrderProductAdmin',
     GET_LIST_USER: 'GetUsers',
+    GET_LIST_PRODUCT_BY_IDCATEGORY: 'GetProductsByIdCategory',
 };

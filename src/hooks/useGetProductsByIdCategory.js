@@ -1,22 +1,24 @@
 import { useQuery } from '@tanstack/react-query';
 import { EQueryKeys } from '~/constants';
-import { GetCategories } from '~/services/Category';
+import { GetProductsByIdCategory } from '~/services/Product';
 
-const useGetCategories = () => {
+const useGetProductsByIdCategory = (filters) => {
     const {
         data,
         isLoading,
         isFetching,
         isError,
-        refetch: refetchListCategory,
+        refetch: refetchListProduct,
         fetchNextPage,
         hasNextPage,
     } = useQuery({
-        queryKey: [EQueryKeys.GET_LIST_CATEGORY],
+        queryKey: [EQueryKeys.GET_LIST_PRODUCT_BY_IDCATEGORY, filters],
         queryFn: async () => {
-            const response = await GetCategories();
+            console.log(filters);
+            const response = await GetProductsByIdCategory(filters);
             return response;
         },
+        enabled: !!filters,
         refetchOnWindowFocus: false,
         keepPreviousData: true,
     });
@@ -26,10 +28,10 @@ const useGetCategories = () => {
         isLoading,
         isFetching,
         isError,
-        refetchListCategory,
+        refetchListProduct,
         fetchNextPage,
         hasNextPage,
     };
 };
 
-export default useGetCategories;
+export default useGetProductsByIdCategory;

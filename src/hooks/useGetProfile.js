@@ -14,7 +14,6 @@ const useGetProfile = (options = {}) => {
         queryKey: [EQueryKeys.GET_PROFILE],
         queryFn: async () => {
             const response = await GetProfile();
-            console.log(response);
             return response;
         },
         ...options,

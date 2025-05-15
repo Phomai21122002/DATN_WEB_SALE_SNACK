@@ -6,7 +6,6 @@ export const CreateFeedBack = async (userId, data) => {
             inputUserId: userId,
         },
     });
-    console.log(res.data);
     return res.data;
 };
 
@@ -20,6 +19,5 @@ export const GetFeedBacks = async ({ userId, productId, PageNumber = 1, PageSize
             PageSize,
         },
     });
-    console.log(res.data);
     return res.data;
 };
