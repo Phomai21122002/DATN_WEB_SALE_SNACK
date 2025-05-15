@@ -104,78 +104,62 @@ export const GetWards = async (inputUserId, parentCode) => {
 };
 
 export const AddAddressByUserId = async ({ inputUserId, name, code }) => {
-    try {
-        console.log(inputUserId, name, code);
-        const res = await request.post(
-            `/address`,
-            {
-                name: name,
-                code: code,
+    const res = await request.post(
+        `/address`,
+        {
+            name: name,
+            code: code,
+        },
+        {
+            params: {
+                inputUserId: inputUserId,
             },
-            {
-                params: {
-                    inputUserId: inputUserId,
-                },
-            },
-        );
-        return res.data;
-    } catch (error) {
-        throw error;
-    }
+        },
+    );
+    return res.data;
+};
+
+export const GetAddressesByUserId = async ({ inputUserId }) => {
+    const res = await request.get(`/address/addresses`, {
+        params: {
+            inputUserId: inputUserId,
+        },
+    });
+    return res.data;
 };
 
 export const UpdateAddressByUserId = async ({ inputUserId, addressId }) => {
-    try {
-        console.log(inputUserId, addressId);
-        const res = await request.put(`/address`, null, {
-            params: {
-                inputUserId: inputUserId,
-                addressId: addressId,
-            },
-        });
-        return res.data;
-    } catch (error) {
-        throw error;
-    }
+    console.log(inputUserId, addressId);
+    const res = await request.put(`/address`, null, {
+        params: {
+            inputUserId: inputUserId,
+            addressId: addressId,
+        },
+    });
+    return res.data;
 };
 
 export const GetTotalRevenue = async () => {
-    try {
-        const res = await request.get(`/Order/admin/total-revenue`);
-        return res.data;
-    } catch (error) {
-        throw error;
-    }
+    const res = await request.get(`/Order/admin/total-revenue`);
+    return res.data;
 };
 
 export const GetProductSales = async () => {
-    try {
-        const res = await request.get(`/Order/admin/product-sales`);
-        return res.data;
-    } catch (error) {
-        throw error;
-    }
+    const res = await request.get(`/Order/admin/product-sales`);
+    return res.data;
 };
 
 export const GetRevenueProducts = async () => {
-    try {
-        const res = await request.get(`/Order/admin/revenue-by-product`);
-        return res.data;
-    } catch (error) {
-        throw error;
-    }
+    const res = await request.get(`/Order/admin/revenue-by-product`);
+    return res.data;
 };
 
 export const GetOrderByDate = async (startDate, endDate) => {
-    try {
-        const res = await request.get(`/Order/admin/orders-by-date`, {
-            params: {
-                startDate,
-                endDate,
-            },
-        });
-        return res.data;
-    } catch (error) {
-        throw error;
-    }
+    const res = await request.get(`/Order/admin/orders-by-date`, {
+        params: {
+            startDate,
+            endDate,
+        },
+    });
+    return res.data;
 };

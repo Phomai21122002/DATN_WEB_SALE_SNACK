@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import routes from '~/config/routes';
@@ -11,11 +11,13 @@ import { useStorage } from '~/Contexts';
 import { useQueryClient } from '@tanstack/react-query';
 import { EQueryKeys } from '~/constants';
 import { RemoveProductOrder } from '~/services/Product';
+import PopUpRemove from '../PopUpRemove';
 
-function Purchase({ product, date = null }) {
+function Purchase({ product, refetch, date = null }) {
     const queryClient = useQueryClient();
     const { userData } = useStorage();
     const navigate = useNavigate();
+    const [chooseRemove, setChooseRemove] = useState({});
     const handlePurchaseAgain = async () => {
         if (userData && Object.keys(userData).length > 0 && product.product) {
             const res = await AddCart({
@@ -32,19 +34,20 @@ function Purchase({ product, date = null }) {
             navigate(routes.login);
         }
     };
+
     const RemoveProduct = async () => {
-        if (userData && Object.keys(userData).length > 0 && product.product) {
-            console.log(product);
-            const res = await RemoveProductOrder({
-                userId: userData?.id,
-                orderId: product.id,
-                productId: product?.product.id,
-            });
-            if (res) {
-                await queryClient.invalidateQueries({
-                    queryKey: [EQueryKeys.GET_LIST_ORDER_PRODUCT_USER, { userId: userData?.id, Status: 0 }],
+        try {
+            if (userData && Object.keys(userData).length > 0 && product.product) {
+                await RemoveProductOrder({
+                    userId: userData?.id,
+                    orderId: product.id,
+                    productId: product?.product.id,
                 });
+                await refetch();
+                setChooseRemove({});
             }
+        } catch (error) {
+            console.log(error);
         }
     };
 
@@ -98,7 +101,7 @@ function Purchase({ product, date = null }) {
                                 title="Mua Lại"
                             />
                             <Button
-                                handle={RemoveProduct}
+                                handle={() => setChooseRemove(product)}
                                 classNameButton={'bg-red-400 hover:bg-red-500 text-white ml-4'}
                                 title="Hủy"
                             />
@@ -114,6 +117,16 @@ function Purchase({ product, date = null }) {
                     )}
                 </div>
             </BackgroundCart>
+            {chooseRemove && (
+                <PopUpRemove
+                    id={chooseRemove.id}
+                    title={'Delete Product In Order?'}
+                    desc={`Are you sure you want to delete this product ${chooseRemove?.product?.name} in ${chooseRemove?.name}`}
+                    onRemove={() => RemoveProduct()}
+                    onClose={() => setChooseRemove({})}
+                    isRemove={Object.keys(chooseRemove).length > 0}
+                />
+            )}
         </div>
     );
 }

@@ -3,13 +3,13 @@ import { memo, useEffect, useState } from 'react';
 import { AddAddressByUserId, GetDistricts, GetProvinces, GetWards } from '~/services/User';
 import { useForm } from 'react-hook-form';
 
-function AddAddress({ activeAddAddress, setActiveAddAddress }) {
+function AddAddress({ setActiveAddAddress, refetchAddress }) {
     const {
         register,
         watch,
         formState: { errors },
     } = useForm();
-    const { userData, refetchProfile } = useStorage();
+    const { userData } = useStorage();
     const [dataProvinces, setDataProvinces] = useState([]);
     const [dataDistrict, setDataDistrict] = useState([]);
     const [dataWard, setDataWard] = useState([]);
@@ -63,14 +63,18 @@ function AddAddress({ activeAddAddress, setActiveAddAddress }) {
     }, [selectedDistrict]);
 
     const handleAddAddress = async () => {
-        const selectedWardObj = dataWard.find((ward) => ward.code === selectedWard);
-        await AddAddressByUserId({
-            inputUserId: userData.id,
-            name: selectedHomeNumber + ', ' + selectedWardObj.path_with_type,
-            code: Number(selectedWard),
-        });
-        await refetchProfile();
-        setActiveAddAddress(!activeAddAddress);
+        try {
+            const selectedWardObj = dataWard.find((ward) => ward.code === selectedWard);
+            await AddAddressByUserId({
+                inputUserId: userData.id,
+                name: selectedHomeNumber + ', ' + selectedWardObj.path_with_type,
+                code: Number(selectedWard),
+            });
+            await refetchAddress();
+            setActiveAddAddress((prev) => !prev);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (

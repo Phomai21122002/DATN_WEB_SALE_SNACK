@@ -7,7 +7,7 @@ const PageSize = 5;
 function BoardOrderProduct({ selectedStatus }) {
     const { userData } = useStorage();
 
-    const { allProducts, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useGetProductsInOrder({
+    const { allProducts, fetchNextPage, refetch, hasNextPage, isFetchingNextPage, isLoading } = useGetProductsInOrder({
         userId: userData?.id,
         Status: selectedStatus,
         PageSize: PageSize,
@@ -18,7 +18,7 @@ function BoardOrderProduct({ selectedStatus }) {
             {isLoading
                 ? Array.from({ length: PageSize }).map((_, i) => <PurchaseSkeleton key={i} />)
                 : allProducts.map((product, index) => (
-                      <Purchase key={index} product={product} date={product?.createOrder || ''} />
+                      <Purchase key={index} refetch={refetch} product={product} date={product?.createOrder || ''} />
                   ))}
 
             {hasNextPage && (

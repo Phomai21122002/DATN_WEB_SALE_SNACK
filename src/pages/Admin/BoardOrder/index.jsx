@@ -9,19 +9,20 @@ import { useStorage } from '~/Contexts';
 import useGetProductsInOrderInAdmin from '~/hooks/useGetProductsInOrderInAdmin';
 import Pagination from '~/components/Pagination';
 import SkeletonRow from '~/components/SkeletonRow';
+import PopUpRemove from '~/components/PopUpRemove';
 
 function BoardOrder() {
     const navigate = useNavigate();
     const { userData } = useStorage();
     const [page, setPage] = useState(1);
     const [orderList, setOrderList] = useState([]);
-    const [status, setStatus] = useState(false);
+    const [chooseRemove, setChooseRemove] = useState({});
 
     const params = useMemo(() => {
         if (!userData?.id) return null;
         return { userId: userData.id, Status: 1, PageNumber: page };
     }, [userData, page]);
-    const { data, isLoading } = useGetProductsInOrderInAdmin(params);
+    const { data, isLoading, refetch } = useGetProductsInOrderInAdmin(params);
 
     const totalPages = useMemo(() => {
         const totalCount = data?.totalCount || 0;
@@ -37,9 +38,15 @@ function BoardOrder() {
         navigate(`${url}?userId=${data?.user.id}`);
     };
     const deleteOrder = async (data) => {
-        await RemoveSoftOrder({ userId: data?.user.id, orderId: data.id });
-        setStatus(!status);
+        try {
+            await RemoveSoftOrder({ userId: data?.user.id, orderId: data.id });
+            await refetch();
+            setChooseRemove({});
+        } catch (error) {
+            console.log(error);
+        }
     };
+
     return (
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
             <table className="min-w-full text-left text-sm">
@@ -53,7 +60,7 @@ function BoardOrder() {
                                 key={order.id}
                                 index={index}
                                 item={order}
-                                onDel={deleteOrder}
+                                onDel={setChooseRemove}
                                 onEdit={editOrder}
                             />
                         ))
@@ -67,6 +74,16 @@ function BoardOrder() {
                 </tbody>
             </table>
             <Pagination className={'m-8 justify-end'} page={page} setPage={setPage} totalPages={totalPages} />
+            {chooseRemove && (
+                <PopUpRemove
+                    id={chooseRemove.id}
+                    title={'Xóa đơn đặt hàng'}
+                    desc={`Bạn có chắc chắn muốn xóa đơn hàng ${chooseRemove?.name} của khách hàng ${chooseRemove?.user?.firstName} không?`}
+                    onRemove={() => deleteOrder(chooseRemove)}
+                    onClose={() => setChooseRemove({})}
+                    isRemove={Object.keys(chooseRemove).length > 0}
+                />
+            )}
         </div>
     );
 }

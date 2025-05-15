@@ -9,6 +9,7 @@ import AddAddress from '~/components/AddAddress';
 import noImage from '~/assets/images/No-image.png';
 import { uploadMediaToCloudinary } from '~/pages/Admin/CreateProduct/Constant';
 import EditIcon from '@mui/icons-material/Edit';
+import useGetAddresses from '~/hooks/useGetAddresses';
 
 function Profile() {
     const navigate = useNavigate();
@@ -22,12 +23,12 @@ function Profile() {
     const { userData, refetchProfile } = useStorage();
     const [activeAddAddress, setActiveAddAddress] = useState(false);
     const [image, setImage] = useState(watch('url'));
-
+    const { data, isLoading, refetchAddress } = useGetAddresses(userData?.id);
     useEffect(() => {
         const getProfileOfUser = async () => {
             try {
                 if (userData && Object.keys(userData).length > 0) {
-                    const address = userData?.addresses?.find((address) => address?.isDefault && address);
+                    const address = data?.find((address) => address?.isDefault && address);
                     reset({
                         id: userData.id,
                         firstName: userData.firstName,
@@ -45,7 +46,7 @@ function Profile() {
         };
         getProfileOfUser();
         // eslint-disable-next-line
-    }, [userData]);
+    }, [userData, data]);
 
     const handleSaveProfile = async (profile) => {
         const { id, addressId, ...reqProfile } = profile;
@@ -167,7 +168,7 @@ function Profile() {
                     {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
                 </div>
                 {activeAddAddress && (
-                    <AddAddress activeAddAddress={activeAddAddress} setActiveAddAddress={setActiveAddAddress} />
+                    <AddAddress refetchAddress={refetchAddress} setActiveAddAddress={setActiveAddAddress} />
                 )}
                 <div className="flex-1">
                     <div className="flex items-center justify-between">
@@ -185,7 +186,7 @@ function Profile() {
                         {...register('addressId', { required: 'Địa chỉ nhà là bắt buộc' })}
                     >
                         <option value="">Chọn địa chỉ</option>
-                        {userData?.addresses?.map((address, index) => (
+                        {data?.map((address, index) => (
                             <option key={index} value={address.id}>
                                 {address.name}
                             </option>

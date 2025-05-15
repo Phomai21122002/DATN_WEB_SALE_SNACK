@@ -8,6 +8,7 @@ import { useStorage } from '~/Contexts';
 import { UpdateAddressByUserId, UpdateUserById } from '~/services/User';
 import noImage from '~/assets/images/No-image.png';
 import { uploadMediaToCloudinary } from '../CreateProduct/Constant';
+import useGetAddresses from '~/hooks/useGetAddresses';
 
 function ProfileAdmin() {
     const navigate = useNavigate();
@@ -21,13 +22,14 @@ function ProfileAdmin() {
     } = useForm();
     const [activeAddAddress, setActiveAddAddress] = useState(false);
     const [image, setImage] = useState(watch('url'));
+    const { data, isLoading, refetchAddress } = useGetAddresses(userData?.id);
 
     useEffect(() => {
         console.log('profile', userData);
         const getProfileOfAdmin = async () => {
             try {
                 if (userData && Object.keys(userData).length > 0) {
-                    const address = userData?.addresses?.find((address) => address?.isDefault && address);
+                    const address = data?.find((address) => address?.isDefault && address);
                     reset({
                         id: userData.id,
                         firstName: userData.firstName,
@@ -170,7 +172,7 @@ function ProfileAdmin() {
                 </div>
 
                 {activeAddAddress && (
-                    <AddAddress activeAddAddress={activeAddAddress} setActiveAddAddress={setActiveAddAddress} />
+                    <AddAddress refetchAddress={refetchAddress} setActiveAddAddress={setActiveAddAddress} />
                 )}
                 <div className="flex-1">
                     <div className="flex items-center justify-between">
@@ -188,7 +190,7 @@ function ProfileAdmin() {
                         {...register('addressId', { required: 'Địa chỉ nhà là bắt buộc' })}
                     >
                         <option value="">Chọn địa chỉ</option>
-                        {userData?.addresses?.map((address, index) => (
+                        {data?.map((address, index) => (
                             <option key={index} value={address.id}>
                                 {address.name}
                             </option>

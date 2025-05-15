@@ -198,7 +198,7 @@ function Cart() {
                     id={chooseRemove.id}
                     title={'Delete Product In Cart?'}
                     desc={`Are you sure you want to delete this product ${chooseRemove?.products.name}?`}
-                    onRemove={handleRemoveCart}
+                    onRemove={() => handleRemoveCart(userData?.id, chooseRemove.id)}
                     onClose={() => setChooseRemove({})}
                     isRemove={Object.keys(chooseRemove).length > 0}
                 />

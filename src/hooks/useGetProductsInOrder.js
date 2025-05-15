@@ -12,6 +12,7 @@ const useGetProductsInOrder = ({ userId, Status, PageSize }) => {
                 PageNumber: pageParam,
                 PageSize,
             });
+            console.log(res);
             return res;
         },
         getNextPageParam: (lastPage, pages) => {
