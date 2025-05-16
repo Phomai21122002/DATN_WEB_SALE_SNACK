@@ -25,6 +25,7 @@ export const routesUser = Object.fromEntries(
         userListOrder: 'order',
         userProfile: 'profile',
         userChangePass: 'changepass',
+        userCheckOutPayment: 'checkoutpayment',
     }).map(([key, value]) => [key, `/user/${value}`]),
 );
 

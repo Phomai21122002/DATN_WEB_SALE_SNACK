@@ -6,53 +6,40 @@ import PopUpRemove from '~/components/PopUpRemove';
 import ProductCart from '~/components/ProductCart';
 import routes from '~/config/routes';
 import { useStorage } from '~/Contexts';
-import { DeleteCart, UpdateCartsOrder } from '~/services/Cart';
+import { DeleteCart, UpdateCart, UpdateCartsOrder } from '~/services/Cart';
 import { OrderProduct } from '~/services/Order';
 import { CreatePaymentVnpay } from '~/services/Payment';
 
 function Cart() {
     const navigate = useNavigate();
-    const { userData, dataCart, setDataCart, checkedCart, setCheckedCart } = useStorage();
-    const [checkProduct, setCheckProduct] = useState([]);
+    const { userData, dataCart, refetchListCart } = useStorage();
     const [chooseRemove, setChooseRemove] = useState({});
-    console.log(dataCart);
+
     const uniqueCategories = useMemo(() => {
         const map = new Map();
-        dataCart.forEach((item) => {
-            map.set(item.category.id, item.category);
-        });
+        dataCart &&
+            dataCart?.forEach((item) => {
+                map.set(item.category.id, item.category);
+            });
         return [...map.values()];
     }, [dataCart]);
 
-    const updateQuantity = useCallback((id, newQuantity) => {
-        setDataCart((prevProducts) =>
-            prevProducts.map((product) =>
-                product.products.id === id
-                    ? {
-                          ...product,
-                          products: {
-                              ...product.products,
-                              quantity: newQuantity,
-                          },
-                          total: newQuantity * product.products.price,
-                      }
-                    : product,
-            ),
-        );
+    const updateQuantity = useCallback(async (id, newQuantity) => {
+        const cart = dataCart && dataCart.find((cart) => cart.product.id === id);
+        const resUpdateCart = await UpdateCart({
+            userId: userData.id,
+            quantity: newQuantity,
+            isSelectedForOrder: true,
+            cartId: cart.id,
+        });
+        resUpdateCart && (await refetchListCart());
         // eslint-disable-next-line
     }, []);
 
     const handleChangeCheckCart = async (e, category) => {
-        const isChecked = e.target.checked;
         const cartsId = dataCart.filter((product) => product.category.id === category.id).map((product) => product.id);
         const resUpdateCart = await UpdateCartsOrder({ userId: userData.id, cartsId: cartsId });
-        if (resUpdateCart) {
-            setDataCart((prev) =>
-                prev.map((product) =>
-                    product.category.id === category.id ? { ...product, isSelectedForOrder: isChecked } : product,
-                ),
-            );
-        }
+        resUpdateCart && (await refetchListCart());
     };
 
     const HandlePurchase = async () => {
@@ -66,39 +53,14 @@ function Cart() {
     };
 
     const handleRemoveCart = async (userId, idCart) => {
-        await DeleteCart(userId, idCart);
-        setChooseRemove({});
-        setDataCart((prev) => prev.filter((product) => product.id !== idCart));
+        try {
+            await DeleteCart(userId, idCart);
+            await refetchListCart();
+            setChooseRemove({});
+        } catch (error) {
+            console.log(error);
+        }
     };
-
-    // const handlePay = async () => {
-    //     try {
-    //         console.log(userData);
-    //         if (userData && Object.keys(userData).length > 0 && userData?.addresses?.length <= 0) {
-    //             navigate(routes.userProfile);
-    //         } else if (userData && Object.keys(userData).length > 0 && userData?.addresses?.length > 0) {
-    //             const selectedProductIds = checkProduct
-    //                 .filter((product) => product.check === true)
-    //                 .map((product) => product.id);
-    //             console.log(selectedProductIds);
-    //             const res = await OrderProduct(userData?.id, { cartsId: selectedProductIds, paymentMethod: 'VnPay' });
-    //             console.log(res.paymentUrl);
-    //             if (res.paymentUrl) {
-    //                 window.location.href = res.paymentUrl;
-    //             }
-    //             setDataCart((prevDataCart) =>
-    //                 prevDataCart.filter((product) => !selectedProductIds.includes(product.id)),
-    //             );
-    //             setCheckProduct((prevDataCart) =>
-    //                 prevDataCart.filter((product) => !selectedProductIds.includes(product.id)),
-    //             );
-    //         } else {
-    //             navigate(routes.login);
-    //         }
-    //     } catch (err) {
-    //         console.error('Payment error:', err);
-    //     }
-    // };
 
     return (
         <div className="max-w-[1100px] mx-auto py-8 mt-[64px]">
@@ -133,7 +95,6 @@ function Cart() {
                                 <ProductCart
                                     product={item}
                                     onUpdateQuantity={updateQuantity}
-                                    setChecked={setDataCart}
                                     setChooseRemove={setChooseRemove}
                                 />
                             </BackgroundCart>
@@ -146,10 +107,12 @@ function Cart() {
                     <input type="checkbox" className="w-4 h-4 cursor-pointer" />
                     <span className="text-[16px] font-medium">
                         Chọn tất cả (
-                        {dataCart.reduce(
-                            (count, item) => (item.isSelectedForOrder === true ? count + item.product.quantity : count),
-                            0,
-                        )}{' '}
+                        {dataCart &&
+                            dataCart.reduce(
+                                (count, item) =>
+                                    item.isSelectedForOrder === true ? count + item.product.quantity : count,
+                                0,
+                            )}{' '}
                         sản phẩm)
                     </span>
                     <button className="text-red-500 text-[16px] font-medium hover:underline">Xóa tất cả</button>
@@ -158,21 +121,23 @@ function Cart() {
                     <div className="flex items-center justify-center mr-4">
                         Tổng thanh toán (
                         <span className="mx-1">
-                            {dataCart.reduce(
-                                (count, item) =>
-                                    item.isSelectedForOrder === true ? count + item.product.quantity : count,
-                                0,
-                            )}
+                            {dataCart &&
+                                dataCart.reduce(
+                                    (count, item) =>
+                                        item.isSelectedForOrder === true ? count + item.product.quantity : count,
+                                    0,
+                                )}
                         </span>{' '}
                         sản phẩm)
                         <span className="text-red-500 ml-2">
-                            {dataCart
-                                .reduce(
-                                    (count, item) =>
-                                        item.isSelectedForOrder === true ? count + (item?.total || 0) : count,
-                                    0,
-                                )
-                                .toLocaleString()}
+                            {dataCart &&
+                                dataCart
+                                    .reduce(
+                                        (count, item) =>
+                                            item.isSelectedForOrder === true ? count + (item?.total || 0) : count,
+                                        0,
+                                    )
+                                    .toLocaleString()}
                             ₫
                         </span>
                     </div>
@@ -182,12 +147,6 @@ function Cart() {
                     >
                         Mua hàng
                     </button>
-                    {/* <button
-                        onClick={handlePay}
-                        className="px-8 py-2 bg-yellow-400 text-white text-sm font-bold rounded hover:bg-yellow-500"
-                    >
-                        Thanh toán
-                    </button> */}
                 </div>
             </BackgroundCart>
 
@@ -197,7 +156,7 @@ function Cart() {
                 <PopUpRemove
                     id={chooseRemove.id}
                     title={'Delete Product In Cart?'}
-                    desc={`Are you sure you want to delete this product ${chooseRemove?.products.name}?`}
+                    desc={`Are you sure you want to delete this product ${chooseRemove?.product?.name}?`}
                     onRemove={() => handleRemoveCart(userData?.id, chooseRemove.id)}
                     onClose={() => setChooseRemove({})}
                     isRemove={Object.keys(chooseRemove).length > 0}

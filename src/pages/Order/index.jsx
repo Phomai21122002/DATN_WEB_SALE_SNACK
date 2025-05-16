@@ -1,48 +1,35 @@
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
-import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import BackgroundCart from '~/components/BackgroundCart';
 import ProductOrder from '~/components/ProductOrder';
 import routes from '~/config/routes';
 import { useStorage } from '~/Contexts';
 import { OrderProduct } from '~/services/Order';
-import { GetPaymentVnpay } from '~/services/Payment';
 import { listPaymentByAcount } from './Constains';
 
 function Order() {
     const navigate = useNavigate();
     const { userData, dataCart } = useStorage();
-    const [params] = useSearchParams();
-    const [orderData, setOrderData] = useState(null);
     const [listPayMethod, setListPayMethod] = useState(listPaymentByAcount);
     const [isActivePay, setIsActivePay] = useState(false);
 
     const productsOrder = useMemo(() => {
-        return dataCart.filter((cart) => cart.isSelectedForOrder).map((cart) => cart.product);
+        return dataCart && dataCart.filter((cart) => cart.isSelectedForOrder).map((cart) => cart.product);
     }, [dataCart]);
     const selectedProductIds = useMemo(() => {
-        return dataCart.filter((cart) => cart.isSelectedForOrder).map((cart) => cart.id);
+        return dataCart && dataCart.filter((cart) => cart.isSelectedForOrder).map((cart) => cart.id);
     }, [dataCart]);
     const totalProductCost = useMemo(() => {
-        return dataCart.filter((cart) => cart.isSelectedForOrder).reduce((sum, item) => sum + (item.total || 0), 0);
+        return (
+            dataCart &&
+            dataCart.filter((cart) => cart.isSelectedForOrder).reduce((sum, item) => sum + (item.total || 0), 0)
+        );
     }, [dataCart]);
 
     const shippingFee = 30000;
     const finalTotal = totalProductCost + shippingFee;
-
-    useEffect(() => {
-        const fetchPaymentResult = async () => {
-            try {
-                const res = await GetPaymentVnpay(params);
-                setOrderData(res);
-            } catch (err) {
-                console.error('Failed to fetch payment result', err);
-            }
-        };
-
-        fetchPaymentResult();
-    }, [params]);
 
     const handlePay = async () => {
         const maymentMethod = listPayMethod.find((method) => method.isActive);
@@ -51,6 +38,7 @@ function Order() {
                 cartsId: selectedProductIds,
                 paymentMethod: maymentMethod.method,
             });
+            console.log(res);
             if (res.paymentUrl) {
                 window.location.href = res.paymentUrl;
             } else {
@@ -68,7 +56,7 @@ function Order() {
             ),
         );
     };
-    console.log(listPayMethod.length);
+
     return (
         <div className="max-w-[1100px] mx-auto py-8 mt-[64px]">
             <BackgroundCart className="flex-col justify-end">
@@ -86,19 +74,6 @@ function Order() {
                     <div className="text-[16px] text-blue-400 font-sm cursor-pointer">Thay đổi</div>
                 </div>
             </BackgroundCart>
-            {orderData && (
-                <div className="max-w-[1100px] mx-auto py-8">
-                    <BackgroundCart className="flex-col justify-end">
-                        <span className="text-green-500 text-[20px] font-medium">Kết quả thanh toán</span>
-                        <div className="flex items-center text-black-400 space-x-4">
-                            <div className="text-[16px] font-medium">
-                                {orderData.success ? 'Thanh toán thành công!' : 'Thanh toán thất bại'}
-                            </div>
-                            <div className="text-[16px] font-medium">{orderData.orderDescription}</div>
-                        </div>
-                    </BackgroundCart>
-                </div>
-            )}
 
             <BackgroundCart className={'items-center'}>
                 <div className="flex-grow text-sm text-gray-900 font-medium">Sản phẩm</div>
@@ -150,18 +125,18 @@ function Order() {
                 </div>
                 <div className="text-[16px] font-medium w-full max-w-md py-8">
                     <div className="flex justify-between items-center mb-4">
-                        <span className="text-gray-700">Tổng tiền hàng ({productsOrder.length} sản phẩm):</span>
+                        <span className="text-gray-700">Tổng tiền hàng ({productsOrder?.length} sản phẩm):</span>
                         <span className="text-black-500 font-semibold">
-                            {totalProductCost.toLocaleString('vi-VN')}đ
+                            {totalProductCost?.toLocaleString('vi-VN')}đ
                         </span>
                     </div>
                     <div className="flex justify-between items-center mb-4">
                         <span className="text-gray-700">Phí vận chuyển:</span>
-                        <span className="text-black-500 font-semibold"> {shippingFee.toLocaleString('vi-VN')}đ</span>
+                        <span className="text-black-500 font-semibold"> {shippingFee?.toLocaleString('vi-VN')}đ</span>
                     </div>
                     <div className="flex justify-between items-center mb-4">
                         <span className="text-gray-700">Tổng thành tiền:</span>
-                        <span className="text-red-500 font-semibold">{finalTotal.toLocaleString('vi-VN')}đ</span>
+                        <span className="text-red-500 font-semibold">{finalTotal?.toLocaleString('vi-VN')}đ</span>
                     </div>
                     <button
                         onClick={handlePay}

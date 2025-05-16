@@ -10,6 +10,7 @@ import {
     Category,
     ChangePassAdmin,
     ChangePassUser,
+    CheckOutPayment,
     CreateCategory,
     CreateProduct,
     Home,
@@ -64,6 +65,7 @@ const userRoutes = [
     { path: config.routes.userListOrder, component: BoardOrderUser },
     { path: config.routes.userProfile, component: ProfileUser },
     { path: config.routes.userChangePass, component: ChangePassUser },
+    { path: config.routes.userCheckOutPayment, component: CheckOutPayment },
 ];
 
 export { publicRoutes, adminRoutes, userRoutes };

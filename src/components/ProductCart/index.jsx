@@ -7,28 +7,17 @@ import QuantitySelector from '~/components/QuantitySelector';
 import { useStorage } from '~/Contexts';
 import { UpdateCartsOrder } from '~/services/Cart';
 
-function ProductCart({ product, onUpdateQuantity, setChecked, setChooseRemove }) {
-    const { userData, dataCart } = useStorage();
+function ProductCart({ product, onUpdateQuantity, setChooseRemove }) {
+    const { userData, dataCart, refetchListCart } = useStorage();
     const handleDelProduct = async (idCart) => {
         const cart = dataCart.find((cart) => cart.id === idCart);
+        console.log(cart);
         setChooseRemove(cart);
     };
 
     const handleCheckedProduct = async (idProduct) => {
         const resUpdateCart = await UpdateCartsOrder({ userId: userData.id, cartsId: [idProduct] });
-        if (resUpdateCart) {
-            setChecked((prev) =>
-                prev.map((product) => {
-                    if (product.id === idProduct) {
-                        return {
-                            ...product,
-                            isSelectedForOrder: !product?.isSelectedForOrder,
-                        };
-                    }
-                    return product;
-                }),
-            );
-        }
+        resUpdateCart && (await refetchListCart());
     };
     return (
         <>

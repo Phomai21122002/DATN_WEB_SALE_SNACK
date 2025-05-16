@@ -12,7 +12,7 @@ function GlobalStates({ children }) {
     const { data: userData, refetchProfile } = useGetProfile({
         enabled: !!token && !!isLoggedIn,
     });
-    const { data: dataCart } = useGetCarts(userData?.id);
+    const { data: dataCart, refetchListCart } = useGetCarts(userData?.id);
 
     useEffect(() => {
         if (token) {
@@ -29,6 +29,7 @@ function GlobalStates({ children }) {
         checkedCart,
         setCheckedCart,
         refetchProfile,
+        refetchListCart,
     };
 
     return <StorageContext.Provider value={states}>{children}</StorageContext.Provider>;
