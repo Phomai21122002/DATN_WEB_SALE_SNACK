@@ -1,11 +1,11 @@
 import request from '../request';
 
-export const CreatePaymentVnpay = async (data) => {
-    const res = await request.post(`/payment/create`, data);
+export const GetPaymentVnpay = async (params) => {
+    const res = await request.get(`/payment?${params.toString()}`);
     return res.data;
 };
 
-export const GetPaymentVnpay = async (params) => {
-    const res = await request.get(`/payment?${params.toString()}`);
+export const GetPaymentMomo = async (params) => {
+    const res = await request.get(`/payment/momo?${params.toString()}`);
     return res.data;
 };

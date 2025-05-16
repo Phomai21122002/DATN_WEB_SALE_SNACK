@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import BackgroundCart from '~/components/BackgroundCart';
-import { GetPaymentVnpay } from '~/services/Payment';
+import { GetPaymentMomo, GetPaymentVnpay } from '~/services/Payment';
 
 function CheckOutPayment() {
     const [params] = useSearchParams();
@@ -11,8 +11,14 @@ function CheckOutPayment() {
     useEffect(() => {
         const fetchPaymentResult = async () => {
             try {
-                const res = await GetPaymentVnpay(params);
-                setOrderData(res);
+                const partnerCode = params.get('partnerCode') || params.get('vnp_BankCode');
+                if (partnerCode === 'VNPAY') {
+                    const res = await GetPaymentVnpay(params);
+                    setOrderData(res);
+                } else if (partnerCode === 'MOMO') {
+                    const res = await GetPaymentMomo(params);
+                    setOrderData(res);
+                }
             } catch (err) {
                 console.error('Failed to fetch payment result', err);
             }
@@ -20,7 +26,7 @@ function CheckOutPayment() {
 
         fetchPaymentResult();
     }, [params]);
-
+    console.log(orderData);
     return (
         <div className="max-w-[1100px] mx-auto py-8 mt-[64px]">
             {orderData && (
