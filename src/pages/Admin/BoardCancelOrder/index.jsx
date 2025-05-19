@@ -33,7 +33,7 @@ function BoardCancelOrder() {
         setOrderList(data?.datas || []);
     }, [data]);
 
-    const editOrder = (data) => {
+    const handleShow = (data) => {
         const url = routes.adminUpdateOrder.replace(':id', data.id);
         navigate(`${url}?userId=${data?.user.id}`);
     };
@@ -55,13 +55,7 @@ function BoardCancelOrder() {
                         Array.from({ length: 10 }).map((_, idx) => <SkeletonRow key={idx} col={listTitle.length} />)
                     ) : orderList.length > 0 ? (
                         orderList.map((order, index) => (
-                            <BodyTabel
-                                key={order.id}
-                                index={index}
-                                item={order}
-                                onDel={setChooseRemove}
-                                onEdit={editOrder}
-                            />
+                            <BodyTabel key={order.id} index={index} status={true} item={order} onShow={handleShow} />
                         ))
                     ) : (
                         <tr>

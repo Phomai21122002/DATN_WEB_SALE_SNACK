@@ -43,6 +43,19 @@ export const UpdateUserById = async (id, data) => {
     }
 };
 
+export const UpdateUserOfAdmin = async (id, data) => {
+    try {
+        const res = await request.put(`/user/user`, data, {
+            params: {
+                userId: id,
+            },
+        });
+        return res;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const DeleteUserById = async (id) => {
     try {
         const res = await request.delete(`/user`, {

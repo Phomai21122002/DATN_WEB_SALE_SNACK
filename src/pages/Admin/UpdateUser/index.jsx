@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { EditIcon } from '~/components/Icons';
 import routes from '~/config/routes';
-import { GetUserById, UpdateUserById } from '~/services/User';
+import { GetUserById, UpdateUserOfAdmin } from '~/services/User';
 import { uploadMediaToCloudinary } from '../CreateProduct/Constant';
 import noImage from '~/assets/images/No-image.png';
 import { GetRoles } from '~/services/Role';
@@ -35,7 +35,7 @@ function UpdateUser() {
                     lastName: res.lastName,
                     email: res.email,
                     phone: res.phone,
-                    role: res.role?.name || '',
+                    role: res.role?.id || '',
                     joinDate: res.createdAt?.split('T')[0] || '',
                     url: res.url,
                 });
@@ -50,12 +50,12 @@ function UpdateUser() {
         const { id, joinDate, role, ...userToDB } = user;
         const userReq = {
             ...userToDB,
-            roles: [role],
+            idRole: Number(role),
             url: user.url,
         };
         console.log(userReq);
         try {
-            await UpdateUserById(id, userReq);
+            await UpdateUserOfAdmin(id, userReq);
             navigate(routes.adminListUser);
         } catch (err) {
             console.error('Error saving user:', err);
@@ -173,7 +173,7 @@ function UpdateUser() {
                     >
                         <option value="">Chọn vai trò</option>
                         {roles.map((role) => (
-                            <option key={role.id} value={role.name}>
+                            <option key={role.id} value={role.id}>
                                 {role.name}
                             </option>
                         ))}

@@ -1,4 +1,4 @@
-export const listTitle = ['STT', 'Name', 'Email', 'Số điện thoại', 'Phân quyền', 'Điều chỉnh'];
+export const listTitle = ['STT', 'Ảnh đại diện', 'Name', 'Email', 'Số điện thoại', 'Phân quyền', 'Điều chỉnh'];
 
 export const sorts = [
     { id: 1, name: 'Tên người dùng' },

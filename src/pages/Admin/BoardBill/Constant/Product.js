@@ -28,4 +28,4 @@ export const orderList = [
     },
 ];
 
-export const listTitle = ['STT', 'Mã đặt hàng', 'Số lượng', 'Tổng tiền', 'Trạng thái'];
+export const listTitle = ['STT', 'Mã đặt hàng', 'Số sản phẩm', 'Số lượng', 'Thanh toán', 'Tổng tiền', 'Trạng thái'];

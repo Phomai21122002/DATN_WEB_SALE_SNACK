@@ -8,6 +8,7 @@ import { listTitle, sorts } from './Constant';
 import useGetUsers from '~/hooks/useGetUsers';
 import Pagination from '~/components/Pagination';
 import SkeletonRow from '~/components/SkeletonRow';
+import noImage from '~/assets/images/No-image.png';
 
 function BoardUser() {
     const navigate = useNavigate();
@@ -105,6 +106,15 @@ function BoardUser() {
                             users.map((User, index) => (
                                 <tr key={User.id} className="border-b hover:bg-gray-50">
                                     <td className="py-3 px-6">{index + 1}</td>
+                                    <td className="py-3 px-6">
+                                        {User.url && (
+                                            <img
+                                                src={User.url || noImage}
+                                                alt={`user-${User?.firstName + ' ' + User?.lastNam}`}
+                                                className="w-16 h-16 object-cover rounded-md"
+                                            />
+                                        )}
+                                    </td>
                                     <td className="py-3 px-6">{User.firstName + ' ' + User.lastName}</td>
                                     <td className="py-3 px-6">{User.email}</td>
                                     <td className="py-3 px-6">{User.phone}</td>

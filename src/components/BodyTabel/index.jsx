@@ -2,8 +2,10 @@ import React from 'react';
 import { useStorage } from '~/Contexts';
 import { getOrderStatusStyle, getOrderStatusText } from './Constant';
 
-const BodyTabel = ({ index, item = {}, onEdit, onDel, status = false }) => {
+const BodyTabel = ({ index, item = {}, onEdit, onDel, status = false, onShow }) => {
     const { userData } = useStorage();
+    console.log(status);
+    console.log(item);
     return (
         <tr key={item.id} className="border-b hover:bg-gray-50 cursor-pointer">
             <td className="py-3 px-6">{index + 1}</td>
@@ -15,14 +17,22 @@ const BodyTabel = ({ index, item = {}, onEdit, onDel, status = false }) => {
                     {getOrderStatusText(item.status)}
                 </span>
             </td>
-            {userData && userData.role?.name === 'Admin' && !status && (
+            {userData && userData.role?.name === 'Admin' && (
                 <td className="py-3 px-6 min-w-[120px]">
-                    <button className="text-blue-600 hover:underline mr-2" onClick={() => onEdit(item)}>
-                        Xác nhận
-                    </button>
-                    <button className="text-red-600 hover:underline" onClick={() => onDel(item)}>
-                        Xóa
-                    </button>
+                    {status ? (
+                        <button className="text-blue-600 hover:underline" onClick={() => onShow(item)}>
+                            Xem chi tiết
+                        </button>
+                    ) : (
+                        <>
+                            <button className="text-blue-600 hover:underline mr-2" onClick={() => onEdit(item)}>
+                                Xác nhận
+                            </button>
+                            <button className="text-red-600 hover:underline" onClick={() => onDel(item)}>
+                                Xóa
+                            </button>
+                        </>
+                    )}
                 </td>
             )}
         </tr>

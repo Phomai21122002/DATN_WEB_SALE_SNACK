@@ -1,42 +1,35 @@
 import HeaderTable from '~/components/HeaderTabel';
 import { listTitle } from './Constant';
-import BodyTabel from '~/components/BodyTabel';
-import { GetOrderProductAdmin, RemoveSoftOrder } from '~/services/Order';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
 import { useStorage } from '~/Contexts';
 import Pagination from '~/components/Pagination';
-import useGetProductsInOrderInAdmin from '~/hooks/useGetProductsInOrderInAdmin';
 import SkeletonRow from '~/components/SkeletonRow';
+import useGetBillAdmins from '~/hooks/useGetBillAdmins';
+import BodyTabelBill from '~/components/BodyTabelBill';
 
 function BoardBill() {
     const { userData } = useStorage();
     const navigate = useNavigate();
     const [page, setPage] = useState(1);
     const [orderList, setOrderList] = useState([]);
-    const [status, setStatus] = useState(false);
-    const params = useMemo(() => {
-        if (!userData?.id) return null;
-        return { userId: userData.id, Status: 3, PageNumber: page };
-    }, [userData, page]);
-    const { data, isLoading } = useGetProductsInOrderInAdmin(params);
+    const { data, isLoading } = useGetBillAdmins({
+        userId: userData?.id,
+        PageNumber: page,
+    });
+
+    useEffect(() => {
+        setOrderList(data?.datas ?? []);
+    }, [data]);
 
     const totalPages = useMemo(() => {
         const totalCount = data?.totalCount || 0;
         return totalCount ? Math.ceil(totalCount / data?.pageSize) : 0;
     }, [data]);
 
-    useEffect(() => {
-        setOrderList(data?.datas || []);
-    }, [data]);
-
-    const editOrder = (id) => {
-        navigate(routes.adminUpdateOrder.replace(':id', id));
-    };
-    const deleteOrder = async (orderId) => {
-        await RemoveSoftOrder({ userId: userData.id, orderId });
-        setStatus(!status);
+    const showBill = (bill) => {
+        navigate(routes.adminUpdateOrder.replace(':id', bill.id));
     };
     return (
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
@@ -47,14 +40,7 @@ function BoardBill() {
                         Array.from({ length: 10 }).map((_, idx) => <SkeletonRow key={idx} col={listTitle.length} />)
                     ) : orderList.length > 0 ? (
                         orderList.map((order, index) => (
-                            <BodyTabel
-                                key={order.id}
-                                index={index}
-                                item={order}
-                                status
-                                onDel={deleteOrder}
-                                onEdit={editOrder}
-                            />
+                            <BodyTabelBill key={order.id} index={index} item={order} onShow={showBill} />
                         ))
                     ) : (
                         <tr>

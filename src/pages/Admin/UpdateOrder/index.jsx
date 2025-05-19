@@ -5,6 +5,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { GetOrderById, UpdateOrderProduct } from '~/services/Order';
 import routes from '~/config/routes';
 import { getOrderStatusStyle, getOrderStatusText } from '~/components/BodyTabel/Constant';
+import { CreateBillOrder } from '~/services/Bill';
 
 function UpdateOrder() {
     const { id } = useParams();
@@ -15,13 +16,12 @@ function UpdateOrder() {
 
     useEffect(() => {
         const getData = async () => {
-            console.log(userId);
             const res = await GetOrderById(id, userId);
-            console.log(res);
             setOrder(res);
         };
         getData();
     }, [id, userId]);
+    console.log(order);
 
     const handleBack = () => {
         switch (order?.status) {
@@ -44,10 +44,10 @@ function UpdateOrder() {
         switch (order?.status) {
             case 1:
                 await UpdateOrderProduct(id, userId);
-                navigate(routes.adminListConfirmOrder);
+                navigate(routes.admin);
                 break;
             case 2:
-                await UpdateOrderProduct(id, userId);
+                await CreateBillOrder(id, userId);
                 navigate(routes.adminListConfirmOrder);
                 break;
             default:
@@ -55,6 +55,7 @@ function UpdateOrder() {
                 break;
         }
     };
+    console.log();
     return (
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
             <div className="max-w-[1100px] mx-auto py-8">
@@ -69,9 +70,9 @@ function UpdateOrder() {
                 <div className="flex flex-col items-center bg-white">
                     <BackgroundCart className="w-full justify-between items-center">
                         <div className="flex items-center space-x-4">
-                            <span className="text-[16px] font-medium">{order.name}</span>
-                            <span className={`px-3 py-1 rounded-full text-xs ${getOrderStatusStyle(order.status)}`}>
-                                {getOrderStatusText(order.status)}
+                            <span className="text-[16px] font-medium">{order?.name}</span>
+                            <span className={`px-3 py-1 rounded-full text-xs ${getOrderStatusStyle(order?.status)}`}>
+                                {getOrderStatusText(order?.status)}
                             </span>
                         </div>
                     </BackgroundCart>
@@ -79,48 +80,59 @@ function UpdateOrder() {
                         <ProductOrder products={order?.products} date={order?.createOrder} />
                     </BackgroundCart>
                 </div>
-                <BackgroundCart className="flex gap-16 w-full items-end mt-8 mb-12">
-                    <div className="text-[16px] font-medium w-full max-w-md">
-                        <div className="flex justify-between items-center mb-4">
+                <BackgroundCart className="flex flex-col md:flex-row gap-8 md:gap-16 w-full items-start mt-8 mb-12">
+                    <div className="text-[16px] font-medium w-full md:max-w-md space-y-4">
+                        <div className="flex flex-col">
                             <span className="text-gray-700">Tên người mua:</span>
-                            <span className="text-black-500 font-semibold">
+                            <span className="text-black font-semibold">
                                 {order?.user?.firstName + ' ' + order?.user?.lastName}
                             </span>
                         </div>
-                        <div className="flex justify-between items-center mb-4">
+                        <div className="flex flex-col">
                             <span className="text-gray-700">Địa chỉ:</span>
-                            <span className="text-black-500 font-semibold">
-                                {order?.user?.addresses?.find((address) => address?.isDefault && address)}
+                            <span className="text-black font-semibold leading-snug">
+                                {order?.user?.addresses?.find((a) => a?.isDefault).name}
                             </span>
                         </div>
-                        <div className="flex justify-between items-center mb-4">
+                        <div className="flex flex-col">
                             <span className="text-gray-700">Số điện thoại:</span>
                             <span className="text-red-500 font-semibold">{order?.user?.phone}</span>
                         </div>
-                        <div className="flex justify-between items-center mb-4">
-                            <span className="text-gray-700">Thanh toán:</span>
-                            <span className="text-green-500 font-semibold">Đã thanh toán</span>
-                        </div>
                     </div>
-                    <div className="text-[16px] font-medium w-full max-w-md">
-                        <div className="flex justify-between items-center mb-4">
-                            <span className="text-gray-700">Tổng tiền hàng ({order?.countProduct || 0} sản phẩm):</span>
-                            <span className="text-black-500 font-semibold">{order?.total?.toLocaleString()}</span>
+
+                    <div className="text-[16px] font-medium w-full md:max-w-md space-y-4">
+                        <div className="flex justify-between items-center">
+                            <span className="text-gray-700">Tổng tiền hàng ({order?.countProduct ?? 0} sản phẩm):</span>
+                            <span className="text-black font-semibold">
+                                {order?.products?.reduce((sum, p) => sum + p.price * p.quantity, 0)?.toLocaleString() ??
+                                    0}
+                                đ
+                            </span>
                         </div>
-                        <div className="flex justify-between items-center mb-4">
+                        <div className="flex justify-between items-center">
                             <span className="text-gray-700">Phí vận chuyển (khu vực nội thành):</span>
-                            <span className="text-black-500 font-semibold">30.000đ</span>
+                            <span className="text-black font-semibold">30,000đ</span>
                         </div>
-                        <div className="flex justify-between items-center mb-4">
+                        <div className="flex justify-between items-center">
                             <span className="text-gray-700">Tổng thành tiền:</span>
                             <span className="text-red-500 font-semibold">
-                                {(order?.total + 30000).toLocaleString()}đ
+                                {(order?.total + 30000)?.toLocaleString() ?? 0}đ
+                            </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <span className="text-gray-700">Thanh toán:</span>
+                            <span className="font-semibold">{order?.paymentMethod || 'COD'}</span>
+                        </div>
+                        <div className="flex justify-end items-center">
+                            <span className={`font-semibold ${order?.isPayment ? 'text-green-500' : 'text-red-500'}`}>
+                                {order?.isPayment ? 'Đã thanh toán' : 'Chưa thanh toán'}
                             </span>
                         </div>
                     </div>
                 </BackgroundCart>
+
                 <div className="flex justify-between gap-4">
-                    {order?.status === 3 || (
+                    {order?.status === 3 || order?.status === 4 || (
                         <button
                             type="submit"
                             onClick={handleSubmit}

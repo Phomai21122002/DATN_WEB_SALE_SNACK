@@ -39,4 +39,4 @@ export const listTitle = [
     'Điều chỉnh',
 ];
 
-export const listTitleUser = ['STT', 'Mã đặt hàng', 'Số lượng', 'Tổng tiền', 'Trạng thái'];
+export const listTitleUser = ['STT', 'Mã đặt hàng', 'Số sản phẩm', 'Số lượng', 'Thanh toán', 'Tổng tiền', 'Trạng thái'];

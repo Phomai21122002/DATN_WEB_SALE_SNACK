@@ -11,12 +11,12 @@ function CheckOutPayment() {
     useEffect(() => {
         const fetchPaymentResult = async () => {
             try {
-                const partnerCode = params.get('partnerCode') || params.get('vnp_BankCode');
-                if (partnerCode === 'VNPAY') {
-                    const res = await GetPaymentVnpay(params);
-                    setOrderData(res);
-                } else if (partnerCode === 'MOMO') {
+                const partnerCode = params.get('partnerCode');
+                if (partnerCode === 'MOMO') {
                     const res = await GetPaymentMomo(params);
+                    setOrderData(res);
+                } else {
+                    const res = await GetPaymentVnpay(params);
                     setOrderData(res);
                 }
             } catch (err) {

@@ -14,7 +14,6 @@ const useGetOrdersUser = (queryInput) => {
     } = useQuery({
         queryKey: [EQueryKeys.GET_LIST_ORDER_USER, queryInput],
         queryFn: async () => {
-            console.log(queryInput.Status);
             const response = await GetOrdersProduct(queryInput);
             return response;
         },

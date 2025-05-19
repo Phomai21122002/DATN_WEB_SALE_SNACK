@@ -11,4 +11,6 @@ export const EQueryKeys = {
     GET_LIST_USER: 'GetUsers',
     GET_LIST_PRODUCT_BY_IDCATEGORY: 'GetProductsByIdCategory',
     GET_LIST_ADDRESS_USER: 'GetAddressesByUserId',
+    GET_LIST_BILL: 'GetBills',
+    GET_LIST_BILL_ADMIN: 'GetBillsAdmin',
 };
