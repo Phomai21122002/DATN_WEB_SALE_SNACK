@@ -44,3 +44,8 @@ export const ConfirmEmail = async (email, code) => {
     });
     return res.data;
 };
+
+export const LoginByGoogle = async () => {
+    const res = await request.post('/Auth/google-login');
+    return res.data;
+};
