@@ -6,18 +6,7 @@ export const loginLogoList = [
     {
         name: 'Google',
         handle: () => {
-            const popup = window.open(
-                'https://localhost:7239/api/auth/google-login',
-                'googleLogin',
-                'width=500,height=600',
-            );
-
-            window.addEventListener('message', (event) => {
-                if (event.data.token) {
-                    console.log('JWT token from Google:', event.data.token);
-                    localStorage.setItem('token', event.data.token);
-                }
-            });
+            window.location.href = 'https://localhost:7239/api/auth/google-login?returnUrl=http://localhost:3000';
         },
         logo: <GoogleColor width={LOGO_SIZE} height={LOGO_SIZE} />,
     },
