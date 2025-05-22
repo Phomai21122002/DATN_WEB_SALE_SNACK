@@ -41,7 +41,7 @@ const Login = memo(() => {
             Cookies.set('refreshToken', refreshToken, { expires: 7 });
             setIsLoggedIn(true);
             await refetchProfile();
-            toast.success('Login with Google successfully!');
+            toast.success('Login successfully!');
             navigate(routes.home);
         };
         window.addEventListener('message', handleMessage);

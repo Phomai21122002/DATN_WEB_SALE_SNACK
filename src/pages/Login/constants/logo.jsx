@@ -17,6 +17,13 @@ export const loginLogoList = [
     },
     {
         name: 'Facebook',
+        handle: () => {
+            window.open(
+                'https://localhost:7239/api/auth/facebook-login?returnUrl=http://localhost:3000',
+                '_blank',
+                'width=500,height=600',
+            );
+        },
         logo: <FaceBookColor width={LOGO_SIZE} height={LOGO_SIZE} />,
     },
     {
