@@ -6,7 +6,12 @@ export const loginLogoList = [
     {
         name: 'Google',
         handle: () => {
-            window.location.href = 'https://localhost:7239/api/auth/google-login?returnUrl=http://localhost:3000';
+            // window.location.href = 'https://localhost:7239/api/auth/google-login?returnUrl=http://localhost:3000';
+            window.open(
+                'https://localhost:7239/api/auth/google-login?returnUrl=http://localhost:3000',
+                '_blank',
+                'width=500,height=600',
+            );
         },
         logo: <GoogleColor width={LOGO_SIZE} height={LOGO_SIZE} />,
     },

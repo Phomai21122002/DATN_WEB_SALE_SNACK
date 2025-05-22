@@ -15,7 +15,7 @@ import PopUpCode from '~/components/PopUpCode';
 
 const Login = memo(() => {
     const navigate = useNavigate();
-    const { setUserData, setIsLoggedIn } = useStorage();
+    const { setIsLoggedIn, refetchProfile } = useStorage();
     const [errorPass, setErrorPass] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [showCodePopup, setShowCodePopup] = useState(false);
@@ -32,6 +32,22 @@ const Login = memo(() => {
         localStorage.clear();
         Cookies.remove('authToken');
     }, [setIsLoggedIn]);
+
+    useEffect(() => {
+        const handleMessage = async (event) => {
+            const { token, refreshToken } = event.data || {};
+            if (!token || !refreshToken) return;
+            Cookies.set('authToken', token, { expires: 7 });
+            Cookies.set('refreshToken', refreshToken, { expires: 7 });
+            setIsLoggedIn(true);
+            await refetchProfile();
+            toast.success('Login with Google successfully!');
+            navigate(routes.home);
+        };
+        window.addEventListener('message', handleMessage);
+        return () => window.removeEventListener('message', handleMessage);
+        // eslint-disable-next-line
+    }, [navigate, setIsLoggedIn]);
 
     const onLogin = async (values) => {
         const { email, password } = values;
@@ -119,7 +135,7 @@ const Login = memo(() => {
                         <div className="mt-6 text-[14px] font-bold text-slate-400">Others:</div>
                         {loginLogoList.map((item, index) => (
                             <div
-                                onClick={item?.handle}
+                                onClick={item.handle || undefined}
                                 key={index}
                                 className="h-10 w-full flex justify-center items-center gap-2 border-[1px] border-[#8590A2] border-solid cursor-pointer hover:bg-slate-50 mb-4 rounded-sm"
                             >
