@@ -1,18 +1,20 @@
 import HeaderTable from '~/components/HeaderTabel';
 import { listTitle, removeVietnameseTones, sortDate } from './Constant';
 import SearchSortListOfAdmin from '~/components/SearchSortListOfAdmin';
-import { GetCategories } from '~/services/Category';
+import { GetCategories, GetSoftDeleteCategories } from '~/services/Category';
 import { useEffect, useState } from 'react';
 import noImage from '~/assets/images/No-image.png';
 import routes from '~/config/routes';
 import { useNavigate } from 'react-router-dom';
 import SkeletonRow from '~/components/SkeletonRow';
+import PopUpRemove from '~/components/PopUpRemove';
 
 function Category() {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [categories, setCategories] = useState([]);
     const [allcategories, setAllCategories] = useState([]);
+    const [chooseRemove, setChooseRemove] = useState({});
 
     useEffect(() => {
         const getAllCategory = async () => {
@@ -31,17 +33,17 @@ function Category() {
         getAllCategory();
     }, []);
 
-    const editOrder = (id) => {
+    const editCategory = (id) => {
         navigate(routes.adminUpdateCategory.replace(':id', id));
     };
-    const deleteOrder = async (id) => {
-        console.log('Deleting order', id);
-        // try {
-        //     await AdminDeleteProduct(id);
-        //     setCategories((prev) => prev.filter((category) => category.id !== id));
-        // } catch (error) {
-        //     console.error('Error fetching category data: ', error);
-        // }
+    const deleteCategory = async (category) => {
+        try {
+            await GetSoftDeleteCategories(category?.id);
+            setCategories((prev) => prev.filter((c) => c.id !== category.id));
+            setChooseRemove({});
+        } catch (error) {
+            console.error('Error fetching category data: ', error);
+        }
     };
 
     const handleSortChange = (id) => {
@@ -68,6 +70,7 @@ function Category() {
 
         setCategories(filtered);
     };
+    console.log(chooseRemove);
     return (
         <>
             <SearchSortListOfAdmin
@@ -106,13 +109,13 @@ function Category() {
                                         <td className="py-3 px-6">
                                             <button
                                                 className="text-blue-600 hover:underline mr-2"
-                                                onClick={() => editOrder(category.id)}
+                                                onClick={() => editCategory(category.id)}
                                             >
                                                 Chỉnh sửa
                                             </button>
                                             <button
                                                 className="text-red-600 hover:underline"
-                                                onClick={() => deleteOrder(category.id)}
+                                                onClick={() => setChooseRemove(category)}
                                             >
                                                 Xóa
                                             </button>
@@ -130,6 +133,16 @@ function Category() {
                     </tbody>
                 </table>
             </div>
+            {chooseRemove && (
+                <PopUpRemove
+                    id={chooseRemove.id}
+                    title={'Xóa loại sản phẩm'}
+                    desc={`Bạn có chắc chắn muốn xóa loại sản phẩm ${chooseRemove?.name} này không?`}
+                    onRemove={() => deleteCategory(chooseRemove)}
+                    onClose={() => setChooseRemove({})}
+                    isRemove={Object.keys(chooseRemove).length > 0}
+                />
+            )}
         </>
     );
 }

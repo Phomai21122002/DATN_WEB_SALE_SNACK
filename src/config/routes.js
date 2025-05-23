@@ -22,6 +22,7 @@ export const routesAdmin = Object.fromEntries(
 export const routesUser = Object.fromEntries(
     Object.entries({
         userListBill: 'bill',
+        userBillDetail: 'bill/:id',
         userListOrder: 'order',
         userProfile: 'profile',
         userChangePass: 'changepass',

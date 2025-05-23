@@ -1,6 +1,7 @@
 import config from '~/config';
 import { AdminLayout, AuthLayout } from '~/layouts';
 import {
+    BillDetail,
     BoardBillUser,
     BoardOrder,
     BoardOrderUser,
@@ -62,6 +63,7 @@ const adminRoutes = [
 
 const userRoutes = [
     { path: config.routes.userListBill, component: BoardBillUser },
+    { path: config.routes.userBillDetail, component: BillDetail },
     { path: config.routes.userListOrder, component: BoardOrderUser },
     { path: config.routes.userProfile, component: ProfileUser },
     { path: config.routes.userChangePass, component: ChangePassUser },

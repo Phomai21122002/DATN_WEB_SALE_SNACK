@@ -2,9 +2,9 @@ import React from 'react';
 
 const BodyTabelBill = ({ index, item = {}, onShow }) => {
     return (
-        <tr key={item.id} className="border-b hover:bg-gray-50 cursor-pointer">
+        <tr onClick={() => onShow(item)} key={item.id} className="border-b hover:bg-gray-50 cursor-pointer">
             <td className="py-3 px-6">{index + 1}</td>
-            <td className="py-3 px-6">{item?.nameOrder}</td>
+            <td className="py-3 px-6">{item?.name}</td>
             <td className="py-3 px-6 min-w-[120px]">{item?.quantityProduct}</td>
             <td className="py-3 px-6 min-w-[120px]">{item?.total}</td>
             <td className="py-3 px-6">{item?.paymentMethod}</td>

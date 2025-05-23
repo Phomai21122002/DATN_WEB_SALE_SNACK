@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 
 import BackgroundCart from '~/components/BackgroundCart';
+import routes from '~/config/routes';
 import { GetPaymentMomo, GetPaymentVnpay } from '~/services/Payment';
 
 function CheckOutPayment() {
@@ -12,13 +13,8 @@ function CheckOutPayment() {
         const fetchPaymentResult = async () => {
             try {
                 const partnerCode = params.get('partnerCode');
-                if (partnerCode === 'MOMO') {
-                    const res = await GetPaymentMomo(params);
-                    setOrderData(res);
-                } else {
-                    const res = await GetPaymentVnpay(params);
-                    setOrderData(res);
-                }
+                const res = partnerCode === 'MOMO' ? await GetPaymentMomo(params) : await GetPaymentVnpay(params);
+                setOrderData(res);
             } catch (err) {
                 console.error('Failed to fetch payment result', err);
             }
@@ -26,20 +22,44 @@ function CheckOutPayment() {
 
         fetchPaymentResult();
     }, [params]);
-    console.log(orderData);
+
+    const isSuccess = useMemo(() => orderData?.success, [orderData]);
+
     return (
         <div className="max-w-[1100px] mx-auto py-8 mt-[64px]">
             {orderData && (
-                <div className="max-w-[1100px] mx-auto py-8">
-                    <BackgroundCart className="flex-col justify-end">
-                        <span className="text-green-500 text-[20px] font-medium">Kết quả thanh toán</span>
-                        <div className="flex items-center text-black-400 space-x-4">
-                            <div className="text-[16px] font-medium">
-                                {orderData.success ? 'Thanh toán thành công!' : 'Thanh toán thất bại'}
-                            </div>
-                            <div className="text-[16px] font-medium">{orderData.orderDescription}</div>
+                <div className="p-6 rounded-2xl shadow-lg border bg-white">
+                    <h2 className={`text-2xl text-center font-semibold mb-4`}>
+                        Kết quả thông tin giao dịch thanh toán
+                    </h2>
+                    <h2 className={`text-2xl font-semibold mb-4 ${isSuccess ? 'text-green-600' : 'text-red-500'}`}>
+                        {isSuccess ? 'Thanh toán thành công!' : 'Thanh toán thất bại'}
+                    </h2>
+                    <div className="space-y-3">
+                        <div className="flex justify-between border-b pb-2">
+                            <span className="font-medium text-xl text-gray-600">Mã đơn hàng:</span>
+                            <span className={`text-xl ${isSuccess ? 'text-green-600' : 'text-red-500'}`}>
+                                {orderData?.orderId || 'Không có'}
+                            </span>
                         </div>
-                    </BackgroundCart>
+                        <div className="flex justify-between border-b pb-2">
+                            <span className="font-medium text-xl text-gray-600">Mô tả đơn hàng:</span>
+                            <span className={`text-xl ${isSuccess ? 'text-green-600' : 'text-red-500'}`}>
+                                {orderData?.orderDescription || 'Không có'}
+                            </span>
+                        </div>
+                        <div className="flex justify-between border-b pb-2">
+                            <span className="font-medium text-xl text-gray-600">Tổng tiền:</span>
+                            <span className={`text-xl ${isSuccess ? 'text-green-600' : 'text-red-500'}`}>
+                                {orderData?.amount ? `${orderData?.amount.toLocaleString()} đ` : 'Không xác định'}
+                            </span>
+                        </div>
+                    </div>
+                    <div className="mt-6">
+                        <Link to={routes.userListOrder} className="text-blue-500 text-2xl hover:underline">
+                            → Xem lịch sử đơn hàng đã đặt
+                        </Link>
+                    </div>
                 </div>
             )}
         </div>

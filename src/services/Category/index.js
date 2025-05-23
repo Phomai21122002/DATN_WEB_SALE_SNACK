@@ -31,9 +31,13 @@ export const AddCategory = async (data) => {
     }
 };
 
-export const GetSoftDeleteCategories = async () => {
+export const GetSoftDeleteCategories = async (id) => {
     try {
-        const res = await request.get('/Categories/admin/soft-delete-list');
+        const res = await request.delete('/category/soft-delete', {
+            params: {
+                categoryId: id,
+            },
+        });
         return res.data;
     } catch (error) {
         throw error;

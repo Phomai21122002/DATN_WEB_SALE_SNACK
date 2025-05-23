@@ -6,8 +6,11 @@ import useGetBills from '~/hooks/useGetBills';
 import Pagination from '~/components/Pagination';
 import SkeletonRow from '~/components/SkeletonRow';
 import BodyTabelBill from '../../../components/BodyTabelBill';
+import { useNavigate } from 'react-router-dom';
+import routes from '~/config/routes';
 
 function BoardBill() {
+    const navigate = useNavigate();
     const { userData } = useStorage();
     const [page, setPage] = useState(1);
     const [orderList, setOrderList] = useState([]);
@@ -27,7 +30,7 @@ function BoardBill() {
     }, [data]);
 
     const showBill = (bill) => {
-        console.log(bill);
+        navigate(routes.userBillDetail.replace(':id', bill.id));
     };
 
     return (

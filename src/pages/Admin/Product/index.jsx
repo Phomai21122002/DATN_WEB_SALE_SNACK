@@ -11,16 +11,18 @@ import { removeVietnameseTones } from '../Category/Constant';
 import useGetProducts from '~/hooks/useGetProducts';
 import Pagination from '~/components/Pagination';
 import SkeletonRow from '~/components/SkeletonRow';
+import PopUpRemove from '~/components/PopUpRemove';
 
 function Product() {
     const [page, setPage] = useState(1);
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [allProducts, setAllProducts] = useState([]);
+    const [chooseRemove, setChooseRemove] = useState({});
     const navigate = useNavigate();
 
     const filters = useMemo(() => ({ PageNumber: page }), [page]);
-    const { data, isLoading } = useGetProducts(filters);
+    const { data, isLoading, refetchListProduct } = useGetProducts(filters);
     const totalPages = useMemo(() => {
         const totalCount = data?.totalCount || 0;
         return totalCount ? Math.ceil(totalCount / data?.pageSize) : 0;
@@ -30,13 +32,14 @@ function Product() {
         setProducts(data?.datas || []);
     }, [data]);
 
-    const editOrder = (slug) => {
+    const editProduct = (slug) => {
         navigate(routes.adminUpdateProduct.replace(':slug', slug));
     };
-    const deleteOrder = async (id) => {
+    const deleteProduct = async (product) => {
         try {
-            await AdminDeleteProduct(id);
-            setProducts((prev) => prev.filter((product) => product.id !== id));
+            await AdminDeleteProduct(product?.id);
+            await refetchListProduct();
+            setChooseRemove({});
         } catch (error) {
             console.error('Error fetching product data: ', error);
         }
@@ -72,7 +75,7 @@ function Product() {
 
         setProducts(filtered);
     };
-
+    console.log(chooseRemove);
     return (
         <>
             <SearchSortListOfAdmin
@@ -126,13 +129,13 @@ function Product() {
                                     <td className="py-3 px-6">
                                         <button
                                             className="text-blue-600 hover:underline mr-2"
-                                            onClick={() => editOrder(product.slug)}
+                                            onClick={() => editProduct(product.slug)}
                                         >
                                             Chỉnh sửa
                                         </button>
                                         <button
                                             className="text-red-600 hover:underline"
-                                            onClick={() => deleteOrder(product.id)}
+                                            onClick={() => setChooseRemove(product)}
                                         >
                                             Xóa
                                         </button>
@@ -150,6 +153,16 @@ function Product() {
                 </table>
                 <Pagination className={'m-8 justify-end'} page={page} setPage={setPage} totalPages={totalPages} />
             </div>
+            {chooseRemove && (
+                <PopUpRemove
+                    id={chooseRemove.id}
+                    title={'Xóa sản phẩm'}
+                    desc={`Bạn có chắc chắn muốn xóa sản phẩm ${chooseRemove?.name} không?`}
+                    onRemove={() => deleteProduct(chooseRemove)}
+                    onClose={() => setChooseRemove({})}
+                    isRemove={Object.keys(chooseRemove).length > 0}
+                />
+            )}
         </>
     );
 }

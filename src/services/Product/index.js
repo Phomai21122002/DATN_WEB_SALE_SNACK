@@ -70,7 +70,11 @@ export const AdminUpdateProduct = async (productId, categoryId, data) => {
 };
 
 export const AdminDeleteProduct = async (id) => {
-    const res = await request.delete(`/Products/admin/${id}`);
+    const res = await request.delete(`/product/soft-delete`, {
+        params: {
+            productId: id,
+        },
+    });
     return res.data;
 };
 
