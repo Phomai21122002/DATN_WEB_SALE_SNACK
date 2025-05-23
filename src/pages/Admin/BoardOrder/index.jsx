@@ -1,15 +1,20 @@
-import HeaderTable from '~/components/HeaderTabel';
-import { listTitle } from './Constant';
-import BodyTabel from '~/components/BodyTabel';
 import { useEffect, useMemo, useState } from 'react';
-import { RemoveSoftOrder } from '~/services/Order';
 import { useNavigate } from 'react-router-dom';
+import { Chart } from 'react-google-charts';
+
+import HeaderTable from '~/components/HeaderTabel';
+import { dataChart, listTitle, options, stats } from './Constant';
+import BodyTabel from '~/components/BodyTabel';
+import { RemoveSoftOrder } from '~/services/Order';
 import routes from '~/config/routes';
 import { useStorage } from '~/Contexts';
 import useGetProductsInOrderInAdmin from '~/hooks/useGetProductsInOrderInAdmin';
 import Pagination from '~/components/Pagination';
 import SkeletonRow from '~/components/SkeletonRow';
 import PopUpRemove from '~/components/PopUpRemove';
+import StatCardProduct from '~/components/StatCardProduct';
+import StatCardRenevue from '~/components/StatCardRenevue';
+import StatCardDashBoard from '~/components/StatCardDashBoard';
 
 function BoardOrder() {
     const navigate = useNavigate();
@@ -48,42 +53,56 @@ function BoardOrder() {
     };
 
     return (
-        <div className="bg-white shadow-md rounded-lg overflow-hidden">
-            <table className="min-w-full text-left text-sm">
-                <HeaderTable listTitle={listTitle} />
-                <tbody>
-                    {isLoading ? (
-                        Array.from({ length: 10 }).map((_, idx) => <SkeletonRow key={idx} col={listTitle.length} />)
-                    ) : orderList.length > 0 ? (
-                        orderList.map((order, index) => (
-                            <BodyTabel
-                                key={order.id}
-                                index={index}
-                                item={order}
-                                onDel={setChooseRemove}
-                                onEdit={editOrder}
-                            />
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan={listTitle.length} className="text-center py-6 text-gray-500">
-                                Không có đơn hàng nào
-                            </td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
-            <Pagination className={'m-8 justify-end'} page={page} setPage={setPage} totalPages={totalPages} />
-            {chooseRemove && (
-                <PopUpRemove
-                    id={chooseRemove.id}
-                    title={'Xóa đơn đặt hàng'}
-                    desc={`Bạn có chắc chắn muốn xóa đơn hàng ${chooseRemove?.name} của khách hàng ${chooseRemove?.user?.firstName} không?`}
-                    onRemove={() => deleteOrder(chooseRemove)}
-                    onClose={() => setChooseRemove({})}
-                    isRemove={Object.keys(chooseRemove).length > 0}
-                />
-            )}
+        <div className="space-y-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {stats.map((stat, idx) => (
+                    <StatCardRenevue key={idx} {...stat} />
+                ))}
+            </div>
+            <div className="flex flex-col sm:flex-row gap-4 my-4 rounded-lg bg-gray-200 px-4 py-6">
+                <StatCardProduct value={547} label="Pending Orders" type="pending" />
+                <StatCardProduct value={605} label="Shipped Orders" type="shipped" />
+                <StatCardProduct value={249} label="Recieved Orders" type="recieved" />
+                <StatCardProduct value={249} label="Cancelled Orders" type="cancelled" />
+            </div>
+
+            <div className="bg-white shadow-md rounded-lg overflow-hidden">
+                <table className="min-w-full text-left text-sm">
+                    <HeaderTable listTitle={listTitle} />
+                    <tbody>
+                        {isLoading ? (
+                            Array.from({ length: 10 }).map((_, idx) => <SkeletonRow key={idx} col={listTitle.length} />)
+                        ) : orderList.length > 0 ? (
+                            orderList.map((order, index) => (
+                                <BodyTabel
+                                    key={order.id}
+                                    index={index}
+                                    item={order}
+                                    onDel={setChooseRemove}
+                                    onEdit={editOrder}
+                                />
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan={listTitle.length} className="text-center py-6 text-gray-500">
+                                    Không có đơn hàng nào
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+                <Pagination className={'m-8 justify-end'} page={page} setPage={setPage} totalPages={totalPages} />
+                {chooseRemove && (
+                    <PopUpRemove
+                        id={chooseRemove.id}
+                        title={'Xóa đơn đặt hàng'}
+                        desc={`Bạn có chắc chắn muốn xóa đơn hàng ${chooseRemove?.name} của khách hàng ${chooseRemove?.user?.firstName} không?`}
+                        onRemove={() => deleteOrder(chooseRemove)}
+                        onClose={() => setChooseRemove({})}
+                        isRemove={Object.keys(chooseRemove).length > 0}
+                    />
+                )}
+            </div>
         </div>
     );
 }

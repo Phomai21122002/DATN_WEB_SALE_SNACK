@@ -22,7 +22,7 @@ function CheckOutPayment() {
 
         fetchPaymentResult();
     }, [params]);
-
+    console.log(orderData);
     const isSuccess = useMemo(() => orderData?.success, [orderData]);
 
     return (

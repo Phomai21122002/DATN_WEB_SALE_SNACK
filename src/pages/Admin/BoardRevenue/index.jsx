@@ -1,9 +1,12 @@
+import { Chart } from 'react-google-charts';
+
 import HeaderTable from '~/components/HeaderTabel';
-import { listTitle, orderList } from './Constant';
+import { dataChart, listTitle, options, orderList } from './Constant';
 // import BodyTabel from '~/components/BodyTabel';
 import BackgroundCart from '~/components/BackgroundCart';
 import { useEffect, useState } from 'react';
 import { GetOrderByDate, GetProductSales, GetRevenueProducts, GetTotalRevenue } from '~/services/User';
+import StatCardDashBoard from '~/components/StatCardDashBoard';
 
 function BoardRevenue() {
     const [totalRevenue, setTotalRevenue] = useState();
@@ -35,6 +38,25 @@ function BoardRevenue() {
     // };
     return (
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
+            <div className="grid grid-cols-12 gap-4 my-4 rounded-lg bg-gray-200 px-4 py-6 w-full">
+                <div className="col-span-12 md:col-span-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+                    <StatCardDashBoard label="Total Users" value={277} growth={95} type="users" />
+                    <StatCardDashBoard label="Total Orders" value={338} growth={30} type="orders" />
+                    <StatCardDashBoard label="Total Products" value={557} growth={25} type="products" />
+                    <StatCardDashBoard label="Total Reviews" value={166} growth={45} type="reviews" />
+                </div>
+                <div className="col-span-12 md:col-span-4">
+                    <StatCardDashBoard
+                        label="Total Sales"
+                        value={3787681.0}
+                        growth={40.63}
+                        type="sales"
+                        className={'h-full'}
+                    >
+                        <Chart chartType="PieChart" width="100%" height="220px" data={dataChart} options={options} />
+                    </StatCardDashBoard>
+                </div>
+            </div>
             <table className="min-w-full text-left text-sm">
                 <HeaderTable listTitle={listTitle} />
                 <tbody>
