@@ -26,9 +26,7 @@ const StatCardProduct = ({ type, label, value }) => {
     };
 
     return (
-        <div
-            className={`relative overflow-visible text-white rounded-lg p-6 shadow-md ${bgColors[type]} w-full sm:w-1/3`}
-        >
+        <div className={`relative overflow-visible text-white rounded-lg p-6 shadow-md ${bgColors[type]} w-full`}>
             <div className="text-2xl font-bold">{value}</div>
             <div className="text-sm mt-1">{label}</div>
             {ICONS[type]}

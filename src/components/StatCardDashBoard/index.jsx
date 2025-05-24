@@ -23,7 +23,7 @@ const StatCardDashBoard = ({ label, value, growth, type, className, children }) 
                 <div className="flex flex-col space-y-1">
                     <span className="text-sm font-medium">{label}</span>
                     <span className="text-2xl font-bold">
-                        {type === 'sales' ? `$${value.toLocaleString()}` : value}
+                        {type === 'sales' ? `$${value?.toLocaleString()}` : value}
                     </span>
                     <span className="text-xs">
                         <span className="font-semibold text-white">+{growth}%</span> Last Month

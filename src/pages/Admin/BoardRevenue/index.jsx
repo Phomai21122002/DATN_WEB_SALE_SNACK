@@ -7,8 +7,10 @@ import BackgroundCart from '~/components/BackgroundCart';
 import { useEffect, useState } from 'react';
 import { GetOrderByDate, GetProductSales, GetRevenueProducts, GetTotalRevenue } from '~/services/User';
 import StatCardDashBoard from '~/components/StatCardDashBoard';
+import { GetStatistic } from '~/services/Statistic';
 
 function BoardRevenue() {
+    const [statistic, setStatistic] = useState({});
     const [totalRevenue, setTotalRevenue] = useState();
     const [productSalesCount, setProductSalesCount] = useState({});
     const [revenueProducts, setRevenueProducts] = useState([]);
@@ -16,6 +18,8 @@ function BoardRevenue() {
 
     useEffect(() => {
         const getData = async () => {
+            const res = await GetStatistic();
+            setStatistic(res);
             // const resTotal = await GetTotalRevenue();
             // setTotalRevenue(resTotal.totalRevenue);
             // const resSales = await GetProductSales();
@@ -30,6 +34,7 @@ function BoardRevenue() {
         };
         getData();
     }, []);
+    console.log(statistic);
     // const editOrder = (id) => {
     //     console.log('Editing order', id);
     // };
@@ -40,15 +45,25 @@ function BoardRevenue() {
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
             <div className="grid grid-cols-12 gap-4 my-4 rounded-lg bg-gray-200 px-4 py-6 w-full">
                 <div className="col-span-12 md:col-span-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
-                    <StatCardDashBoard label="Total Users" value={277} growth={95} type="users" />
-                    <StatCardDashBoard label="Total Orders" value={338} growth={30} type="orders" />
-                    <StatCardDashBoard label="Total Products" value={557} growth={25} type="products" />
-                    <StatCardDashBoard label="Total Categories" value={166} growth={45} type="categories" />
+                    <StatCardDashBoard label="Total Users" value={statistic?.totalUsers} growth={95} type="users" />
+                    <StatCardDashBoard label="Total Orders" value={statistic?.totalOrders} growth={30} type="orders" />
+                    <StatCardDashBoard
+                        label="Total Products"
+                        value={statistic?.totalProducts}
+                        growth={25}
+                        type="products"
+                    />
+                    <StatCardDashBoard
+                        label="Total Categories"
+                        value={statistic?.totalCategories}
+                        growth={45}
+                        type="categories"
+                    />
                 </div>
                 <div className="col-span-12 md:col-span-4">
                     <StatCardDashBoard
                         label="Total Sales"
-                        value={3787681.0}
+                        value={statistic?.totalSales}
                         growth={40.63}
                         type="sales"
                         className={'h-full'}

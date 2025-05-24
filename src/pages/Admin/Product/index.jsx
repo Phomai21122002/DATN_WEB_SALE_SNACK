@@ -13,6 +13,7 @@ import Pagination from '~/components/Pagination';
 import SkeletonRow from '~/components/SkeletonRow';
 import PopUpRemove from '~/components/PopUpRemove';
 import StatCardProduct from '~/components/StatCardProduct';
+import { GetStatistic } from '~/services/Statistic';
 
 function Product() {
     const [page, setPage] = useState(1);
@@ -20,6 +21,8 @@ function Product() {
     const [categories, setCategories] = useState([]);
     const [allProducts, setAllProducts] = useState([]);
     const [chooseRemove, setChooseRemove] = useState({});
+    const [statistic, setStatistic] = useState({});
+
     const navigate = useNavigate();
 
     const filters = useMemo(() => ({ PageNumber: page }), [page]);
@@ -47,15 +50,17 @@ function Product() {
     };
 
     useEffect(() => {
-        const getAllProduct = async () => {
+        const getAllCategory = async () => {
             try {
                 const resCategory = await GetCategories();
                 setCategories(resCategory);
+                const res = await GetStatistic();
+                setStatistic(res);
             } catch (err) {
                 console.error('Error fetching product data: ', err);
             }
         };
-        getAllProduct();
+        getAllCategory();
     }, []);
 
     const handleSortChange = (id) => {
@@ -80,8 +85,8 @@ function Product() {
     return (
         <>
             <div className="flex flex-col sm:flex-row gap-4 my-4 rounded-lg bg-gray-200 px-4 py-6">
-                <StatCardProduct value={547} label="Total Products" type="product" />
-                <StatCardProduct value={605} label="Total Categories" type="category" />
+                <StatCardProduct value={statistic?.totalProducts} label="Total Products" type="product" />
+                <StatCardProduct value={statistic?.totalCategories} label="Total Categories" type="category" />
             </div>
             <SearchSortListOfAdmin
                 title={'Chọn loại sản phẩm'}

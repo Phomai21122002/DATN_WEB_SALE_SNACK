@@ -116,3 +116,8 @@ export const RemoveOrder = async ({ userId, orderId }) => {
     });
     return res.data;
 };
+
+export const GetOrderStatistic = async () => {
+    const res = await request.get(`/order/statistic`);
+    return res.data;
+};

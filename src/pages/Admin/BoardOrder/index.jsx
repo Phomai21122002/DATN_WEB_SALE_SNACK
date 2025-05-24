@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import HeaderTable from '~/components/HeaderTabel';
 import { dataChart, listTitle, options, stats } from './Constant';
 import BodyTabel from '~/components/BodyTabel';
-import { RemoveSoftOrder } from '~/services/Order';
+import { GetOrderStatistic, RemoveSoftOrder } from '~/services/Order';
 import routes from '~/config/routes';
 import { useStorage } from '~/Contexts';
 import useGetProductsInOrderInAdmin from '~/hooks/useGetProductsInOrderInAdmin';
@@ -20,6 +20,7 @@ function BoardOrder() {
     const { userData } = useStorage();
     const [page, setPage] = useState(1);
     const [orderList, setOrderList] = useState([]);
+    const [orderListStatistic, setOrderListStatistic] = useState({});
     const [chooseRemove, setChooseRemove] = useState({});
 
     const params = useMemo(() => {
@@ -35,6 +36,11 @@ function BoardOrder() {
 
     useEffect(() => {
         setOrderList(data?.datas || []);
+        const getDataStatisticOrder = async () => {
+            const res = await GetOrderStatistic();
+            setOrderListStatistic(res);
+        };
+        getDataStatisticOrder();
     }, [data]);
 
     const editOrder = (data) => {
@@ -53,17 +59,21 @@ function BoardOrder() {
 
     return (
         <div className="space-y-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <StatCardRenevue type="orders" title="New Orders" value="1,390" />
                 <StatCardRenevue type="sales" title="Sales" value="$57,890" />
                 <StatCardRenevue type="revenue" title="Revenue" value="$12,390" />
                 <StatCardRenevue type="products" title="Total Products" value="1,390" />
-            </div>
+            </div> */}
             <div className="flex flex-col sm:flex-row gap-4 my-4 rounded-lg bg-gray-200 px-4 py-6">
-                <StatCardProduct value={547} label="Pending Orders" type="pending" />
-                <StatCardProduct value={605} label="Shipped Orders" type="shipped" />
-                <StatCardProduct value={249} label="Recieved Orders" type="recieved" />
-                <StatCardProduct value={249} label="Cancelled Orders" type="cancelled" />
+                <StatCardProduct value={orderListStatistic?.amountPending} label="Pending Orders" type="pending" />
+                <StatCardProduct value={orderListStatistic?.amountShipped} label="Shipped Orders" type="shipped" />
+                <StatCardProduct value={orderListStatistic?.amountRecieved} label="Recieved Orders" type="recieved" />
+                <StatCardProduct
+                    value={orderListStatistic?.amountCancelled}
+                    label="Cancelled Orders"
+                    type="cancelled"
+                />
             </div>
 
             <div className="bg-white shadow-md rounded-lg overflow-hidden">
