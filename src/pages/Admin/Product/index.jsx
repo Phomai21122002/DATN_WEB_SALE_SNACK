@@ -76,13 +76,12 @@ function Product() {
 
         setProducts(filtered);
     };
-    console.log(chooseRemove);
+
     return (
         <>
             <div className="flex flex-col sm:flex-row gap-4 my-4 rounded-lg bg-gray-200 px-4 py-6">
                 <StatCardProduct value={547} label="Total Products" type="product" />
                 <StatCardProduct value={605} label="Total Categories" type="category" />
-                <StatCardProduct value={249} label="Total Brands" type="brand" />
             </div>
             <SearchSortListOfAdmin
                 title={'Chọn loại sản phẩm'}

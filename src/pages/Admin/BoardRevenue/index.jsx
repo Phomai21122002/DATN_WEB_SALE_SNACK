@@ -43,7 +43,7 @@ function BoardRevenue() {
                     <StatCardDashBoard label="Total Users" value={277} growth={95} type="users" />
                     <StatCardDashBoard label="Total Orders" value={338} growth={30} type="orders" />
                     <StatCardDashBoard label="Total Products" value={557} growth={25} type="products" />
-                    <StatCardDashBoard label="Total Reviews" value={166} growth={45} type="reviews" />
+                    <StatCardDashBoard label="Total Categories" value={166} growth={45} type="categories" />
                 </div>
                 <div className="col-span-12 md:col-span-4">
                     <StatCardDashBoard

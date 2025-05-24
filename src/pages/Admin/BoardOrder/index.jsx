@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Chart } from 'react-google-charts';
 
 import HeaderTable from '~/components/HeaderTabel';
 import { dataChart, listTitle, options, stats } from './Constant';
@@ -55,9 +54,10 @@ function BoardOrder() {
     return (
         <div className="space-y-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {stats.map((stat, idx) => (
-                    <StatCardRenevue key={idx} {...stat} />
-                ))}
+                <StatCardRenevue type="orders" title="New Orders" value="1,390" />
+                <StatCardRenevue type="sales" title="Sales" value="$57,890" />
+                <StatCardRenevue type="revenue" title="Revenue" value="$12,390" />
+                <StatCardRenevue type="products" title="Total Products" value="1,390" />
             </div>
             <div className="flex flex-col sm:flex-row gap-4 my-4 rounded-lg bg-gray-200 px-4 py-6">
                 <StatCardProduct value={547} label="Pending Orders" type="pending" />

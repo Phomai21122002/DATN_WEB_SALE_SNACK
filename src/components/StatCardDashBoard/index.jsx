@@ -4,7 +4,7 @@ const iconMap = {
     users: <Person className="text-white" />,
     orders: <ShoppingCart className="text-white" />,
     products: <ShoppingBag className="text-white" />,
-    reviews: <Star className="text-white" />,
+    categories: <Star className="text-white" />,
     sales: <MonetizationOn className="text-white" />,
 };
 
@@ -12,7 +12,7 @@ const bgMap = {
     users: 'bg-green-500',
     orders: 'bg-pink-500',
     products: 'bg-blue-400',
-    reviews: 'bg-yellow-500',
+    categories: 'bg-yellow-500',
     sales: 'bg-blue-600',
 };
 
