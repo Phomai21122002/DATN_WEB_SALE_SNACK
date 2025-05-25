@@ -88,3 +88,13 @@ export const RemoveProductOrder = async ({ userId, orderId, productId }) => {
     });
     return res.data;
 };
+
+export const GetRecommenedProductBySlug = async ({ slug }) => {
+    const res = await request.get(`http://127.0.0.1:8000/api`, {
+        params: {
+            slug: slug,
+        },
+    });
+    console.log(res.data);
+    return res.data;
+};

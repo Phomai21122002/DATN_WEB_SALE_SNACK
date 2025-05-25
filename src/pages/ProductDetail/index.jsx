@@ -7,7 +7,7 @@ import Button from '~/components/Button';
 import ImageSlider from '~/components/ImageSlider';
 import CountNumber from '~/components/CountNumber';
 import MenuProduct from '~/components/MenuProduct';
-import { GetProductBySlug } from '~/services/Product';
+import { GetProductBySlug, GetRecommenedProductBySlug } from '~/services/Product';
 import { useStorage } from '~/Contexts';
 import { AddCart } from '~/services/Cart';
 import noImage from '~/assets/images/No-image.png';
@@ -19,6 +19,9 @@ import { useQueryClient } from '@tanstack/react-query';
 import { EQueryKeys } from '~/constants';
 import Pagination from '~/components/Pagination';
 import routes from '~/config/routes';
+import SkeletonProduct from '~/components/SkeletonProduct';
+import Product from '~/components/Product';
+import { updatedProducts } from '~/components/MenuProduct/Constains';
 
 const ProductDetail = () => {
     const { slug } = useParams();
@@ -33,6 +36,7 @@ const ProductDetail = () => {
     const [reviewContent, setReviewContent] = useState('');
     const [reviewMedia, setReviewMedia] = useState([]);
     const [chooseAddComment, setChooseAddComment] = useState(false);
+    const [allProducts, setAllProducts] = useState([]);
 
     useEffect(() => {
         const getProductById = async () => {
@@ -40,6 +44,8 @@ const ProductDetail = () => {
             try {
                 const res = await GetProductBySlug({ slug });
                 setProduct({ ...res, count: 1 });
+                const resRecommendedProduct = await GetRecommenedProductBySlug({ slug });
+                setAllProducts(updatedProducts(resRecommendedProduct.recommendedProduct));
             } catch (err) {
                 console.log(err);
             } finally {
@@ -96,6 +102,28 @@ const ProductDetail = () => {
     const totalCount = data?.totalCount || 0;
     const totalPages = totalCount ? Math.ceil(totalCount / data?.pageSize) : 0;
 
+    const addToCart = async (productId, quantity) => {
+        if (userData && Object.keys(userData).length > 0) {
+            const res = await AddCart({
+                quantity,
+                userId: userData.id,
+                productId,
+            });
+            res &&
+                queryClient.invalidateQueries({
+                    queryKey: [EQueryKeys.GET_LIST_CART, userData?.id],
+                });
+        } else {
+            navigate(routes.login);
+        }
+    };
+
+    const updateQuantity = (id, newQuantity) => {
+        setAllProducts((prev) =>
+            prev.map((product) => (product.id === id ? { ...product, count: newQuantity } : product)),
+        );
+    };
+
     return (
         <div className="max-w-[1200px] mx-auto pt-32">
             {/* Product Info */}
@@ -149,7 +177,7 @@ const ProductDetail = () => {
             </div>
 
             {/* Feedback Section */}
-            <div className="bg-white w-full p-8">
+            <div className="bg-white w-full p-8 my-8">
                 <h2 className="uppercase">Đánh giá sản phẩm</h2>
                 {feedbacks.map((feedback, index) => (
                     <div key={index} className="mt-6 border-b-2 border-gray-300">
@@ -237,8 +265,25 @@ const ProductDetail = () => {
                 )}
             </div>
 
-            {/* Related Products */}
-            <MenuProduct title="Các sản phẩm liên quan" />
+            <div className="py-4">
+                <div className="flex text-xl text-gray-500 font-medium mb-4 uppercase">Các sản phẩm liên quan</div>
+                <div className="relative">
+                    <div className="overflow-hidden">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 transition-all duration-500 p-1">
+                            {loading
+                                ? Array.from({ length: 5 }).map((_, index) => <SkeletonProduct key={index} />)
+                                : allProducts.map((product) => (
+                                      <Product
+                                          key={product.id}
+                                          product={product}
+                                          addToCart={addToCart}
+                                          updateQuantity={updateQuantity}
+                                      />
+                                  ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };

@@ -59,8 +59,8 @@ function PopUpCode({ email, setShowCodePopup }) {
             });
             const profile = await GetProfile();
             setUserData(profile);
-            toast.success('Login successfully');
             navigate(routes.home);
+            toast.success('Login successfully');
         } catch (error) {
             setErrorCode('Mã xác nhận không đúng. Vui lòng thử lại.');
         }
