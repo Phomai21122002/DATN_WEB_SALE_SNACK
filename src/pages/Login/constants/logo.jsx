@@ -1,4 +1,4 @@
-import { Apple, FaceBookColor, GoogleColor } from '~/components/Icons';
+import { FaceBookColor, GoogleColor } from '~/components/Icons';
 
 const LOGO_SIZE = 24;
 
@@ -25,10 +25,6 @@ export const loginLogoList = [
             );
         },
         logo: <FaceBookColor width={LOGO_SIZE} height={LOGO_SIZE} />,
-    },
-    {
-        name: 'Apple',
-        logo: <Apple width={LOGO_SIZE} height={LOGO_SIZE} />,
     },
 ];
 

@@ -1,6 +1,5 @@
 import React, { memo, useState } from 'react';
 import { Button, Divider, TextField } from '@mui/material';
-import { Apple, FaceBookColor, GoogleColor } from '~/components/Icons';
 import { Link } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 
@@ -9,8 +8,7 @@ import { joiResolver } from '@hookform/resolvers/joi';
 import validation from './validation';
 import { toast } from 'react-toastify';
 import PopUpCode from '~/components/PopUpCode';
-
-const borderStyle = 'border-[1px] border-[#8590A2] border-solid';
+import { loginLogoList } from '../Login/constants/logo';
 
 function SignUp() {
     const form = useForm({
@@ -47,7 +45,7 @@ function SignUp() {
                 <div>
                     <div className="mb-4">
                         <div className="flex justify-center">
-                            <div>WEB SALES</div>
+                            <div>PHÔ MAI SHOP</div>
                         </div>
                         <h5 className="text-[16px] font-medium pt-6 text-center text-[var(--text-color)]">
                             Register to continue
@@ -162,37 +160,23 @@ function SignUp() {
                             Continue
                         </Button>
                     </form>
-                    <div className="mt-6">
-                        <span className="mb-4 text-[14px] font-bold text-slate-400">Others:</span>
-                    </div>
-
-                    <div>
+                    <div className="mt-6 text-[14px] font-bold text-slate-400">Others:</div>
+                    {loginLogoList.map((item, index) => (
                         <div
-                            className={`h-10 w-full flex justify-center items-center gap-2 ${borderStyle} cursor-pointer hover:bg-slate-50 mb-4 rounded-sm`}
+                            onClick={item.handle || undefined}
+                            key={index}
+                            className="h-10 w-full flex justify-center items-center gap-2 border-[1px] border-[#8590A2] border-solid cursor-pointer hover:bg-slate-50 mb-4 rounded-sm"
                         >
-                            <GoogleColor width={24} height={24} />
-                            <span className="text-[14px] font-bold">Google</span>
+                            {item.logo}
+                            <span className="text-[14px] font-bold">{item.name}</span>
                         </div>
-                        <div
-                            className={`h-10 w-full flex justify-center items-center gap-2 ${borderStyle} cursor-pointer hover:bg-slate-50 mb-4 rounded-sm`}
-                        >
-                            <FaceBookColor width={24} height={24} />
-                            <span className="text-[14px] font-bold">Facebook</span>
-                        </div>
-
-                        <div
-                            className={`h-10 w-full flex justify-center items-center gap-2 ${borderStyle} cursor-pointer hover:bg-slate-50 mb-4 rounded-sm`}
-                        >
-                            <Apple width={24} height={24} />
-                            <span className="text-[14px] font-bold">Apple</span>
-                        </div>
-                    </div>
+                    ))}
                     <div className="my-4">
                         <Divider component="div" />
                     </div>
                     <div className="flex">
                         <Link to={'/login'} className="text-[#0c66e4] text-[14px] hover:underline">
-                            Already have an Atlassian account? Login
+                            Have an account? Log in.
                         </Link>
                     </div>
                 </div>

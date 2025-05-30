@@ -6,7 +6,6 @@ import { Skeleton } from '@mui/material';
 import Button from '~/components/Button';
 import ImageSlider from '~/components/ImageSlider';
 import CountNumber from '~/components/CountNumber';
-import MenuProduct from '~/components/MenuProduct';
 import { GetProductBySlug, GetRecommenedProductBySlug } from '~/services/Product';
 import { useStorage } from '~/Contexts';
 import { AddCart } from '~/services/Cart';
@@ -185,11 +184,13 @@ const ProductDetail = () => {
                             <img className="w-16 h-16 rounded-full" src={feedback.user?.url || noImage} alt="avatar" />
                             <div className="mx-4 text-xl">
                                 <h4>{feedback.user.firstName + ' ' + feedback.user.lastName}</h4>
-                                <p className="text-gray-500">{feedback.createdAt}</p>
+                                <p className="text-lg text-gray-500">
+                                    {new Date(feedback.createdAt)?.toLocaleString()}
+                                </p>
                             </div>
                         </div>
                         <div className="mx-4 my-2">
-                            <p className="whitespace-pre-line text-justify py-4">{feedback.content}</p>
+                            <p className="whitespace-pre-line text-xl text-justify py-4">{feedback.content}</p>
                             {feedback.imageFeedBacks?.length > 0 && (
                                 <div className="flex items-center flex-wrap py-2 gap-4">
                                     {feedback.imageFeedBacks.map((url, i) => (
@@ -220,7 +221,7 @@ const ProductDetail = () => {
                 {/* Add Review */}
                 {chooseAddComment && (
                     <div className="bg-white w-full p-8 mt-8">
-                        <h2 className="uppercase mb-4">Đánh giá của bạn</h2>
+                        <h2 className="uppercase mb-4 text-xl">Đánh giá của bạn</h2>
                         <form
                             onSubmit={(e) => {
                                 e.preventDefault();
@@ -236,7 +237,13 @@ const ProductDetail = () => {
                                 onChange={(e) => setReviewContent(e.target.value)}
                                 required
                             />
-                            <input type="file" accept="image/*,video/*" multiple onChange={handleMediaUpload} />
+                            <input
+                                className="text-xl"
+                                type="file"
+                                accept="image/*,video/*"
+                                multiple
+                                onChange={handleMediaUpload}
+                            />
                             <div className="flex gap-4 flex-wrap">
                                 {reviewMedia.map((url, index) => (
                                     <div key={index} className="relative">
@@ -257,7 +264,7 @@ const ProductDetail = () => {
                                     </div>
                                 ))}
                             </div>
-                            <button type="submit" className="w-full bg-blue-600 text-white px-4 py-2 rounded">
+                            <button type="submit" className="w-full  text-xl bg-blue-600 text-white px-4 py-2 rounded">
                                 Gửi đánh giá
                             </button>
                         </form>

@@ -11,7 +11,7 @@ import { listPaymentByAcount } from './Constains';
 
 function Order() {
     const navigate = useNavigate();
-    const { userData, dataCart } = useStorage();
+    const { userData, dataCart, refetchListCart } = useStorage();
     const [listPayMethod, setListPayMethod] = useState(listPaymentByAcount);
     const [isActivePay, setIsActivePay] = useState(false);
 
@@ -38,11 +38,11 @@ function Order() {
                 cartsId: selectedProductIds,
                 paymentMethod: maymentMethod.method,
             });
-            console.log(res);
             if (res.paymentUrl) {
                 window.location.href = res.paymentUrl;
             } else {
                 navigate(routes.cart);
+                await refetchListCart();
             }
         } catch (err) {
             console.error('Payment error:', err);

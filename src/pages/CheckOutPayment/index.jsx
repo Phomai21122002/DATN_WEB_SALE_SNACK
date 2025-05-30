@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 
-import BackgroundCart from '~/components/BackgroundCart';
 import routes from '~/config/routes';
+import { useStorage } from '~/Contexts';
 import { GetPaymentMomo, GetPaymentVnpay } from '~/services/Payment';
 
 function CheckOutPayment() {
     const [params] = useSearchParams();
+    const { refetchListCart } = useStorage();
+
     const [orderData, setOrderData] = useState(null);
 
     useEffect(() => {
@@ -15,13 +17,14 @@ function CheckOutPayment() {
                 const partnerCode = params.get('partnerCode');
                 const res = partnerCode === 'MOMO' ? await GetPaymentMomo(params) : await GetPaymentVnpay(params);
                 setOrderData(res);
+                await refetchListCart();
             } catch (err) {
                 console.error('Failed to fetch payment result', err);
             }
         };
 
         fetchPaymentResult();
-    }, [params]);
+    }, [params, refetchListCart]);
     console.log(orderData);
     const isSuccess = useMemo(() => orderData?.success, [orderData]);
 

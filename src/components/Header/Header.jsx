@@ -12,7 +12,6 @@ import AvatarUser from '../AvatarUser';
 import PopperProfile from '../PopperProfile';
 import { options, optionsUser } from '../PopperProfile/Constains';
 import PopperCart from '../PopperCart';
-import { GetCarts } from '~/services/Cart';
 import useGetProducts from '~/hooks/useGetProducts';
 
 const Header = () => {
@@ -21,20 +20,20 @@ const Header = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [anchorElCart, setAnchorElCart] = useState(null);
     const [allNameProducts, setAllNameProducts] = useState([]);
-    const [searchQuery, setSearchQuery] = useState(''); // Từ khóa tìm kiếm
+    const [searchQuery, setSearchQuery] = useState('');
     const [filteredResults, setFilteredResults] = useState([]);
     const filters = { PageSize: 1000 };
-    const { data, isLoading } = useGetProducts(filters);
+    const { data } = useGetProducts(filters);
     useEffect(() => {
         setAllNameProducts(data?.datas);
     }, [data]);
 
     useEffect(() => {
         if (searchQuery === '') {
-            setFilteredResults([]); // Nếu không có từ khóa tìm kiếm, không hiển thị gợi ý
+            setFilteredResults([]);
         } else {
-            const results = allNameProducts.filter(
-                (product) => product.name.toLowerCase().includes(searchQuery.toLowerCase()), // Tìm kiếm không phân biệt chữ hoa/thường
+            const results = allNameProducts.filter((product) =>
+                product.name.toLowerCase().includes(searchQuery.toLowerCase()),
             );
             setFilteredResults(results);
         }
@@ -69,7 +68,7 @@ const Header = () => {
     const openCart = Boolean(anchorElCart);
     const idProfile = open ? 'simple-popover' : undefined;
     const idCart = openCart ? 'cart-popover' : undefined;
-
+    console.log(userData);
     return (
         <div className="flex items-center justify-center fixed top-0 left-0 w-full z-50 bg-white shadow-md">
             <div className="flex items-center justify-between max-w-[1080px] w-full px-6 py-1">
@@ -151,7 +150,7 @@ const Header = () => {
                                 open={open}
                                 anchorEl={anchorEl}
                                 onClose={handleClose}
-                                options={userData.role.name === 'Admin' ? options : optionsUser}
+                                options={userData?.role?.name === 'Admin' ? options : optionsUser}
                             />
                         </>
                     ) : (

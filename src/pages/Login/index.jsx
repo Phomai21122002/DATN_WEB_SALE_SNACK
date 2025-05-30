@@ -10,7 +10,6 @@ import { loginLogoList } from './constants/logo';
 import { SignIn } from '~/services/Auth';
 import Loading from '~/components/Loading';
 import { useStorage } from '~/Contexts';
-import { GetProfile } from '~/services/User';
 import PopUpCode from '~/components/PopUpCode';
 
 const Login = memo(() => {
@@ -84,7 +83,7 @@ const Login = memo(() => {
                     <div>
                         <div className="mb-4">
                             <div className="flex justify-center">
-                                <div>WEB SALES</div>
+                                <div>PHÔ MAI SHOP</div>
                             </div>
                             <h5 className="text-[16px] font-medium pt-6 text-center text-[var(--text-color)]">
                                 Login to continue
@@ -148,7 +147,7 @@ const Login = memo(() => {
                         </div>
 
                         <div className="flex">
-                            <Link className="text-[#0c66e4] text-[14px] hover:underline">You can't login ?</Link>
+                            <Link className="text-[#0c66e4] text-[14px] hover:underline">Forgot password?</Link>
                             <p className="text-[14px] text-[#42526E] mx-2">•</p>
                             <Link to={routes.signup} className="text-[#0c66e4] text-[14px] hover:underline">
                                 Create account

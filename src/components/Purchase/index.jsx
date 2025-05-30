@@ -120,8 +120,8 @@ function Purchase({ product, refetch, date = null }) {
             {chooseRemove && (
                 <PopUpRemove
                     id={chooseRemove.id}
-                    title={'Delete Product In Order?'}
-                    desc={`Are you sure you want to delete this product ${chooseRemove?.product?.name} in ${chooseRemove?.name}`}
+                    title={'Xóa sản phẩm trong đơn hàng?'}
+                    desc={`Bạn có chắc chắn là muốn xóa sản phẩm ${chooseRemove?.product?.name} trong đơn hàng ${chooseRemove?.name} này không?`}
                     onRemove={() => RemoveProduct()}
                     onClose={() => setChooseRemove({})}
                     isRemove={Object.keys(chooseRemove).length > 0}

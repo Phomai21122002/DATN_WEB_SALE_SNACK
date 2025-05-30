@@ -29,7 +29,7 @@ function BoardBill() {
     }, [data]);
 
     const showBill = (bill) => {
-        navigate(routes.adminUpdateOrder.replace(':id', bill.id));
+        // navigate(routes.adminUpdateOrder.replace(':id', bill.id));
     };
     return (
         <div className="bg-white shadow-md rounded-lg overflow-hidden">

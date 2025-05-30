@@ -7,15 +7,12 @@ import { updatedProducts } from './Constains';
 import useGetProducts from '~/hooks/useGetProducts';
 import routes from '~/config/routes';
 import { useState, useEffect, memo, useMemo } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
-import { EQueryKeys } from '~/constants';
 import SkeletonProduct from '../SkeletonProduct';
 
 function MenuProduct({ title }) {
     const navigate = useNavigate();
-    const queryClient = useQueryClient();
     const [page, setPage] = useState(1);
-    const { userData } = useStorage();
+    const { userData, refetchListCart } = useStorage();
 
     const filters = useMemo(() => ({ PageNumber: page }), [page]);
     const [allProducts, setAllProducts] = useState([]);
@@ -35,17 +32,13 @@ function MenuProduct({ title }) {
     };
 
     const addToCart = async (productId, quantity) => {
-        console.log(productId, quantity);
         if (userData && Object.keys(userData).length > 0) {
             const res = await AddCart({
                 quantity,
                 userId: userData.id,
                 productId,
             });
-            res &&
-                queryClient.invalidateQueries({
-                    queryKey: [EQueryKeys.GET_LIST_CART, userData?.id],
-                });
+            res && (await refetchListCart());
         } else {
             navigate(routes.login);
         }

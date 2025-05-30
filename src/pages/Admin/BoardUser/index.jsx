@@ -3,7 +3,7 @@ import SearchSortListOfAdmin from '~/components/SearchSortListOfAdmin';
 import { useEffect, useMemo, useState } from 'react';
 import routes from '~/config/routes';
 import { useNavigate } from 'react-router-dom';
-import { DeleteUserById, GetUsers } from '~/services/User';
+import { DeleteUserById } from '~/services/User';
 import { listTitle, sorts } from './Constant';
 import useGetUsers from '~/hooks/useGetUsers';
 import Pagination from '~/components/Pagination';
@@ -30,7 +30,7 @@ function BoardUser() {
         setAllUser(data?.datas || []);
         setUsers(data?.datas || []);
     }, [data]);
-
+    console.log(users);
     const editOrder = (id) => {
         navigate(routes.adminUpdateUser.replace(':id', id));
     };
@@ -118,7 +118,7 @@ function BoardUser() {
                                     <td className="py-3 px-6">{User.firstName + ' ' + User.lastName}</td>
                                     <td className="py-3 px-6">{User.email}</td>
                                     <td className="py-3 px-6">{User.phone}</td>
-                                    <td className="py-3 px-6">{User.role.name}</td>
+                                    <td className="py-3 px-6">{User?.role?.name}</td>
                                     <td className="py-3 px-6">
                                         <button
                                             className="text-blue-600 hover:underline mr-2"
