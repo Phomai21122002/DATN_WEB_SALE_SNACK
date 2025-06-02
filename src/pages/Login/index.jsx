@@ -147,7 +147,9 @@ const Login = memo(() => {
                         </div>
 
                         <div className="flex">
-                            <Link className="text-[#0c66e4] text-[14px] hover:underline">Forgot password?</Link>
+                            <Link to={routes.reset} className="text-[#0c66e4] text-[14px] hover:underline">
+                                Forgot password?
+                            </Link>
                             <p className="text-[14px] text-[#42526E] mx-2">•</p>
                             <Link to={routes.signup} className="text-[#0c66e4] text-[14px] hover:underline">
                                 Create account
@@ -157,7 +159,7 @@ const Login = memo(() => {
                 </div>
             </div>
             {isLoading && <Loading />}
-            {showCodePopup && <PopUpCode email={loginEmail} setShowCodePopup={setShowCodePopup} />}
+            {showCodePopup && <PopUpCode email={loginEmail} onBack={setShowCodePopup(false)} />}
         </div>
     );
 });

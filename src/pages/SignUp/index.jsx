@@ -182,7 +182,7 @@ function SignUp() {
                 </div>
             </div>
 
-            {showCodePopup && <PopUpCode email={registeredEmail} setShowCodePopup={setShowCodePopup} />}
+            {showCodePopup && <PopUpCode email={registeredEmail} onBack={setShowCodePopup(false)} />}
         </div>
     );
 }

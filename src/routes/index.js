@@ -1,3 +1,4 @@
+import PopUpCode from '~/components/PopUpCode';
 import config from '~/config';
 import { AdminLayout, AuthLayout } from '~/layouts';
 import {
@@ -31,6 +32,8 @@ import {
 import BoardBill from '~/pages/Admin/BoardBill';
 import BoardCancelOrder from '~/pages/Admin/BoardCancelOrder';
 import BoardConfirmOrder from '~/pages/Admin/BoardConfirmOrder';
+import ForgotPassword from '~/pages/ForgotPassword';
+import VerifiEmail from '~/pages/VerifiEmail';
 
 const publicRoutes = [
     { path: config.routes.login, component: Login, layout: AuthLayout },
@@ -40,6 +43,8 @@ const publicRoutes = [
     { path: config.routes.order, component: Order },
     { path: config.routes.product, component: ProductDetail },
     { path: config.routes.search, component: Search },
+    { path: config.routes.reset, component: ForgotPassword, layout: AuthLayout },
+    { path: config.routes.verifyEmail, component: VerifiEmail, layout: AuthLayout },
 ];
 
 const adminRoutes = [

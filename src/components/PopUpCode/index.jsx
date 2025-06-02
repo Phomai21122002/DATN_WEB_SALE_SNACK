@@ -8,7 +8,7 @@ import { ConfirmEmail } from '~/services/Auth';
 import { GetProfile } from '~/services/User';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-function PopUpCode({ email, setShowCodePopup }) {
+function PopUpCode({ email, onBack }) {
     const navigate = useNavigate();
     const { setUserData, setIsLoggedIn } = useStorage();
     const [verifyCode, setVerifyCode] = useState(['', '', '', '', '', '']);
@@ -51,7 +51,7 @@ function PopUpCode({ email, setShowCodePopup }) {
         try {
             const code = verifyCode.join('');
             const res = await ConfirmEmail(email, code);
-            setShowCodePopup(false);
+            onBack();
             setIsLoggedIn(true);
             Cookies.set('authToken', res.token, {
                 expires: 7,
@@ -70,12 +70,18 @@ function PopUpCode({ email, setShowCodePopup }) {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md text-center">
                 <div className="flex items-center justify-start mb-4">
-                    <button onClick={() => setShowCodePopup(false)} className="text-red-500 hover:opacity-70">
+                    <button
+                        onClick={() => {
+                            console.log('ONbACK');
+                            onBack();
+                        }}
+                        className="text-red-500 hover:opacity-70"
+                    >
                         <ArrowBackIcon />
                     </button>
-                    <h2 className="flex-1 text-xl font-semibold text-center mr-6">Nhập mã xác nhận</h2>
+                    <h2 className="flex-1 text-2xl font-semibold text-center mr-6">Nhập mã xác nhận</h2>
                 </div>
-                <p className="text-gray-600 mb-2">Mã xác thực sẽ được gửi qua Email đến</p>
+                <p className="text-gray-600 text-xl mb-2">Mã xác thực sẽ được gửi qua Email đến</p>
                 <p className="font-medium text-base text-blue-600 mb-4">{email}</p>
 
                 <div className="flex justify-center gap-2 mb-4">

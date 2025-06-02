@@ -38,6 +38,8 @@ const routes = {
     search: '/search/:id',
     login: '/login',
     signup: '/signup',
+    reset: '/reset',
+    verifyEmail: '/verify/email',
     ...routesAdmin,
     ...routesUser,
 };
