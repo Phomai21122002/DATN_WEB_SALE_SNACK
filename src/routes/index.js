@@ -1,4 +1,3 @@
-import PopUpCode from '~/components/PopUpCode';
 import config from '~/config';
 import { AdminLayout, AuthLayout } from '~/layouts';
 import {

@@ -35,7 +35,6 @@ export const SignUp = async (firstName, lastName, email, password) => {
 };
 
 export const ConfirmEmail = async (email, code) => {
-    console.log(email, code);
     const res = await request.post('/Auth/confirmEmail', null, {
         params: {
             email,
@@ -47,5 +46,24 @@ export const ConfirmEmail = async (email, code) => {
 
 export const LoginByGoogle = async () => {
     const res = await request.post('/Auth/google-login');
+    return res.data;
+};
+
+export const SendCodeForEmail = async (email) => {
+    const res = await request.post('/Auth/SendCode', null, {
+        params: {
+            email,
+        },
+    });
+    return res.data;
+};
+
+export const ConfirmResetPassword = async (email, code) => {
+    const res = await request.post('/Auth/confirmCodeResetPassword', null, {
+        params: {
+            email: email,
+            code: code,
+        },
+    });
     return res.data;
 };

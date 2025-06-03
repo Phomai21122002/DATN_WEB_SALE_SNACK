@@ -1,16 +1,8 @@
-import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import routes from '~/config/routes';
-import { useStorage } from '~/Contexts';
-import { ConfirmEmail } from '~/services/Auth';
-import { GetProfile } from '~/services/User';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-function PopUpCode({ email, onBack }) {
-    const navigate = useNavigate();
-    const { setUserData, setIsLoggedIn } = useStorage();
+function PopUpCode({ email, onBack, onVerify }) {
     const [verifyCode, setVerifyCode] = useState(['', '', '', '', '', '']);
     const [errorCode, setErrorCode] = useState('');
     const [resendTimer, setResendTimer] = useState(60);
@@ -49,18 +41,8 @@ function PopUpCode({ email, onBack }) {
 
     const handleVerify = async () => {
         try {
-            const code = verifyCode.join('');
-            const res = await ConfirmEmail(email, code);
+            await onVerify(verifyCode);
             onBack();
-            setIsLoggedIn(true);
-            Cookies.set('authToken', res.token, {
-                expires: 7,
-                path: '/',
-            });
-            const profile = await GetProfile();
-            setUserData(profile);
-            navigate(routes.home);
-            toast.success('Login successfully');
         } catch (error) {
             setErrorCode('Mã xác nhận không đúng. Vui lòng thử lại.');
         }

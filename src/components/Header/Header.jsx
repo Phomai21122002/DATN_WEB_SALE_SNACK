@@ -68,7 +68,6 @@ const Header = () => {
     const openCart = Boolean(anchorElCart);
     const idProfile = open ? 'simple-popover' : undefined;
     const idCart = openCart ? 'cart-popover' : undefined;
-    console.log(userData);
     return (
         <div className="flex items-center justify-center fixed top-0 left-0 w-full z-50 bg-white shadow-md">
             <div className="flex items-center justify-between max-w-[1080px] w-full px-6 py-1">

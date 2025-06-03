@@ -87,6 +87,11 @@ export const ChangePassword = async (userId, data) => {
     return res.data;
 };
 
+export const ResetPassword = async (data) => {
+    const res = await request.patch(`/user/forgot-password`, data);
+    return res.data;
+};
+
 export const GetProvinces = async (inputUserId) => {
     const res = await request.get(`/address/provinces`, {
         params: {

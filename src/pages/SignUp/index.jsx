@@ -1,16 +1,21 @@
 import React, { memo, useState } from 'react';
 import { Button, Divider, TextField } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 
-import { SignUp as Register } from '~/services/Auth';
+import { ConfirmEmail, SignUp as Register } from '~/services/Auth';
 import { joiResolver } from '@hookform/resolvers/joi';
 import validation from './validation';
 import { toast } from 'react-toastify';
 import PopUpCode from '~/components/PopUpCode';
 import { loginLogoList } from '../Login/constants/logo';
+import Cookies from 'js-cookie';
+import { GetProfile } from '~/services/User';
+import { useStorage } from '~/Contexts';
+import routes from '~/config/routes';
 
 function SignUp() {
+    const navigate = useNavigate();
     const form = useForm({
         defaultValues: {
             firstName: '',
@@ -23,6 +28,7 @@ function SignUp() {
         mode: 'onSubmit',
         reValidateMode: 'onBlur',
     });
+    const { setIsLoggedIn, setUserData } = useStorage();
     const [showCodePopup, setShowCodePopup] = useState(false);
     const [registeredEmail, setRegisteredEmail] = useState('');
 
@@ -37,6 +43,20 @@ function SignUp() {
                 console.error(err);
                 toast.error('Register account fail');
             });
+    };
+
+    const handleVerify = async (verifyCode) => {
+        const code = verifyCode.join('');
+        const res = await ConfirmEmail(registeredEmail, code);
+        setIsLoggedIn(true);
+        Cookies.set('authToken', res.token, {
+            expires: 7,
+            path: '/',
+        });
+        const profile = await GetProfile();
+        setUserData(profile);
+        navigate(routes.home);
+        toast.success('Register successfully');
     };
 
     return (
@@ -182,7 +202,9 @@ function SignUp() {
                 </div>
             </div>
 
-            {showCodePopup && <PopUpCode email={registeredEmail} onBack={setShowCodePopup(false)} />}
+            {showCodePopup && (
+                <PopUpCode email={registeredEmail} onBack={setShowCodePopup(false)} onVerify={handleVerify} />
+            )}
         </div>
     );
 }

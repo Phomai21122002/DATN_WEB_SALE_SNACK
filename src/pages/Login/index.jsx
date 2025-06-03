@@ -1,24 +1,28 @@
 import { memo, useEffect, useState } from 'react';
-import { Button, Divider, TextField } from '@mui/material';
+import { Button, Divider, TextField, IconButton, InputAdornment } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 import routes from '../../config/routes';
 import { loginLogoList } from './constants/logo';
-import { SignIn } from '~/services/Auth';
+import { ConfirmEmail, SignIn } from '~/services/Auth';
 import Loading from '~/components/Loading';
 import { useStorage } from '~/Contexts';
 import PopUpCode from '~/components/PopUpCode';
+import { GetProfile } from '~/services/User';
 
 const Login = memo(() => {
     const navigate = useNavigate();
-    const { setIsLoggedIn, refetchProfile } = useStorage();
+    const { setIsLoggedIn, refetchProfile, setUserData } = useStorage();
     const [errorPass, setErrorPass] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [showCodePopup, setShowCodePopup] = useState(false);
     const [loginEmail, setLoginEmail] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+
     const { handleSubmit, control } = useForm({
         defaultValues: {
             email: '',
@@ -48,6 +52,10 @@ const Login = memo(() => {
         // eslint-disable-next-line
     }, [navigate, setIsLoggedIn]);
 
+    const handleClickShowPassword = () => {
+        setShowPassword((prev) => !prev);
+    };
+
     const onLogin = async (values) => {
         const { email, password } = values;
         setIsLoading(true);
@@ -74,6 +82,20 @@ const Login = memo(() => {
             .finally(() => {
                 setIsLoading(false);
             });
+    };
+
+    const handleVerify = async (verifyCode) => {
+        const code = verifyCode.join('');
+        const res = await ConfirmEmail(loginEmail, code);
+        setIsLoggedIn(true);
+        Cookies.set('authToken', res.token, {
+            expires: 7,
+            path: '/',
+        });
+        const profile = await GetProfile();
+        setUserData(profile);
+        navigate(routes.home);
+        toast.success('Login successfully');
     };
 
     return (
@@ -113,18 +135,30 @@ const Login = memo(() => {
                                 control={control}
                                 render={({ field }) => (
                                     <TextField
-                                        onChange={field.onChange}
-                                        value={field.password}
-                                        type="password"
+                                        {...field}
+                                        type={showPassword ? 'text' : 'password'}
+                                        placeholder="Input your password"
                                         sx={{
+                                            '& .MuiOutlinedInput-root': {
+                                                backgroundColor: '#e8f0fe',
+                                            },
                                             '& .MuiInputBase-input': {
                                                 padding: 1,
                                             },
                                         }}
-                                        placeholder="Input your password"
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <IconButton onClick={handleClickShowPassword} edge="end">
+                                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            ),
+                                        }}
                                     />
                                 )}
                             />
+
                             <Button type="submit" variant="contained">
                                 Continue
                             </Button>
@@ -159,7 +193,7 @@ const Login = memo(() => {
                 </div>
             </div>
             {isLoading && <Loading />}
-            {showCodePopup && <PopUpCode email={loginEmail} onBack={setShowCodePopup(false)} />}
+            {showCodePopup && <PopUpCode email={loginEmail} onBack={setShowCodePopup(false)} onVerify={handleVerify} />}
         </div>
     );
 });

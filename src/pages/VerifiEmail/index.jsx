@@ -1,6 +1,8 @@
 import PopUpCode from '~/components/PopUpCode';
 import { useLocation, useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
+import { ConfirmResetPassword } from '~/services/Auth';
+import Cookies from 'js-cookie';
 
 const VerifiEmail = () => {
     const location = useLocation();
@@ -13,7 +15,17 @@ const VerifiEmail = () => {
         navigate(routes.reset);
     };
 
-    return <PopUpCode email={email} onBack={handleBack} />;
+    const handleVerify = async (verifyCode) => {
+        const code = verifyCode.join('');
+        const res = await ConfirmResetPassword(email, Number(code));
+        Cookies.set('resetPasswordToken', res.token, {
+            expires: 1 / 288,
+            path: '/',
+        });
+        // navigate(routes.reset);
+    };
+
+    return <PopUpCode email={email} onBack={handleBack} onVerify={handleVerify} />;
 };
 
 export default VerifiEmail;
