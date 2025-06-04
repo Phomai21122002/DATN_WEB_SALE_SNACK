@@ -86,7 +86,7 @@ function BoardOrder() {
                             orderList.map((order, index) => (
                                 <BodyTabel
                                     key={order.id}
-                                    index={index}
+                                    index={(page - 1) * data?.pageSize + index}
                                     item={order}
                                     onDel={setChooseRemove}
                                     onEdit={editOrder}

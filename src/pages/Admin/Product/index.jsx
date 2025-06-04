@@ -18,6 +18,7 @@ import { GetStatistic } from '~/services/Statistic';
 function Product() {
     const [page, setPage] = useState(1);
     const [products, setProducts] = useState([]);
+    const [chooseNameCategory, setChooseNameCategory] = useState(null);
     const [categories, setCategories] = useState([]);
     const [allProducts, setAllProducts] = useState([]);
     const [chooseRemove, setChooseRemove] = useState({});
@@ -25,7 +26,7 @@ function Product() {
 
     const navigate = useNavigate();
 
-    const filters = useMemo(() => ({ PageNumber: page }), [page]);
+    const filters = useMemo(() => ({ categoryId: chooseNameCategory, PageNumber: page }), [page, chooseNameCategory]);
     const { data, isLoading, refetchListProduct } = useGetProducts(filters);
     const totalPages = useMemo(() => {
         const totalCount = data?.totalCount || 0;
@@ -64,9 +65,7 @@ function Product() {
     }, []);
 
     const handleSortChange = (id) => {
-        id
-            ? setProducts(() => allProducts.filter((product) => product.category?.id === parseInt(id)))
-            : setProducts(allProducts);
+        setChooseNameCategory(Number(id));
     };
 
     const handleSearchProduct = (title) => {
@@ -103,7 +102,7 @@ function Product() {
                         ) : products.length > 0 ? (
                             products.map((product, index) => (
                                 <tr key={product.id} className="border-b hover:bg-gray-50">
-                                    <td className="py-3 px-6">{index + 1}</td>
+                                    <td className="py-3 px-6">{(page - 1) * data?.pageSize + index + 1}</td>
                                     <td className="py-3 px-6">
                                         {product.urls.length > 0 && (
                                             <img

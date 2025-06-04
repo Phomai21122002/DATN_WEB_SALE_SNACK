@@ -6,9 +6,11 @@ export const GetProducts = async ({
     isDecsending = false,
     PageNumber = 1,
     PageSize = 10,
+    categoryId,
 } = {}) => {
     const res = await request.get('/product/products', {
         params: {
+            categoryId,
             Name,
             SortBy,
             isDecsending,

@@ -32,7 +32,7 @@ const Header = () => {
         if (searchQuery === '') {
             setFilteredResults([]);
         } else {
-            const results = allNameProducts.filter((product) =>
+            const results = allNameProducts?.filter((product) =>
                 product.name.toLowerCase().includes(searchQuery.toLowerCase()),
             );
             setFilteredResults(results);
@@ -102,9 +102,9 @@ const Header = () => {
                         <div className="rounded-tr-md rounded-br-md py-1 px-2 hover:bg-yellow-200 transition duration-200 cursor-pointer">
                             <SearchOutlinedIcon sx={{ fontSize: '20px' }} className="text-gray-500" />
                         </div>
-                        {filteredResults.length > 0 && (
+                        {filteredResults?.length > 0 && (
                             <ul className="absolute max-h-[200px] overflow-y-auto top-[40px] left-0 w-full bg-white border border-gray-300 rounded-md shadow-md z-10">
-                                {filteredResults.map((product, index) => (
+                                {filteredResults?.map((product, index) => (
                                     <li
                                         onClick={() => handleSearchProduct(product)}
                                         key={index}

@@ -21,6 +21,8 @@ import routes from '~/config/routes';
 import SkeletonProduct from '~/components/SkeletonProduct';
 import Product from '~/components/Product';
 import { updatedProducts } from '~/components/MenuProduct/Constains';
+import StarRate from '~/components/StarRate';
+import { convertRatingData } from './Constants';
 
 const ProductDetail = () => {
     const { slug } = useParams();
@@ -30,12 +32,14 @@ const ProductDetail = () => {
 
     const [product, setProduct] = useState({});
     const [feedbacks, setFeedbacks] = useState([]);
+    const [revenueRating, setRevenueRating] = useState({});
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [reviewContent, setReviewContent] = useState('');
     const [reviewMedia, setReviewMedia] = useState([]);
     const [chooseAddComment, setChooseAddComment] = useState(false);
     const [allProducts, setAllProducts] = useState([]);
+    const [rating, setRating] = useState(null);
 
     useEffect(() => {
         const getProductById = async () => {
@@ -60,9 +64,9 @@ const ProductDetail = () => {
         [page, userData?.id, product?.id],
     );
     const { data } = useGetFeedBacks(filterFeedbacks);
-
     useEffect(() => {
-        setFeedbacks(data?.datas || []);
+        setFeedbacks(data?.datas[0].feedBacks || []);
+        setRevenueRating(convertRatingData(data?.datas[0]));
     }, [data]);
 
     const handleMediaUpload = async (e) => {
@@ -75,7 +79,12 @@ const ProductDetail = () => {
 
     const handleAddReview = async () => {
         try {
-            await CreateFeedBack(userData.id, { productId: product?.id, content: reviewContent, urls: reviewMedia });
+            await CreateFeedBack(userData.id, {
+                productId: product?.id,
+                rate: rating,
+                content: reviewContent,
+                urls: reviewMedia,
+            });
             queryClient.invalidateQueries([
                 EQueryKeys.GET_LIST_FEEDBACK,
                 { userId: userData.id, productId: product.id },
@@ -125,7 +134,6 @@ const ProductDetail = () => {
 
     return (
         <div className="max-w-[1200px] mx-auto pt-32">
-            {/* Product Info */}
             <div className="flex flex-col md:flex-row gap-8 mb-12">
                 <div className="flex-1">
                     <div className="w-full max-w-md mx-auto">
@@ -171,44 +179,81 @@ const ProductDetail = () => {
                 </div>
             </div>
 
-            <div className="whitespace-pre-line text-gray-700 text-base leading-relaxed">
+            <div className="px-12 whitespace-pre-line text-gray-700 text-xl leading-relaxed">
                 {product.descriptionDetail}
             </div>
 
-            {/* Feedback Section */}
             <div className="bg-white w-full p-8 my-8">
                 <h2 className="uppercase">Đánh giá sản phẩm</h2>
-                {feedbacks.map((feedback, index) => (
-                    <div key={index} className="mt-6 border-b-2 border-gray-300">
-                        <div className="flex items-center">
-                            <img className="w-16 h-16 rounded-full" src={feedback.user?.url || noImage} alt="avatar" />
-                            <div className="mx-4 text-xl">
-                                <h4>{feedback.user.firstName + ' ' + feedback.user.lastName}</h4>
-                                <p className="text-lg text-gray-500">
-                                    {new Date(feedback.createdAt)?.toLocaleString()}
-                                </p>
+                <div className="flex flex-col md:flex-row items-center md:items-center mt-8 mb-12 gap-6">
+                    <div className="flex flex-col items-center justify-center w-full h-full md:w-1/4">
+                        <span className="text-5xl font-semibold text-red-500">{revenueRating.starAverage}</span>
+                        <span className="text-red-500 text-lg font-medium">ĐÁNH GIÁ TRUNG BÌNH</span>
+                    </div>
+
+                    <div className="flex flex-col w-full md:w-3/4 space-y-2">
+                        {[5, 4, 3, 2, 1].map((star) => {
+                            const count = revenueRating[star] || 0;
+                            const percent =
+                                revenueRating.totalRating > 0
+                                    ? Math.round((count / revenueRating.totalRating) * 100)
+                                    : 0;
+                            return (
+                                <div key={star} className="flex items-center">
+                                    <span className="w-6 text-sm font-semibold">{star}★</span>
+                                    <div className="flex-1 h-2 bg-gray-200 mx-2 relative rounded overflow-hidden">
+                                        <div className="h-full bg-red-500" style={{ width: `${percent}%` }} />
+                                    </div>
+                                    <span className="w-20 text-sm text-gray-600">
+                                        {percent}% ({count})
+                                    </span>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+                {feedbacks.length > 0 ? (
+                    feedbacks.map((feedback, index) => (
+                        <div key={index} className="mt-6 border-b-2 border-gray-300">
+                            <div className="flex items-center">
+                                <img
+                                    className="w-16 h-16 rounded-full"
+                                    src={feedback.user?.url || noImage}
+                                    alt="avatar"
+                                />
+                                <div className="mx-4 text-xl">
+                                    <h4 className="leading-none">
+                                        {feedback.user.firstName + ' ' + feedback.user.lastName}
+                                    </h4>
+                                    <StarRate rating={feedback?.rate || 0} setRating={setRating} />
+                                    <p className="text-lg text-gray-500">
+                                        {new Date(feedback.createdAt)?.toLocaleString()}
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="mx-4 my-2">
+                                <p className="whitespace-pre-line text-xl text-justify py-4">{feedback.content}</p>
+                                {feedback.imageFeedBacks?.length > 0 && (
+                                    <div className="flex items-center flex-wrap py-2 gap-4">
+                                        {feedback.imageFeedBacks.map((url, i) => (
+                                            <div key={i} className="w-36 h-36">
+                                                {url.url.match(/.(mp4|webm)$/) ? (
+                                                    <video controls className="w-full h-full">
+                                                        <source src={url.url} type="video/mp4" />
+                                                    </video>
+                                                ) : (
+                                                    <Image src={url.url} className="object-cover w-full h-full" />
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         </div>
-                        <div className="mx-4 my-2">
-                            <p className="whitespace-pre-line text-xl text-justify py-4">{feedback.content}</p>
-                            {feedback.imageFeedBacks?.length > 0 && (
-                                <div className="flex items-center flex-wrap py-2 gap-4">
-                                    {feedback.imageFeedBacks.map((url, i) => (
-                                        <div key={i} className="w-36 h-36">
-                                            {url.url.match(/.(mp4|webm)$/) ? (
-                                                <video controls className="w-full h-full">
-                                                    <source src={url.url} type="video/mp4" />
-                                                </video>
-                                            ) : (
-                                                <Image src={url.url} className="object-cover w-full h-full" />
-                                            )}
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                ))}
+                    ))
+                ) : (
+                    <div className="text-center py-6 text-gray-500">Không có lượt đánh giá</div>
+                )}
                 <Pagination page={page} setPage={setPage} totalPages={totalPages} />
 
                 <span
@@ -221,7 +266,6 @@ const ProductDetail = () => {
                 {/* Add Review */}
                 {chooseAddComment && (
                     <div className="bg-white w-full p-8 mt-8">
-                        <h2 className="uppercase mb-4 text-xl">Đánh giá của bạn</h2>
                         <form
                             onSubmit={(e) => {
                                 e.preventDefault();
@@ -229,6 +273,10 @@ const ProductDetail = () => {
                             }}
                             className="space-y-4"
                         >
+                            <h2 className="uppercase mb-4 text-xl">Đánh giá của bạn</h2>
+                            <StarRate className={'mb-4'} sizeStar={40} gap={4} rating={rating} setRating={setRating} />
+
+                            <h2 className="uppercase mb-4 text-xl">Nhận xét của bạn</h2>
                             <textarea
                                 placeholder="Nội dung đánh giá"
                                 className="border text-xl p-2 w-full rounded"
