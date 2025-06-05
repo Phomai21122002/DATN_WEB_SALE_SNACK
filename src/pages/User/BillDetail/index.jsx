@@ -19,8 +19,6 @@ function BillDetail() {
         getBillDetail();
     }, [userData, id]);
 
-    const userFullName = `${bill?.user?.lastName || ''} ${bill?.user?.firstName || ''}`.trim();
-
     return (
         <div className="max-w-[1100px] mx-auto py-8 mt-10">
             <div className="max-w-[700px] mx-auto py-6 px-4 mt-[64px] bg-white border border-gray-300 rounded-md font-mono text-[15px]">
@@ -94,21 +92,18 @@ function BillDetail() {
                 {bill?.user && (
                     <div className="border-t border-dashed pt-2 text-sm mt-4">
                         <p>
-                            <span className="font-semibold">Khách hàng:</span> {userFullName}
+                            <span className="font-semibold">Khách hàng:</span> {bill.fullName}
                         </p>
                         <p>
-                            <span className="font-semibold">Email:</span> {bill.user.email}
+                            <span className="font-semibold">Email:</span> {bill.email}
                         </p>
                         <p>
-                            <span className="font-semibold">SĐT:</span> {bill.user.phone}
+                            <span className="font-semibold">SĐT:</span> {bill.phone}
                         </p>
-                        {bill.user.addresses?.length > 0 && (
-                            <p>
-                                <span className="font-semibold">Địa chỉ:</span>{' '}
-                                {bill.user.addresses.find((addr) => addr.isDefault)?.name ||
-                                    'Không có địa chỉ mặc định'}
-                            </p>
-                        )}
+                        <p>
+                            <span className="font-semibold">Địa chỉ:</span>{' '}
+                            {bill.address || 'Không có địa chỉ mặc định'}
+                        </p>
                     </div>
                 )}
 

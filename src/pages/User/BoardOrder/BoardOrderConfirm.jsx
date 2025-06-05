@@ -15,7 +15,7 @@ function BoardOrderConfirm({ selectedOrder, setSelectedOrder, selectedStatus }) 
     const [expandedOrderId, setExpandedOrderId] = useState('');
     const { userData } = useStorage();
 
-    const { data, isLoadingListOrderUser } = useGetOrdersUser({
+    const { data, isLoadingListOrderUser, refetchListOrderUser } = useGetOrdersUser({
         userId: userData?.id,
         Status: selectedStatus,
         PageNumber: page,
@@ -59,6 +59,7 @@ function BoardOrderConfirm({ selectedOrder, setSelectedOrder, selectedStatus }) 
         },
         [expandedOrderId, userData?.id, setSelectedOrder],
     );
+    console.log(selectedOrder);
     return (
         <div className="flex justify-center pb-8 bg-white shadow-md rounded-lg overflow-hidden">
             <div className="max-w-[1100px] mx-auto py-8 w-full">
@@ -72,12 +73,13 @@ function BoardOrderConfirm({ selectedOrder, setSelectedOrder, selectedStatus }) 
                 <Pagination page={page} setPage={setPage} totalPages={totalPages} />
                 {expandedOrderId && selectedOrder && (
                     <div className="mt-6">
-                        <h3 className="text-lg font-semibold mb-3">Chi tiết đơn hàng</h3>
+                        <h3 className="text-lg font-semibold mb-3 mx-4">Chi tiết đơn hàng</h3>
                         <div className="w-full flex flex-col bg-white py-2 mb-4 font-semibold text-gray-600 shadow-sm">
                             {selectedOrder.products.map((product, index) => (
                                 <Purchase
                                     key={index}
-                                    product={{ product: product }}
+                                    product={{ product: product, id: selectedOrder.id, name: selectedOrder.name }}
+                                    refetch={refetchListOrderUser}
                                     date={selectedOrder.createOrder || ''}
                                 />
                             ))}

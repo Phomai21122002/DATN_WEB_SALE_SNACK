@@ -22,7 +22,6 @@ export const GetProducts = async ({
 };
 
 export const GetProductsByIdCategory = async ({ categoryId, isDecsending, PageNumber = 1, PageSize = 10 } = {}) => {
-    console.log(isDecsending);
     const res = await request.get('/product/productsByIdCategory', {
         params: {
             categoryId,

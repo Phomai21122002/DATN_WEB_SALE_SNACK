@@ -79,6 +79,7 @@ export const GetProfile = async () => {
 };
 
 export const ChangePassword = async (userId, data) => {
+    console.log(data);
     const res = await request.patch(`/user/change-password`, data, {
         params: {
             userId: userId,

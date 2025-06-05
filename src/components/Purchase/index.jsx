@@ -56,7 +56,9 @@ function Purchase({ product, refetch, date = null }) {
             <div className="flex flex-col pt-4 px-8 text-lg font-medium text-gray-700 bg-[#fffefb]">
                 <div className="flex items-center py-2 justify-between border-b border-gray-200">
                     <ul className="text-lg font-medium">
-                        <li className="">{product?.product?.category.name}</li>
+                        <li className="">
+                            {product?.product?.category.name} ({product?.name})
+                        </li>
                     </ul>
                     {product?.product?.status !== undefined && (
                         <div className={`uppercase ${getOrderStatusStyleText(product?.product.status)}`}>

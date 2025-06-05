@@ -23,7 +23,7 @@ function Profile() {
     const { userData, refetchProfile } = useStorage();
     const [activeAddAddress, setActiveAddAddress] = useState(false);
     const [image, setImage] = useState(watch('url'));
-    const { data, isLoading, refetchAddress } = useGetAddresses(userData?.id);
+    const { data, refetchAddress } = useGetAddresses(userData?.id);
     useEffect(() => {
         const getProfileOfUser = async () => {
             try {
@@ -46,7 +46,7 @@ function Profile() {
         };
         getProfileOfUser();
         // eslint-disable-next-line
-    }, [userData, data]);
+    }, [userData]);
 
     const handleSaveProfile = async (profile) => {
         const { id, addressId, ...reqProfile } = profile;
@@ -62,6 +62,7 @@ function Profile() {
             });
             navigate(routes.home);
             await refetchProfile();
+            await refetchAddress();
         } catch (err) {
             console.error('Error saving profile:', err);
         }

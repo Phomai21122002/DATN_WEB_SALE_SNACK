@@ -1,10 +1,9 @@
 import { memo, useEffect, useState } from 'react';
-import { Button, Divider, TextField, IconButton, InputAdornment } from '@mui/material';
+import { Button, Divider, TextField } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 import routes from '../../config/routes';
 import { loginLogoList } from './constants/logo';
@@ -21,7 +20,6 @@ const Login = memo(() => {
     const [isLoading, setIsLoading] = useState(false);
     const [showCodePopup, setShowCodePopup] = useState(false);
     const [loginEmail, setLoginEmail] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
 
     const { handleSubmit, control } = useForm({
         defaultValues: {
@@ -51,10 +49,6 @@ const Login = memo(() => {
         return () => window.removeEventListener('message', handleMessage);
         // eslint-disable-next-line
     }, [navigate, setIsLoggedIn]);
-
-    const handleClickShowPassword = () => {
-        setShowPassword((prev) => !prev);
-    };
 
     const onLogin = async (values) => {
         const { email, password } = values;
@@ -136,24 +130,12 @@ const Login = memo(() => {
                                 render={({ field }) => (
                                     <TextField
                                         {...field}
-                                        type={showPassword ? 'text' : 'password'}
+                                        type={'password'}
                                         placeholder="Input your password"
                                         sx={{
-                                            '& .MuiOutlinedInput-root': {
-                                                backgroundColor: '#e8f0fe',
-                                            },
                                             '& .MuiInputBase-input': {
                                                 padding: 1,
                                             },
-                                        }}
-                                        InputProps={{
-                                            endAdornment: (
-                                                <InputAdornment position="end">
-                                                    <IconButton onClick={handleClickShowPassword} edge="end">
-                                                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                    </IconButton>
-                                                </InputAdornment>
-                                            ),
                                         }}
                                     />
                                 )}

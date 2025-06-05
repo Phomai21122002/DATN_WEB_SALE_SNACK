@@ -33,7 +33,6 @@ function Search() {
         let isDecsending = null;
         if (sortOrder === 'Thấp đến Cao') isDecsending = false;
         else if (sortOrder === 'Cao đến Thấp') isDecsending = true;
-
         return {
             categoryId: selectedCategory,
             PageNumber: page,
@@ -42,7 +41,7 @@ function Search() {
         };
     }, [page, selectedCategory, sortOrder]);
     const { data, isLoading } = useGetProductsByIdCategory(filters);
-    console.log(data);
+
     const totalPages = useMemo(() => {
         const totalCount = data?.totalCount || 0;
         return totalCount ? Math.ceil(totalCount / data?.pageSize) : 0;
@@ -161,24 +160,18 @@ function Search() {
             </div>
 
             <div className="flex-1 p-4">
-                <div className="mb-6">
-                    <div className="text-xl font-medium text-gray-800">
-                        Kết quả tìm kiếm cho từ khoá <span className="font-semibold text-blue-600">kết qả</span>
-                    </div>
-
-                    <div className="flex justify-between items-center mt-3">
-                        <div className="flex items-center">
-                            <div className="text-sm text-gray-500 mr-4">Sắp xếp theo:</div>
-                            <select
-                                className="p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                value={sortOrder}
-                                onChange={handleSortChange}
-                            >
-                                <option value="">Chọn sắp xếp</option>
-                                <option value="Thấp đến Cao">Giá thấp đến cao</option>
-                                <option value="Cao đến Thấp">Giá cao đến thấp</option>
-                            </select>
-                        </div>
+                <div className="flex justify-between mb-6 items-center mt-3">
+                    <div className="flex items-center">
+                        <div className="text-sm text-gray-500 mr-4">Sắp xếp theo:</div>
+                        <select
+                            className="p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            value={sortOrder}
+                            onChange={handleSortChange}
+                        >
+                            <option value="">Chọn sắp xếp</option>
+                            <option value="Thấp đến Cao">Giá thấp đến cao</option>
+                            <option value="Cao đến Thấp">Giá cao đến thấp</option>
+                        </select>
                     </div>
                 </div>
 

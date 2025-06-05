@@ -22,10 +22,9 @@ function ProfileAdmin() {
     } = useForm();
     const [activeAddAddress, setActiveAddAddress] = useState(false);
     const [image, setImage] = useState(watch('url'));
-    const { data, isLoading, refetchAddress } = useGetAddresses(userData?.id);
+    const { data, refetchAddress } = useGetAddresses(userData?.id);
 
     useEffect(() => {
-        console.log('profile', userData);
         const getProfileOfAdmin = async () => {
             try {
                 if (userData && Object.keys(userData).length > 0) {
@@ -55,7 +54,6 @@ function ProfileAdmin() {
             ...reqProfile,
             url: image || userData?.url || '',
         };
-        console.log(updatedProfile);
         try {
             await UpdateUserById(id, updatedProfile);
             await UpdateAddressByUserId({
@@ -64,6 +62,7 @@ function ProfileAdmin() {
             });
             navigate(routes.admin);
             await refetchProfile();
+            await refetchAddress();
         } catch (err) {
             console.error('Error saving profile:', err);
         }

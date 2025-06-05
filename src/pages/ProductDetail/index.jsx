@@ -59,7 +59,7 @@ const ProductDetail = () => {
     }, [slug]);
 
     const filterFeedbacks = useMemo(
-        () => ({ userId: userData?.id, productId: product?.id, PageSize: 1, PageNumber: page }),
+        () => ({ userId: userData?.id, productId: product?.id, PageSize: 5, PageNumber: page }),
         // eslint-disable-next-line
         [page, userData?.id, product?.id],
     );
