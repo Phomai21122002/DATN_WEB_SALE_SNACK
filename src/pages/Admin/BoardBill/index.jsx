@@ -1,8 +1,6 @@
 import HeaderTable from '~/components/HeaderTabel';
 import { listTitle } from './Constant';
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import routes from '~/config/routes';
 import { useStorage } from '~/Contexts';
 import Pagination from '~/components/Pagination';
 import SkeletonRow from '~/components/SkeletonRow';
@@ -11,7 +9,6 @@ import BodyTabelBill from '~/components/BodyTabelBill';
 
 function BoardBill() {
     const { userData } = useStorage();
-    const navigate = useNavigate();
     const [page, setPage] = useState(1);
     const [orderList, setOrderList] = useState([]);
     const { data, isLoading } = useGetBillAdmins({

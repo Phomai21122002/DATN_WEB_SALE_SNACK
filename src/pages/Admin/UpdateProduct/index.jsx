@@ -1,5 +1,5 @@
-import { useForm } from 'react-hook-form';
-import { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { useEffect, useRef, useState } from 'react';
 import { GetCategories } from '~/services/Category';
 import { useNavigate, useParams } from 'react-router-dom';
 import routes from '~/config/routes';
@@ -7,14 +7,20 @@ import { AdminUpdateProduct, GetProductBySlug } from '~/services/Product';
 import AddIcon from '@mui/icons-material/Add';
 import noImage from '~/assets/images/No-image.png';
 import { uploadMediaToCloudinary } from '../CreateProduct/Constant';
+import JoditEditor from 'jodit-react';
 
 function UpdateProduct() {
     const { slug } = useParams();
-
+    const editor = useRef(null);
+    const config = {
+        placeholder: 'Nhập mô tả chi tiết về sản phẩm...',
+        style: { backgroundColor: 'rgb(243 244 246)' },
+    };
     const [categories, setCategories] = useState([]);
     const [images, setImages] = useState([]);
     const navigate = useNavigate();
     const {
+        control,
         register,
         handleSubmit,
         reset,
@@ -142,11 +148,31 @@ function UpdateProduct() {
 
                 <div>
                     <label className="block text-sm font-bold mb-1">Mô tả chi tiết sản phẩm</label>
-                    <textarea
-                        className="w-full text-sm p-2 border rounded-md min-h-[100px]"
-                        {...register('descriptionDetail', { required: 'Mô tả về chi tiết sản phẩm là bắt buộc' })}
-                        placeholder="Nhập mô tả chi tiết về sản phẩm"
-                    ></textarea>
+                    <Controller
+                        control={control}
+                        name="descriptionDetail"
+                        rules={{ required: 'Mô tả về chi tiết sản phẩm là bắt buộc' }}
+                        render={({ field }) => (
+                            <JoditEditor
+                                ref={editor}
+                                value={field.value}
+                                config={config}
+                                onBlur={field.onBlur}
+                                onChange={(newContent) => field.onChange(newContent)}
+                                onPaste={(event) => {
+                                    const clipboardData = event.clipboardData || window.clipboardData;
+                                    if (clipboardData) {
+                                        let pastedData = clipboardData.getData('text/html');
+                                        if (pastedData) {
+                                            pastedData = pastedData.replace(/background-color\s*:\s*[^;"]+;?/gi, '');
+                                            event.preventDefault();
+                                            editor.current.editor.selection.insertHTML(pastedData);
+                                        }
+                                    }
+                                }}
+                            />
+                        )}
+                    />
                     {errors.descriptionDetail && (
                         <p className="text-red-500 text-sm">{errors.descriptionDetail.message}</p>
                     )}

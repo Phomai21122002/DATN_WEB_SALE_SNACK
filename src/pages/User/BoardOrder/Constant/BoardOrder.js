@@ -1,4 +1,3 @@
-import { Component } from 'react';
 import BoardOrderConfirm from '../BoardOrderConfirm';
 import BoardOrderProduct from '../BoardOrderProduct';
 

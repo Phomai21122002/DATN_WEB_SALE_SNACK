@@ -1,21 +1,28 @@
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { uploadMediaToCloudinary } from './Constant';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { GetCategories } from '~/services/Category';
 import { AddProduct } from '~/services/Product';
 import { useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
 import noImage from '~/assets/images/No-image.png';
+import JoditEditor from 'jodit-react';
 
 function CreateProduct() {
+    const navigate = useNavigate();
+    const editor = useRef(null);
     const [images, setImages] = useState([]);
     const [categories, setCategories] = useState([]);
-    const navigate = useNavigate();
     const {
+        control,
         register,
         handleSubmit,
         formState: { errors },
     } = useForm();
+
+    const config = {
+        placeholder: 'Nhập mô tả chi tiết về sản phẩm...',
+    };
 
     useEffect(() => {
         const getAllCategory = async () => {
@@ -120,11 +127,25 @@ function CreateProduct() {
 
                 <div>
                     <label className="block text-sm font-bold mb-1">Mô tả chi tiết sản phẩm</label>
-                    <textarea
+                    {/* <textarea
                         className="w-full text-sm p-2 border rounded-md min-h-[100px]"
                         {...register('descriptionDetail', { required: 'Mô tả về chi tiết sản phẩm là bắt buộc' })}
                         placeholder="Nhập mô tả chi tiết về sản phẩm"
-                    ></textarea>
+                    ></textarea> */}
+                    <Controller
+                        control={control}
+                        name="descriptionDetail"
+                        rules={{ required: 'Mô tả về chi tiết sản phẩm là bắt buộc' }}
+                        render={({ field }) => (
+                            <JoditEditor
+                                ref={editor}
+                                value={field.value}
+                                config={config}
+                                onBlur={field.onBlur}
+                                onChange={(newContent) => field.onChange(newContent)}
+                            />
+                        )}
+                    />
                     {errors.descriptionDetail && (
                         <p className="text-red-500 text-sm">{errors.descriptionDetail.message}</p>
                     )}

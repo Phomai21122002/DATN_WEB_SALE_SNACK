@@ -10,31 +10,31 @@ export const RequiredAuth = () => {
     const { userData, setIsLoggedIn } = useStorage();
     const location = useLocation();
 
-    // useEffect(() => {
-    //     const NavigateRoute = async () => {
-    //         if (!!token) {
-    //             const currentPath = location.pathname;
-    //             setIsLoggedIn(true);
-    //             if (userData) {
-    //                 if (userData.role.name === 'User' && Object.values(routesUser).includes(currentPath)) {
-    //                     return;
-    //                 } else if (userData.role.name === 'Admin' && Object.values(routesAdmin).includes(currentPath)) {
-    //                     return;
-    //                 } else if (userData.role && userData.role.name === 'Admin') {
-    //                     navigate(routes.admin);
-    //                 } else if (userData.role && userData.role.name === 'User') {
-    //                     navigate(routes.home);
-    //                 } else {
-    //                     navigate(routes.login);
-    //                 }
-    //             }
-    //         } else {
-    //             navigate(routes.login);
-    //         }
-    //     };
-    //     NavigateRoute();
-    //     // eslint-disable-next-line
-    // }, [token]);
+    useEffect(() => {
+        const NavigateRoute = async () => {
+            if (!!token) {
+                const currentPath = location.pathname;
+                setIsLoggedIn(true);
+                if (userData) {
+                    if (userData.role.name === 'User' && Object.values(routesUser).includes(currentPath)) {
+                        return;
+                    } else if (userData.role.name === 'Admin' && Object.values(routesAdmin).includes(currentPath)) {
+                        return;
+                    } else if (userData.role && userData.role.name === 'Admin') {
+                        navigate(routes.admin);
+                    } else if (userData.role && userData.role.name === 'User') {
+                        navigate(routes.home);
+                    } else {
+                        navigate(routes.login);
+                    }
+                }
+            } else {
+                navigate(routes.login);
+            }
+        };
+        NavigateRoute();
+        // eslint-disable-next-line
+    }, [token]);
 
     return <Outlet />;
 };

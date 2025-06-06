@@ -19,7 +19,6 @@ function AddAddress({ setActiveAddAddress, refetchAddress }) {
     const selectedHomeNumber = watch('homeNumber');
 
     useEffect(() => {
-        console.log('addaddress');
         const getProfile = async () => {
             try {
                 if (Object.keys(userData).length > 0) {
@@ -31,6 +30,7 @@ function AddAddress({ setActiveAddAddress, refetchAddress }) {
             }
         };
         getProfile();
+        // eslint-disable-next-line
     }, [userData]);
 
     useEffect(() => {
@@ -46,6 +46,7 @@ function AddAddress({ setActiveAddAddress, refetchAddress }) {
             }
         };
         fetchDistricts();
+        // eslint-disable-next-line
     }, [selectedProvince]);
 
     useEffect(() => {
@@ -60,6 +61,7 @@ function AddAddress({ setActiveAddAddress, refetchAddress }) {
             }
         };
         fetchWards();
+        // eslint-disable-next-line
     }, [selectedDistrict]);
 
     const handleAddAddress = async () => {

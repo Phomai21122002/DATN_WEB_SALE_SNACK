@@ -3,6 +3,7 @@ import { faFacebook, faGooglePlus, faTwitter } from '@fortawesome/free-brands-sv
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
 import { Skeleton } from '@mui/material';
+
 import Button from '~/components/Button';
 import ImageSlider from '~/components/ImageSlider';
 import CountNumber from '~/components/CountNumber';
@@ -179,9 +180,11 @@ const ProductDetail = () => {
                 </div>
             </div>
 
-            <div className="px-12 whitespace-pre-line text-gray-700 text-xl leading-relaxed">
-                {product.descriptionDetail}
-            </div>
+            <div
+                className="px-12 whitespace-pre-line text-gray-700 text-xl leading-relaxed bg-gray-100"
+                style={{ backgroundColor: 'rgb(243 244 246)' }}
+                dangerouslySetInnerHTML={{ __html: product.descriptionDetail }}
+            ></div>
 
             <div className="bg-white w-full p-8 my-8">
                 <h2 className="uppercase">Đánh giá sản phẩm</h2>

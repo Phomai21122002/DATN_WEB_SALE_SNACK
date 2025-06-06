@@ -4,7 +4,7 @@ import BodyTabel from '~/components/BodyTabel';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
-import { GetOrderProductAdmin, RemoveOrder } from '~/services/Order';
+import { RemoveOrder } from '~/services/Order';
 import { useStorage } from '~/Contexts';
 import useGetProductsInOrderInAdmin from '~/hooks/useGetProductsInOrderInAdmin';
 import Pagination from '~/components/Pagination';

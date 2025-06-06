@@ -61,6 +61,8 @@ export const AddProduct = async (categoryId, data) => {
 };
 
 export const AdminUpdateProduct = async (productId, categoryId, data) => {
+    console.log(data);
+
     const res = await request.put(`/product`, data, {
         params: {
             productId: productId,

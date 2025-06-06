@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import { EQueryKeys } from '~/constants';
-import { GetOrderProductAdmin } from '~/services/Order';
 import { GetUsers } from '~/services/User';
 
 const useGetUsers = (params) => {

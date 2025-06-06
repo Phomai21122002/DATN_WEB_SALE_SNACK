@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo } from 'react';
 import StarIcon from '@mui/icons-material/Star';
 function StarRate({ className, sizeStar, rating, setRating, gap }) {
     return (

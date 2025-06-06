@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import HeaderTable from '~/components/HeaderTabel';
-import { dataChart, listTitle, options, stats } from './Constant';
+import { listTitle } from './Constant';
 import BodyTabel from '~/components/BodyTabel';
 import { GetOrderStatistic, RemoveSoftOrder } from '~/services/Order';
 import routes from '~/config/routes';
@@ -12,8 +12,6 @@ import Pagination from '~/components/Pagination';
 import SkeletonRow from '~/components/SkeletonRow';
 import PopUpRemove from '~/components/PopUpRemove';
 import StatCardProduct from '~/components/StatCardProduct';
-import StatCardRenevue from '~/components/StatCardRenevue';
-import StatCardDashBoard from '~/components/StatCardDashBoard';
 
 function BoardOrder() {
     const navigate = useNavigate();

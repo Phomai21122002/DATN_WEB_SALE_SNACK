@@ -1,8 +1,6 @@
-import { useEffect, useState, useMemo } from 'react';
-import { GetOrderById, GetOrdersProduct } from '~/services/Order';
+import { useState, useMemo } from 'react';
 import { useStorage } from '~/Contexts';
 import { orderTabs } from './Constant';
-import useGetOrdersUser from '~/hooks/useGetOrdersUser';
 
 function BoardOrder() {
     const { userData } = useStorage();

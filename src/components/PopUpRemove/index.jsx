@@ -1,7 +1,6 @@
 import { memo } from 'react';
 import Button from '../Button';
 import CoverPopUp from '../CoverPopUp';
-import { useStorage } from '~/Contexts';
 
 function PopUpRemove({ title, desc, onRemove, onClose, isRemove }) {
     return (

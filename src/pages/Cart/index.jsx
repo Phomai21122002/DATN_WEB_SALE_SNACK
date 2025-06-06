@@ -7,8 +7,6 @@ import ProductCart from '~/components/ProductCart';
 import routes from '~/config/routes';
 import { useStorage } from '~/Contexts';
 import { DeleteCart, UpdateCart, UpdateCartsOrder } from '~/services/Cart';
-import { OrderProduct } from '~/services/Order';
-import { CreatePaymentVnpay } from '~/services/Payment';
 
 function Cart() {
     const navigate = useNavigate();

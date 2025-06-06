@@ -1,4 +1,3 @@
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import { useState } from 'react';
 
 function SearchSortListOfAdmin({ title, categories, onSortChange, onSearch }) {
