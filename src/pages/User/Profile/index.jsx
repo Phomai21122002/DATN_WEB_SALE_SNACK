@@ -10,7 +10,7 @@ import noImage from '~/assets/images/No-image.png';
 import { uploadMediaToCloudinary } from '~/pages/Admin/CreateProduct/Constant';
 import EditIcon from '@mui/icons-material/Edit';
 import useGetAddresses from '~/hooks/useGetAddresses';
-import CloseIcon from '@mui/icons-material/Close';
+import AddressDropdown from '~/components/AddressDropdown';
 
 function Profile() {
     const navigate = useNavigate();
@@ -52,7 +52,6 @@ function Profile() {
     }, [userData]);
 
     const handleSaveProfile = async (profile) => {
-        console.log('handleSaveProfile');
         const { id, addressId, ...reqProfile } = profile;
         const updatedProfile = {
             ...reqProfile,
@@ -204,41 +203,15 @@ function Profile() {
                         {data?.find((a) => a.id === Number(watch('addressId')))?.name || 'Chọn địa chỉ'}
                     </div>
 
-                    {open && (
-                        <ul className="absolute z-10 bg-white border rounded-md w-full mt-1 shadow max-h-60 overflow-auto">
-                            {data?.map((address) => (
-                                <li
-                                    key={address.id}
-                                    className={`flex justify-between items-center px-2 py-1 hover:bg-gray-100 group ${
-                                        Number(watch('addressId')) === address.id
-                                            ? 'font-bold text-blue-600 bg-blue-50'
-                                            : ''
-                                    }`}
-                                >
-                                    <span
-                                        onClick={() => {
-                                            console.log('addressId');
-                                            setValue('addressId', address.id);
-                                            setOpen(false);
-                                        }}
-                                        className="cursor-pointer text-sm"
-                                    >
-                                        {address.name}
-                                    </span>
-                                    <button
-                                        type="button"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleDeleteAddress(address.id);
-                                        }}
-                                        className="text-red-500 invisible group-hover:visible"
-                                    >
-                                        <CloseIcon className="h-4 w-4" />
-                                    </button>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
+                    <AddressDropdown
+                        open={open}
+                        data={data}
+                        selectedId={Number(watch('addressId'))}
+                        setValue={setValue}
+                        setOpen={setOpen}
+                        onDeleteAddress={handleDeleteAddress}
+                        className={'absolute z-10 bg-white border rounded-md w-full mt-1 shadow max-h-60 overflow-auto'}
+                    />
 
                     <input type="hidden" {...register('addressId', { required: 'Địa chỉ nhà là bắt buộc' })} />
 

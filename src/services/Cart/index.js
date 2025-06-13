@@ -31,12 +31,13 @@ export const GetCarts = async (userId) => {
     }
 };
 
-export const DeleteCart = async (userId, cartId) => {
+export const DeleteCart = async (userId, cartsId) => {
     try {
+        console.log(userId, cartsId);
         const res = await request.delete(`/cart`, {
             data: {
                 userId: userId,
-                cartId: cartId,
+                cartsId: cartsId,
             },
         });
         return res.data;

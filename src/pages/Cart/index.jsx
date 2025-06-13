@@ -11,30 +11,29 @@ import { DeleteCart, UpdateCart, UpdateCartsOrder } from '~/services/Cart';
 function Cart() {
     const navigate = useNavigate();
     const { userData, dataCart, refetchListCart } = useStorage();
-    const [chooseRemove, setChooseRemove] = useState({});
+    const [chooseRemove, setChooseRemove] = useState(null);
+    const [removeAll, setRemoveAll] = useState(false);
 
     const uniqueCategories = useMemo(() => {
         const map = new Map();
-        dataCart &&
-            dataCart?.forEach((item) => {
-                map.set(item.category.id, item.category);
-            });
+        dataCart && dataCart?.forEach((item) => map.set(item.category.id, item.category));
         return [...map.values()];
     }, [dataCart]);
 
-    const updateQuantity = useCallback(async (id, newQuantity) => {
-        if (!dataCart || !Array.isArray(dataCart)) return;
-        const cart = dataCart.find((cart) => cart?.product?.id === id);
-        if (!cart) return;
-        const resUpdateCart = await UpdateCart({
-            userId: userData.id,
-            quantity: newQuantity,
-            isSelectedForOrder: true,
-            cartId: cart.id,
-        });
-        resUpdateCart && (await refetchListCart());
-        // eslint-disable-next-line
-    }, []);
+    const updateQuantity = useCallback(
+        async (id, newQuantity) => {
+            const cart = dataCart?.find((cart) => cart?.product?.id === id);
+            if (!cart) return;
+            const resUpdateCart = await UpdateCart({
+                userId: userData.id,
+                quantity: newQuantity,
+                isSelectedForOrder: true,
+                cartId: cart.id,
+            });
+            resUpdateCart && (await refetchListCart());
+        },
+        [dataCart, userData?.id, refetchListCart],
+    );
 
     const handleChangeCheckCart = async (e, category) => {
         const cartsId = dataCart.filter((product) => product.category.id === category.id).map((product) => product.id);
@@ -54,13 +53,28 @@ function Cart() {
 
     const handleRemoveCart = async (userId, idCart) => {
         try {
-            await DeleteCart(userId, idCart);
+            await DeleteCart(userId, [idCart]);
             await refetchListCart();
-            setChooseRemove({});
+            setChooseRemove(null);
         } catch (error) {
             console.log(error);
         }
     };
+
+    const handleRemoveAllCart = async () => {
+        try {
+            const cartsId = dataCart.filter((cart) => cart.isSelectedForOrder).map((cart) => cart.id);
+            await DeleteCart(userData?.id, cartsId);
+            await refetchListCart();
+            setRemoveAll(false);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const isOpenRemovePopUp = useMemo(() => {
+        return chooseRemove !== null || removeAll;
+    }, [chooseRemove, removeAll]);
 
     return (
         <div className="max-w-[1100px] mx-auto py-8 mt-[64px]">
@@ -115,7 +129,12 @@ function Cart() {
                             )}{' '}
                         sản phẩm)
                     </span>
-                    <button className="text-red-500 text-[16px] font-medium hover:underline">Xóa tất cả</button>
+                    <button
+                        onClick={() => setRemoveAll(true)}
+                        className="text-red-500 text-[16px] font-medium hover:underline"
+                    >
+                        Xóa tất cả
+                    </button>
                 </div>
                 <div className="flex items-center text-[16px] font-medium">
                     <div className="flex items-center justify-center mr-4">
@@ -154,14 +173,17 @@ function Cart() {
                 <MenuProduct title={'Có thể bạn cũng thích'} />
             </div>
 
-            {Object.keys(chooseRemove).length > 0 && (
+            {isOpenRemovePopUp && (
                 <PopUpRemove
-                    id={chooseRemove.id}
-                    title={'Xóa sản phẩm trong giỏ hàng?'}
-                    desc={`Bạn chắc chắn muốn xóa sản phẩm ${chooseRemove?.product?.name} không?`}
-                    onRemove={() => handleRemoveCart(userData?.id, chooseRemove.id)}
-                    onClose={() => setChooseRemove({})}
-                    isRemove={Object.keys(chooseRemove).length > 0}
+                    title={'Xóa sản phẩm trong giỏ hàng'}
+                    desc={
+                        removeAll
+                            ? `Bạn muốn xóa các sản phẩm đang chọn?`
+                            : `Bạn chắc chắn muốn xóa sản phẩm ${chooseRemove?.product?.name} không?`
+                    }
+                    onRemove={removeAll ? handleRemoveAllCart : () => handleRemoveCart(userData?.id, chooseRemove.id)}
+                    onClose={removeAll ? () => setRemoveAll(false) : () => setChooseRemove(null)}
+                    isRemove={isOpenRemovePopUp}
                 />
             )}
         </div>

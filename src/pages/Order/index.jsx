@@ -8,10 +8,16 @@ import routes from '~/config/routes';
 import { useStorage } from '~/Contexts';
 import { OrderProduct } from '~/services/Order';
 import { listPaymentByAcount } from './Constains';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import AddressDropdown from '~/components/AddressDropdown';
+import useGetAddresses from '~/hooks/useGetAddresses';
+import { UpdateAddressByUserId } from '~/services/User';
 
 function Order() {
     const navigate = useNavigate();
-    const { userData, dataCart, refetchListCart } = useStorage();
+    const { userData, dataCart, refetchProfile, refetchListCart } = useStorage();
+    const { data, refetchAddress } = useGetAddresses(userData?.id);
+    const [open, setOpen] = useState(false);
     const [listPayMethod, setListPayMethod] = useState(listPaymentByAcount);
     const [isActivePay, setIsActivePay] = useState(false);
 
@@ -56,30 +62,57 @@ function Order() {
             ),
         );
     };
+    const handleUpdateAddress = async (title, addressId) => {
+        try {
+            await UpdateAddressByUserId({ inputUserId: userData?.id, addressId: addressId });
+            await refetchAddress();
+            await refetchProfile();
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <div className="max-w-[1100px] mx-auto py-8 mt-[64px]">
+            <div onClick={() => navigate(routes.cart)} className="text-black m-8 cursor-pointer hover:text-gray-500 ">
+                <ArrowBackIcon style={{ fontSize: 20, marginRight: 8 }} />
+                <span className="text-[20px] font-medium">Quay lại</span>
+            </div>
             <BackgroundCart className="flex-col justify-end">
                 <div className="text-red-500">
                     <AddLocationAltIcon style={{ fontSize: 20, marginRight: 8 }} />
                     <span className="text-[20px] font-medium">Địa Chỉ Nhận Hàng</span>
                 </div>
-                <div className="flex items-center text-black-400 space-x-4">
+                <div className="relative flex items-center text-black-400 space-x-4">
                     <div className="flex items-center font-bold">
-                        <span className="text-[16px]">Username</span>
-                        <span className="text-[16px]">Phone</span>
+                        <span className="text-[16px] mr-8">{userData?.lastName + ' ' + userData?.firstName}</span>
+                        <span className="text-[16px] mr-4">{userData?.phone}</span>
                     </div>
-                    <div className="text-[16px] font-medium">Address</div>
+                    <div className="text-[16px] font-medium">
+                        {userData?.addresses.find((address) => address.isDefault).name}
+                    </div>
                     <div className="text-[12px] text-red-400 font-sm ring-1 ring-red-400 p-[2px]">Mặc Định</div>
-                    <div className="text-[16px] text-blue-400 font-sm cursor-pointer">Thay đổi</div>
+                    <div onClick={() => setOpen(true)} className="text-[16px] text-blue-400 font-sm cursor-pointer">
+                        Thay đổi
+                    </div>
+                    <AddressDropdown
+                        open={open}
+                        data={data}
+                        selectedId={userData?.addresses.find((address) => address.isDefault).id}
+                        setValue={handleUpdateAddress}
+                        setOpen={setOpen}
+                        className={
+                            'absolute right-28 top-10 z-8 bg-white border rounded-md w-[50%] mt-1 shadow max-h-60 overflow-auto'
+                        }
+                    />
                 </div>
             </BackgroundCart>
 
             <BackgroundCart className={'items-center'}>
                 <div className="flex-grow text-sm text-gray-900 font-medium">Sản phẩm</div>
-                <div className="w-32 text-center text-sm text-gray-500 font-medium">Đơn giá</div>
-                <div className="w-32 text-center text-sm text-gray-500 font-medium">Số lượng</div>
-                <div className="w-32 text-center text-sm text-gray-500 font-medium">Số tiền</div>
+                <div className="w-1/5 text-center text-sm text-gray-500 font-medium">Đơn giá</div>
+                <div className="w-1/5 text-center text-sm text-gray-500 font-medium">Số lượng</div>
+                <div className="w-1/5 text-center text-sm text-gray-500 font-medium">Số tiền</div>
             </BackgroundCart>
             <div className="flex flex-col items-center bg-white">
                 <BackgroundCart className="w-full justify-between items-center">

@@ -18,7 +18,7 @@ function ProductCart({ product, onUpdateQuantity, setChooseRemove }) {
         const res = await UpdateCartsOrder({ userId: userData.id, cartsId: [product.id] });
         if (res) await refetchListCart();
     }, [product.id, userData.id, refetchListCart]);
-    console.log(product);
+
     return (
         <>
             <input

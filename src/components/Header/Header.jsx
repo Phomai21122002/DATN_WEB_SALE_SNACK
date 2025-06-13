@@ -89,7 +89,7 @@ const Header = () => {
                 </div>
 
                 <div className="flex items-center space-x-4 sm:space-x-6 text-lg font-bold text-[12px]">
-                    <div className="flex relative items-center border border-gray-300 rounded-md px-2 hover:border-gray-400 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition duration-200">
+                    <div className="flex relative items-center border border-gray-300 rounded-md mx-2 hover:border-gray-400 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition duration-200">
                         <input
                             type="text"
                             name="no-autocomplete"

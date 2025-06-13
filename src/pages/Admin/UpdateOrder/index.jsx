@@ -55,17 +55,17 @@ function UpdateOrder() {
                 break;
         }
     };
-    console.log();
+
     return (
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
             <div className="max-w-[1100px] mx-auto py-8">
                 <BackgroundCart className={'items-center'}>
                     <div className="flex-grow text-sm text-gray-900 font-medium">Hình ảnh</div>
-                    <div className="w-32 text-center text-sm text-gray-500 font-medium">Tên sản phẩm</div>
-                    <div className="w-32 text-center text-sm text-gray-500 font-medium">Giá</div>
-                    <div className="w-32 text-center text-sm text-gray-500 font-medium">Số lượng</div>
-                    <div className="w-32 text-center text-sm text-gray-500 font-medium">Số tiền</div>
-                    <div className="w-32 text-center text-sm text-gray-500 font-medium">Ngày đặt hàng</div>
+                    <div className="w-1/6 text-center text-sm text-gray-500 font-medium">Tên sản phẩm</div>
+                    <div className="w-1/6 text-center text-sm text-gray-500 font-medium">Giá</div>
+                    <div className="w-1/6 text-center text-sm text-gray-500 font-medium">Số lượng</div>
+                    <div className="w-1/6 text-center text-sm text-gray-500 font-medium">Số tiền</div>
+                    <div className="w-1/6 text-center text-sm text-gray-500 font-medium">Ngày đặt hàng</div>
                 </BackgroundCart>
                 <div className="flex flex-col items-center bg-white">
                     <BackgroundCart className="w-full justify-between items-center">
@@ -104,8 +104,7 @@ function UpdateOrder() {
                         <div className="flex justify-between items-center">
                             <span className="text-gray-700">Tổng tiền hàng ({order?.countProduct ?? 0} sản phẩm):</span>
                             <span className="text-black font-semibold">
-                                {order?.products?.reduce((sum, p) => sum + p.price * p.quantity, 0)?.toLocaleString() ??
-                                    0}
+                                {order?.products?.reduce((sum, p) => sum + p.price * p.count, 0)?.toLocaleString() ?? 0}
                                 đ
                             </span>
                         </div>
