@@ -23,7 +23,9 @@ function Cart() {
     }, [dataCart]);
 
     const updateQuantity = useCallback(async (id, newQuantity) => {
-        const cart = dataCart && dataCart.find((cart) => cart.product.id === id);
+        if (!dataCart || !Array.isArray(dataCart)) return;
+        const cart = dataCart.find((cart) => cart?.product?.id === id);
+        if (!cart) return;
         const resUpdateCart = await UpdateCart({
             userId: userData.id,
             quantity: newQuantity,
@@ -108,7 +110,7 @@ function Cart() {
                         {dataCart &&
                             dataCart.reduce(
                                 (count, item) =>
-                                    item.isSelectedForOrder === true ? count + item.product.quantity : count,
+                                    item.isSelectedForOrder === true ? count + item.product.count : count,
                                 0,
                             )}{' '}
                         sản phẩm)
@@ -122,7 +124,7 @@ function Cart() {
                             {dataCart &&
                                 dataCart.reduce(
                                     (count, item) =>
-                                        item.isSelectedForOrder === true ? count + item.product.quantity : count,
+                                        item.isSelectedForOrder === true ? count + item.product.count : count,
                                     0,
                                 )}
                         </span>{' '}
@@ -135,7 +137,7 @@ function Cart() {
                                             item.isSelectedForOrder === true ? count + (item?.total || 0) : count,
                                         0,
                                     )
-                                    .toLocaleString()}
+                                    .toLocaleString('vi-VN')}
                             ₫
                         </span>
                     </div>
@@ -148,13 +150,15 @@ function Cart() {
                 </div>
             </BackgroundCart>
 
-            <MenuProduct title={'Có thể bạn cũng thích'} />
+            <div className="lg:px-0 px-2">
+                <MenuProduct title={'Có thể bạn cũng thích'} />
+            </div>
 
             {Object.keys(chooseRemove).length > 0 && (
                 <PopUpRemove
                     id={chooseRemove.id}
-                    title={'Delete Product In Cart?'}
-                    desc={`Are you sure you want to delete this product ${chooseRemove?.product?.name}?`}
+                    title={'Xóa sản phẩm trong giỏ hàng?'}
+                    desc={`Bạn chắc chắn muốn xóa sản phẩm ${chooseRemove?.product?.name} không?`}
                     onRemove={() => handleRemoveCart(userData?.id, chooseRemove.id)}
                     onClose={() => setChooseRemove({})}
                     isRemove={Object.keys(chooseRemove).length > 0}

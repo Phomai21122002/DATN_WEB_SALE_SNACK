@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FilterList } from '@mui/icons-material';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { useStorage } from '~/Contexts';
@@ -13,18 +12,18 @@ import useGetCategories from '~/hooks/useGetCategories';
 import useGetProductsByIdCategory from '~/hooks/useGetProductsByIdCategory';
 import Pagination from '~/components/Pagination';
 import SkeletonProduct from '~/components/SkeletonProduct';
+import FilterSidebar from '~/components/FilterSidebar';
 
-function Search() {
+function CategoryDetail() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { id: idCategory } = useParams();
     const [products, setProducts] = useState([]);
     const { userData } = useStorage();
     const [page, setPage] = useState(1);
-    const productsPerPage = 9;
+    const productsPerPage = 12;
     const [paginatedProducts, setPaginatedProducts] = useState([]);
     const [sortOrder, setSortOrder] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState(idCategory || '');
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
 
@@ -34,12 +33,12 @@ function Search() {
         if (sortOrder === 'Thấp đến Cao') isDecsending = false;
         else if (sortOrder === 'Cao đến Thấp') isDecsending = true;
         return {
-            categoryId: selectedCategory,
+            categoryId: idCategory,
             PageNumber: page,
             PageSize: productsPerPage,
             isDecsending: isDecsending,
         };
-    }, [page, selectedCategory, sortOrder]);
+    }, [page, idCategory, sortOrder]);
     const { data, isLoading } = useGetProductsByIdCategory(filters);
 
     const totalPages = useMemo(() => {
@@ -71,15 +70,13 @@ function Search() {
     }, [page, products, sortOrder, minPrice, maxPrice]);
 
     useEffect(() => {
-        if (Number(selectedCategory)) {
+        if (Number(idCategory)) {
             let filteredProducts = [...products];
-            setPaginatedProducts(
-                filteredProducts.filter((product) => product.category.id === Number(selectedCategory)),
-            );
+            setPaginatedProducts(filteredProducts.filter((product) => product.category.id === Number(idCategory)));
         } else {
             setPaginatedProducts(products);
         }
-    }, [selectedCategory, products]);
+    }, [idCategory, products]);
 
     const addToCart = async (productId, quantity) => {
         if (userData && Object.keys(userData).length > 0) {
@@ -109,57 +106,30 @@ function Search() {
         setSortOrder(event.target.value);
     };
 
-    const handleCategoryChange = (event) => {
-        setSelectedCategory(event.target.value);
-    };
-
     return (
-        <div className="flex pt-20 max-w-[1100px] mx-auto px-8">
-            <div className="w-1/4 p-4 border-r border-gray-200">
-                <div className="font-semibold text-lg mb-6 flex items-center">
-                    <FilterList className="mr-2 text-gray-500" /> Bộ lọc tìm kiếm
-                </div>
-
-                <div className="mb-6">
-                    <div className="text-sm font-medium mb-2">Theo Danh Mục</div>
-                    <select
-                        value={selectedCategory}
-                        onChange={handleCategoryChange}
-                        className="w-full p-2 border border-gray-300 rounded text-sm"
-                    >
-                        <option value={0}>Chọn loại sản phẩm</option>
-                        {categories &&
-                            categories.map((category) => (
-                                <option key={category.id} value={category.id}>
-                                    {category.name}
-                                </option>
-                            ))}
-                    </select>
-                </div>
-
-                <div className="mb-6">
-                    <div className="text-sm font-medium mb-2">Theo Giá</div>
-                    <div className="flex justify-between text-xs">
-                        <input
-                            type="number"
-                            className="w-1/2 p-2 border border-gray-300 rounded"
-                            placeholder="Từ"
-                            value={minPrice}
-                            onChange={(e) => setMinPrice(e.target.value)}
-                        />
-                        <span className="mx-1">-</span>
-                        <input
-                            type="number"
-                            className="w-1/2 p-2 border border-gray-300 rounded"
-                            placeholder="Đến"
-                            value={maxPrice}
-                            onChange={(e) => setMaxPrice(e.target.value)}
-                        />
-                    </div>
-                </div>
+        <div className="flex pt-20 max-w-[1100px] mx-auto md:px-8">
+            <div className="hidden md:block w-1/4 p-4 border-r border-gray-200">
+                <FilterSidebar
+                    setMinPrice={setMinPrice}
+                    setMaxPrice={setMaxPrice}
+                    categories={categories}
+                    minPrice={minPrice}
+                    maxPrice={maxPrice}
+                    selectedCategory={idCategory}
+                />
             </div>
 
             <div className="flex-1 p-4">
+                <div className="block md:hidden w-full p-4 border-b border-gray-200 mb-4">
+                    <FilterSidebar
+                        setMinPrice={setMinPrice}
+                        setMaxPrice={setMaxPrice}
+                        categories={categories}
+                        minPrice={minPrice}
+                        maxPrice={maxPrice}
+                        selectedCategory={idCategory}
+                    />
+                </div>
                 <div className="flex justify-between mb-6 items-center mt-3">
                     <div className="flex items-center">
                         <div className="text-sm text-gray-500 mr-4">Sắp xếp theo:</div>
@@ -175,7 +145,7 @@ function Search() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grip-cols-3 gap-2">
                     {isLoading
                         ? Array.from({ length: productsPerPage }).map((_, index) => <SkeletonProduct key={index} />)
                         : paginatedProducts?.map((product) => (
@@ -187,12 +157,12 @@ function Search() {
                               />
                           ))}
                 </div>
-                <div className="flex justify-end mt-8 items-center">
-                    <Pagination page={page} setPage={setPage} totalPages={totalPages} className={'m-8 justify-end'} />
+                <div className="flex justify-end mt-4 items-center">
+                    <Pagination page={page} setPage={setPage} totalPages={totalPages} className={'justify-end'} />
                 </div>
             </div>
         </div>
     );
 }
 
-export default Search;
+export default CategoryDetail;

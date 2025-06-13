@@ -138,6 +138,16 @@ export const AddAddressByUserId = async ({ inputUserId, name, code }) => {
     return res.data;
 };
 
+export const DeleteAddress = async ({ inputUserId, addressId }) => {
+    const res = await request.delete(`/address`, {
+        params: {
+            inputUserId: inputUserId,
+            addressId: addressId,
+        },
+    });
+    return res.data;
+};
+
 export const GetAddressesByUserId = async ({ inputUserId }) => {
     const res = await request.get(`/address/addresses`, {
         params: {

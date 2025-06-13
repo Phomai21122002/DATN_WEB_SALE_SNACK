@@ -35,7 +35,7 @@ const routes = {
     product: '/product/:slug',
     cart: '/cart',
     order: '/order',
-    search: '/search/:id',
+    categoryDetail: '/category/:id',
     login: '/login',
     signup: '/signup',
     reset: '/reset',

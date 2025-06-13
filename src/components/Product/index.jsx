@@ -22,14 +22,16 @@ function Product({ product, updateQuantity, addToCart }) {
                 </div>
             </Link>
 
-            <div className="px-2">
+            <div className="p-2">
                 <Link to={`${routes.product.replace('/:slug', '')}/${product.slug}`}>
                     <div className="h-[86px] mb-2">
                         <h3 className="my-2 text-[16px] font-semibold cursor-pointer line-clamp-2">{product.name}</h3>
                         <p className="text-sm text-gray-600 cursor-pointer line-clamp-2">{product.description}</p>
                     </div>
                     <div className="flex items-center justify-between">
-                        <p className="text-lg my-2 text-red-600">{product.price} đ</p>
+                        <p className="text-lg my-2 text-red-600">
+                            {Number(product.price).toLocaleString('vi-VN', { currency: 'VND' })} đ
+                        </p>
                         <p className="text-[12px] my-2 text-gray-600">còn {product.quantity} sp</p>
                     </div>
                 </Link>

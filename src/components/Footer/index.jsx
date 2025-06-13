@@ -13,12 +13,11 @@ function Footer() {
                     {/* <!-- TW Elements section --> */}
                     <div className="">
                         <h6 className="mb-4 flex items-center justify-center text-sm font-semibold md:justify-start">
-                            <Link to={routes.home}>
-                                <img
-                                    src={logoSale}
-                                    alt="Logo"
-                                    className="w-14 h-14 object-contain cursor-pointer mr-2"
-                                />
+                            <Link
+                                to={routes.home}
+                                className="w-14 h-14 overflow-hidden rounded-full mr-2 cursor-pointer"
+                            >
+                                <img src={logoSale} alt="Logo" className="object-contain" />
                             </Link>
                             Phô Mai Shop
                         </h6>

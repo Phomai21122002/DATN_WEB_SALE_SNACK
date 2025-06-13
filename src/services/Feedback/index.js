@@ -20,3 +20,24 @@ export const GetFeedBacks = async ({ userId, productId, PageNumber = 1, PageSize
     });
     return res.data;
 };
+
+export const DeleteFeedBack = async (userId, feedbackId) => {
+    const res = await request.delete(`/feedback`, {
+        params: {
+            inputUserId: userId,
+            feedbackId: feedbackId,
+        },
+    });
+    return res.data;
+};
+
+export const UpdateFeedBack = async (userId, feedbackId, data) => {
+    console.log(userId, feedbackId, data);
+    const res = await request.put(`/feedback`, data, {
+        params: {
+            inputUserId: userId,
+            feedbackId: feedbackId,
+        },
+    });
+    return res.data;
+};

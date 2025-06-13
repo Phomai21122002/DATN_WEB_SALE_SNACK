@@ -4,7 +4,7 @@ import SliderImg from '~/components/SliderImg';
 
 function Home() {
     return (
-        <div className="max-w-[1100px] mx-auto px-8">
+        <div className="max-w-[1100px] mx-auto px-2 sm:px-4 md:px-8 lg:px-8">
             <SliderImg />
             <MenuCategory />
             <MenuProduct title={'Sản phẩm mới nhất'} />

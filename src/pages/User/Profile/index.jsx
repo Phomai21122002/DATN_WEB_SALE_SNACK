@@ -3,13 +3,14 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
 import routes from '~/config/routes';
-import { UpdateUserById, UpdateAddressByUserId } from '~/services/User';
+import { UpdateUserById, UpdateAddressByUserId, DeleteAddress } from '~/services/User';
 import { useStorage } from '~/Contexts';
 import AddAddress from '~/components/AddAddress';
 import noImage from '~/assets/images/No-image.png';
 import { uploadMediaToCloudinary } from '~/pages/Admin/CreateProduct/Constant';
 import EditIcon from '@mui/icons-material/Edit';
 import useGetAddresses from '~/hooks/useGetAddresses';
+import CloseIcon from '@mui/icons-material/Close';
 
 function Profile() {
     const navigate = useNavigate();
@@ -18,12 +19,14 @@ function Profile() {
         handleSubmit,
         reset,
         watch,
+        setValue,
         formState: { errors },
     } = useForm();
     const { userData, refetchProfile } = useStorage();
     const [activeAddAddress, setActiveAddAddress] = useState(false);
     const [image, setImage] = useState(watch('url'));
     const { data, refetchAddress } = useGetAddresses(userData?.id);
+    const [open, setOpen] = useState(false);
     useEffect(() => {
         const getProfileOfUser = async () => {
             try {
@@ -49,6 +52,7 @@ function Profile() {
     }, [userData]);
 
     const handleSaveProfile = async (profile) => {
+        console.log('handleSaveProfile');
         const { id, addressId, ...reqProfile } = profile;
         const updatedProfile = {
             ...reqProfile,
@@ -84,12 +88,22 @@ function Profile() {
         }
     };
 
+    const handleDeleteAddress = async (addressIdToDelete) => {
+        try {
+            await DeleteAddress({ inputUserId: userData?.id, addressId: addressIdToDelete });
+            setOpen(false);
+            await refetchAddress();
+        } catch (err) {
+            console.error('Lỗi khi xóa địa chỉ:', err);
+        }
+    };
+
     return (
         <div className="flex flex-col items-center justify-center mt-24 bg-white p-4">
             <h2 className="text-xl font-bold mb-4 uppercase">Thông Tin Người Dùng</h2>
             <form
                 onSubmit={handleSubmit(handleSaveProfile)}
-                className="bg-gray-300 min-w-[1000px] p-4 flex flex-col gap-4 shadow-md rounded-lg overflow-hidden"
+                className="bg-gray-300 min-w-[1000px] p-4 flex flex-col gap-4 shadow-md rounded-lg"
             >
                 <div
                     className="relative w-32 h-32 mb-4 mx-auto group cursor-pointer"
@@ -100,7 +114,6 @@ function Profile() {
                         alt="Avatar"
                         className="w-full h-full object-cover rounded-full border-2 border-gray-400 group-hover:border-blue-500 transition-all duration-300"
                     />
-                    {/* Overlay khi hover */}
                     <div className="absolute inset-0 bg-black bg-opacity-30 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                         <EditIcon className="text-white w-6 h-6" />
                     </div>
@@ -139,7 +152,7 @@ function Profile() {
                     <label className="block text-sm font-bold mb-1">Email</label>
                     <input
                         type="email"
-                        className="w-full text-sm p-2 border rounded-md"
+                        className="w-full text-sm p-2 border rounded-md bg-gray-100"
                         {...register('email', {
                             required: 'Email là bắt buộc',
                             pattern: {
@@ -148,6 +161,7 @@ function Profile() {
                             },
                         })}
                         placeholder="Nhập email"
+                        readOnly
                     />
                     {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
                 </div>
@@ -171,7 +185,7 @@ function Profile() {
                 {activeAddAddress && (
                     <AddAddress refetchAddress={refetchAddress} setActiveAddAddress={setActiveAddAddress} />
                 )}
-                <div className="flex-1">
+                <div className="relative w-full">
                     <div className="flex items-center justify-between">
                         <label className="block text-sm font-bold mb-1">Địa chỉ</label>
                         <button
@@ -179,20 +193,55 @@ function Profile() {
                             className="bg-red-500 text-sm text-white p-1 rounded-md hover:bg-red-600"
                             onClick={() => setActiveAddAddress(!activeAddAddress)}
                         >
-                            <AddIcon />
+                            <AddIcon fontSize="small" />
                         </button>
                     </div>
-                    <select
-                        className="w-full text-sm p-2 border rounded-md"
-                        {...register('addressId', { required: 'Địa chỉ nhà là bắt buộc' })}
+
+                    <div
+                        className="border rounded-md p-2 text-sm cursor-pointer bg-white"
+                        onClick={() => setOpen(!open)}
                     >
-                        <option value="">Chọn địa chỉ</option>
-                        {data?.map((address, index) => (
-                            <option key={index} value={address.id}>
-                                {address.name}
-                            </option>
-                        ))}
-                    </select>
+                        {data?.find((a) => a.id === Number(watch('addressId')))?.name || 'Chọn địa chỉ'}
+                    </div>
+
+                    {open && (
+                        <ul className="absolute z-10 bg-white border rounded-md w-full mt-1 shadow max-h-60 overflow-auto">
+                            {data?.map((address) => (
+                                <li
+                                    key={address.id}
+                                    className={`flex justify-between items-center px-2 py-1 hover:bg-gray-100 group ${
+                                        Number(watch('addressId')) === address.id
+                                            ? 'font-bold text-blue-600 bg-blue-50'
+                                            : ''
+                                    }`}
+                                >
+                                    <span
+                                        onClick={() => {
+                                            console.log('addressId');
+                                            setValue('addressId', address.id);
+                                            setOpen(false);
+                                        }}
+                                        className="cursor-pointer text-sm"
+                                    >
+                                        {address.name}
+                                    </span>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleDeleteAddress(address.id);
+                                        }}
+                                        className="text-red-500 invisible group-hover:visible"
+                                    >
+                                        <CloseIcon className="h-4 w-4" />
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+
+                    <input type="hidden" {...register('addressId', { required: 'Địa chỉ nhà là bắt buộc' })} />
+
                     {errors.addressId && <p className="text-red-500 text-sm">{errors.addressId.message}</p>}
                 </div>
 

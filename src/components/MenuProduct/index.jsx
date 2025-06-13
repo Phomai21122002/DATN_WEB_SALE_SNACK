@@ -14,7 +14,7 @@ function MenuProduct({ title }) {
     const [page, setPage] = useState(1);
     const { userData, refetchListCart } = useStorage();
 
-    const filters = useMemo(() => ({ PageNumber: page }), [page]);
+    const filters = useMemo(() => ({ PageSize: 12, PageNumber: page }), [page]);
     const [allProducts, setAllProducts] = useState([]);
     const { data, isLoading } = useGetProducts(filters);
 
@@ -55,9 +55,9 @@ function MenuProduct({ title }) {
             <div className="flex text-xl text-gray-500 font-medium mb-4 uppercase">{title}</div>
             <div className="relative">
                 <div className="overflow-hidden">
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 transition-all duration-500 p-1">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-2 transition-all duration-500 p-1">
                         {isLoading
-                            ? Array.from({ length: 10 }).map((_, index) => <SkeletonProduct key={index} />)
+                            ? Array.from({ length: 12 }).map((_, index) => <SkeletonProduct key={index} />)
                             : allProducts.map((product) => (
                                   <Product
                                       key={product.id}

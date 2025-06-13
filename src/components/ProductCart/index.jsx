@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
@@ -9,16 +9,16 @@ import { UpdateCartsOrder } from '~/services/Cart';
 
 function ProductCart({ product, onUpdateQuantity, setChooseRemove }) {
     const { userData, dataCart, refetchListCart } = useStorage();
-    const handleDelProduct = async (idCart) => {
-        const cart = dataCart.find((cart) => cart.id === idCart);
-        console.log(cart);
+    const handleDelProduct = useCallback(() => {
+        const cart = dataCart.find((cart) => cart.id === product.id);
         setChooseRemove(cart);
-    };
+    }, [product.id, dataCart, setChooseRemove]);
 
-    const handleCheckedProduct = async (idProduct) => {
-        const resUpdateCart = await UpdateCartsOrder({ userId: userData.id, cartsId: [idProduct] });
-        resUpdateCart && (await refetchListCart());
-    };
+    const handleCheckedProduct = useCallback(async () => {
+        const res = await UpdateCartsOrder({ userId: userData.id, cartsId: [product.id] });
+        if (res) await refetchListCart();
+    }, [product.id, userData.id, refetchListCart]);
+    console.log(product);
     return (
         <>
             <input
@@ -35,16 +35,18 @@ function ProductCart({ product, onUpdateQuantity, setChooseRemove }) {
                 <div className="text-sm font-medium">{product?.product.name}</div>
             </Link>
             <div className="w-32 text-center text-black text-sm font-medium">
-                {product?.product.price.toLocaleString()}₫
+                {Number(product?.product.price).toLocaleString('vi-VN', { currency: 'VND' })}₫
             </div>
             <div className="w-32 flex justify-center">
                 <QuantitySelector
                     product={product.product}
-                    quantity={product.product.quantity}
+                    quantity={product.product.count}
                     onUpdateQuantity={onUpdateQuantity}
                 />
             </div>
-            <div className="w-32 text-center text-sm text-red-500 font-medium">{product?.total.toLocaleString()}₫</div>
+            <div className="w-32 text-center text-sm text-red-500 font-medium">
+                {Number(product?.total).toLocaleString('vi-VN', { currency: 'VND' })}₫
+            </div>
             <div className="w-32 text-center font-medium leading-none">
                 <button
                     onClick={() => handleDelProduct(product.id)}

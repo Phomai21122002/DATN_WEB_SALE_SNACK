@@ -14,7 +14,6 @@ function UpdateProduct() {
     const editor = useRef(null);
     const config = {
         placeholder: 'Nhập mô tả chi tiết về sản phẩm...',
-        style: { backgroundColor: 'rgb(243 244 246)' },
     };
     const [categories, setCategories] = useState([]);
     const [images, setImages] = useState([]);
@@ -159,17 +158,6 @@ function UpdateProduct() {
                                 config={config}
                                 onBlur={field.onBlur}
                                 onChange={(newContent) => field.onChange(newContent)}
-                                onPaste={(event) => {
-                                    const clipboardData = event.clipboardData || window.clipboardData;
-                                    if (clipboardData) {
-                                        let pastedData = clipboardData.getData('text/html');
-                                        if (pastedData) {
-                                            pastedData = pastedData.replace(/background-color\s*:\s*[^;"]+;?/gi, '');
-                                            event.preventDefault();
-                                            editor.current.editor.selection.insertHTML(pastedData);
-                                        }
-                                    }
-                                }}
                             />
                         )}
                     />

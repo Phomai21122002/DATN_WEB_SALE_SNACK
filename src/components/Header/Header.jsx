@@ -72,10 +72,10 @@ const Header = () => {
         <div className="flex items-center justify-center fixed top-0 left-0 w-full z-50 bg-white shadow-md">
             <div className="flex items-center justify-between max-w-[1080px] w-full px-6 py-1">
                 <div className="flex items-center space-x-6">
-                    <Link to={routes.home}>
+                    <Link to={routes.home} className="mr-4">
                         <img src={logoSale} alt="Logo" className="w-14 h-14 object-contain cursor-pointer" />
                     </Link>
-                    <div className="flex items-center space-x-4 font-bold text-[12px] uppercase">
+                    <div className="items-center space-x-4 font-bold text-[12px] uppercase hidden sm:flex">
                         {menuHeader.map((item, index) => (
                             <div
                                 key={index}
@@ -88,8 +88,8 @@ const Header = () => {
                     </div>
                 </div>
 
-                <div className="flex items-center space-x-6 text-lg font-bold text-[12px]">
-                    <div className="flex relative items-center border border-gray-300 rounded-md pl-2 hover:border-gray-400 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition duration-200">
+                <div className="flex items-center space-x-4 sm:space-x-6 text-lg font-bold text-[12px]">
+                    <div className="flex relative items-center border border-gray-300 rounded-md px-2 hover:border-gray-400 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition duration-200">
                         <input
                             type="text"
                             name="no-autocomplete"
@@ -117,11 +117,11 @@ const Header = () => {
                         )}
                     </div>
 
-                    <Link to={routes.cart} className="flex items-center space-x-2 hover:text-yellow-400 cursor-pointer">
+                    <Link to={routes.cart} className="flex items-center hover:text-yellow-400 cursor-pointer">
                         <div
                             onMouseEnter={handleClickCart}
                             onMouseLeave={handleCloseCart}
-                            className="flex items-center space-x-2"
+                            className="flex items-center sm:space-x-2"
                         >
                             <button aria-describedby={idCart} variant="contained">
                                 <Badge badgeContent={dataCart?.length} color="primary">

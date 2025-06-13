@@ -59,7 +59,7 @@ function BoardOrderConfirm({ selectedOrder, setSelectedOrder, selectedStatus }) 
         },
         [expandedOrderId, userData?.id, setSelectedOrder],
     );
-    console.log(selectedOrder);
+
     return (
         <div className="flex justify-center pb-8 bg-white shadow-md rounded-lg overflow-hidden">
             <div className="max-w-[1100px] mx-auto py-8 w-full">

@@ -100,7 +100,7 @@ function PopperCart({ id, open, anchorEl, dataCart, onClose }) {
                                                 variant="body2"
                                                 sx={{ color: 'text.secondary', marginTop: 0.5 }}
                                             >
-                                                Số lượng: {cart?.product.quantity}
+                                                Số lượng: {cart?.product.count}
                                             </Typography>
                                         </Box>
                                         <Typography
@@ -144,7 +144,7 @@ function PopperCart({ id, open, anchorEl, dataCart, onClose }) {
                                 }}
                             >
                                 {dataCart
-                                    .reduce((total, item) => total + item?.product?.price * item?.product.quantity, 0)
+                                    .reduce((total, item) => total + item?.product?.price * item?.product.count, 0)
                                     .toLocaleString()}{' '}
                                 ₫
                             </Typography>
