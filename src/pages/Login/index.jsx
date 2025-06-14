@@ -55,6 +55,7 @@ const Login = memo(() => {
         setIsLoading(true);
         SignIn(email, password)
             .then(async (res) => {
+                console.log(res);
                 if (!res.isConfirmEmail) {
                     setLoginEmail(email);
                     setShowCodePopup(true);
@@ -175,7 +176,9 @@ const Login = memo(() => {
                 </div>
             </div>
             {isLoading && <Loading />}
-            {showCodePopup && <PopUpCode email={loginEmail} onBack={setShowCodePopup(false)} onVerify={handleVerify} />}
+            {showCodePopup && (
+                <PopUpCode email={loginEmail} onBack={() => setShowCodePopup(false)} onVerify={handleVerify} />
+            )}
         </div>
     );
 });

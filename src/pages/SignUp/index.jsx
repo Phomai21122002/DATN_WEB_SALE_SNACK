@@ -41,7 +41,7 @@ function SignUp() {
             })
             .catch((err) => {
                 console.error(err);
-                toast.error('Register account fail');
+                toast.error('Đăng ký không thành công');
             });
     };
 
@@ -203,7 +203,7 @@ function SignUp() {
             </div>
 
             {showCodePopup && (
-                <PopUpCode email={registeredEmail} onBack={setShowCodePopup(false)} onVerify={handleVerify} />
+                <PopUpCode email={registeredEmail} onBack={() => setShowCodePopup(false)} onVerify={handleVerify} />
             )}
         </div>
     );

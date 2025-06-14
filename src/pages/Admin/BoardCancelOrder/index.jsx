@@ -89,6 +89,7 @@ function BoardCancelOrder() {
                                     status={true}
                                     item={order}
                                     onShow={handleShow}
+                                    onDel={setChooseRemove}
                                 />
                             ))
                         ) : (

@@ -78,7 +78,7 @@ function Purchase({ product, refetch, date = null }) {
                         />
                         <div>
                             <div className="font-medium text-gray-800">{product?.product?.name}</div>
-                            <div className="text-sm text-gray-500">x{product?.product?.quantity}</div>
+                            <div className="text-sm text-gray-500">x{product?.product?.count}</div>
                         </div>
                     </div>
 
@@ -92,7 +92,7 @@ function Purchase({ product, refetch, date = null }) {
                     <div className="flex items-center justify-end gap-x-4 mb-4 text-[20px] font-semibold text-gray-700">
                         <span>Thành tiền:</span>
                         <span className="text-red-500">
-                            {(product?.product?.quantity * product?.product?.price).toLocaleString()}đ
+                            {(product?.product?.count * product?.product?.price).toLocaleString()}đ
                         </span>
                     </div>
                     {product?.product?.status === 1 || product?.product?.status === 2 ? (
@@ -122,8 +122,8 @@ function Purchase({ product, refetch, date = null }) {
             {chooseRemove && (
                 <PopUpRemove
                     id={chooseRemove.id}
-                    title={'Xóa sản phẩm trong đơn hàng?'}
-                    desc={`Bạn có chắc chắn là muốn xóa sản phẩm ${chooseRemove?.product?.name} trong đơn hàng ${chooseRemove?.name} này không?`}
+                    title={'Hủy sản phẩm trong đơn hàng'}
+                    desc={`Bạn có chắc chắn là muốn hủy sản phẩm ${chooseRemove?.product?.name} trong đơn hàng ${chooseRemove?.name} không?`}
                     onRemove={() => RemoveProduct()}
                     onClose={() => setChooseRemove({})}
                     isRemove={Object.keys(chooseRemove).length > 0}

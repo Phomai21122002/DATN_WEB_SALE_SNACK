@@ -40,8 +40,6 @@ export const GetOrderProductAdmin = async ({
     SortBy,
     PageNumber = 1,
     PageSize = 10,
-    StartDate = '',
-    EndDate = '',
 }) => {
     const res = await request.get(`/order/admin/orders`, {
         params: { inputUserId: userId, inputStatus: Status, Name, SortBy, isDecsending, PageNumber, PageSize },

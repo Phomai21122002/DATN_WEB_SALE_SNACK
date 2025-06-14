@@ -9,17 +9,21 @@ import useGetUsers from '~/hooks/useGetUsers';
 import Pagination from '~/components/Pagination';
 import SkeletonRow from '~/components/SkeletonRow';
 import noImage from '~/assets/images/No-image.png';
+import { removeVietnameseTones } from '../Category/Constant';
+import PopUpRemove from '~/components/PopUpRemove';
 
 function BoardUser() {
     const navigate = useNavigate();
     const [users, setUsers] = useState([]);
     const [page, setPage] = useState(1);
     const [allUser, setAllUser] = useState([]);
-    const [idSort, setIdSort] = useState(null);
+    const [nameSearch, setNameSearch] = useState(null);
+    const [chooseRemove, setChooseRemove] = useState({});
+
     const params = useMemo(() => {
-        return { PageNumber: page };
-    }, [page]);
-    const { data, isLoading } = useGetUsers(params);
+        return { PageNumber: page, Name: nameSearch };
+    }, [page, nameSearch]);
+    const { data, isLoading, refetch } = useGetUsers(params);
 
     const totalPages = useMemo(() => {
         const totalCount = data?.totalCount || 0;
@@ -30,22 +34,21 @@ function BoardUser() {
         setAllUser(data?.datas || []);
         setUsers(data?.datas || []);
     }, [data]);
-    console.log(users);
+
     const editOrder = (id) => {
         navigate(routes.adminUpdateUser.replace(':id', id));
     };
-    const deleteOrder = async (id) => {
+    const deleteOrder = async (user) => {
         try {
-            console.log(id);
-            await DeleteUserById(id);
-            setUsers((prev) => prev.filter((User) => User.id !== id));
+            await DeleteUserById(user?.id);
+            refetch();
+            setChooseRemove({});
         } catch (error) {
             console.error('Error fetching User data: ', error);
         }
     };
 
     const handleSortChange = (id) => {
-        setIdSort(Number(id));
         if (Number(id) === 1) {
             setUsers(() => [...allUser].sort((a, b) => a.username?.localeCompare(b.username)));
         } else if (Number(id) === 2) {
@@ -58,36 +61,9 @@ function BoardUser() {
     };
 
     const handleSearchUser = (title) => {
-        if (idSort === 1) {
-            title
-                ? setUsers(() =>
-                      allUser.filter(
-                          (User) =>
-                              User.firstName?.toLowerCase().includes(title.toLowerCase()) ||
-                              User.lastName?.toLowerCase().includes(title.toLowerCase()),
-                      ),
-                  )
-                : setUsers(allUser);
-        } else if (idSort === 2) {
-            title
-                ? setUsers(() => allUser.filter((User) => User.email?.toLowerCase().includes(title.toLowerCase())))
-                : setUsers(allUser);
-        } else if (idSort === 3) {
-            title
-                ? setUsers(() => allUser.filter((User) => User.phone?.toLowerCase().includes(title.toLowerCase())))
-                : setUsers(allUser);
-        } else {
-            title
-                ? setUsers(() =>
-                      allUser.filter(
-                          (User) =>
-                              User.firstName?.toLowerCase().includes(title.toLowerCase()) ||
-                              User.lastName?.toLowerCase().includes(title.toLowerCase()),
-                      ),
-                  )
-                : setUsers(allUser);
-        }
+        setNameSearch(removeVietnameseTones(title?.toLowerCase()));
     };
+    console.log(chooseRemove);
     return (
         <>
             <SearchSortListOfAdmin
@@ -105,7 +81,7 @@ function BoardUser() {
                         ) : users?.length > 0 ? (
                             users.map((User, index) => (
                                 <tr key={User.id} className="border-b hover:bg-gray-50">
-                                    <td className="py-3 px-6">{index + 1}</td>
+                                    <td className="py-3 px-6">{(page - 1) * data?.pageSize + index + 1}</td>
                                     <td className="py-3 px-6">
                                         {User.url && (
                                             <img
@@ -128,7 +104,7 @@ function BoardUser() {
                                         </button>
                                         <button
                                             className="text-red-600 hover:underline"
-                                            onClick={() => deleteOrder(User.id)}
+                                            onClick={() => setChooseRemove(User)}
                                         >
                                             Xóa
                                         </button>
@@ -145,6 +121,18 @@ function BoardUser() {
                     </tbody>
                 </table>
                 <Pagination className={'m-8 justify-end'} page={page} setPage={setPage} totalPages={totalPages} />
+                {chooseRemove && (
+                    <PopUpRemove
+                        id={chooseRemove.id}
+                        title={'Xóa người dùng'}
+                        desc={`Bạn có chắc chắn muốn xóa khách hàng ${
+                            chooseRemove?.firstName + ' ' + chooseRemove?.lastName
+                        } này không?`}
+                        onRemove={() => deleteOrder(chooseRemove)}
+                        onClose={() => setChooseRemove({})}
+                        isRemove={Object.keys(chooseRemove).length > 0}
+                    />
+                )}
             </div>
         </>
     );

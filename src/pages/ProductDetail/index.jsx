@@ -1,5 +1,3 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebook, faGooglePlus, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
 import { Skeleton } from '@mui/material';
@@ -117,7 +115,7 @@ const ProductDetail = () => {
             prev.map((product) => (product.id === id ? { ...product, count: newQuantity } : product)),
         );
     };
-
+    console.log(product);
     return (
         <div className="max-w-[1200px] mx-auto pt-32">
             <div className="flex flex-col md:flex-row gap-6 mb-12">
@@ -145,6 +143,13 @@ const ProductDetail = () => {
                     <p className="whitespace-pre-line text-gray-600 font-small text-[20px]">
                         {product?.description || <Skeleton variant="text" />}
                     </p>
+
+                    <div className="flex items-center gap-4">
+                        <p className="text-sm text-gray-600">Còn {product.quantity} sản phẩm</p>
+                        <span className="text-gray-400">•</span>
+                        <p className="text-sm text-gray-600">Đã bán {product.sold}</p>
+                    </div>
+
                     <div className="flex items-center gap-4">
                         <CountNumber
                             product={product}
@@ -152,15 +157,6 @@ const ProductDetail = () => {
                             onUpdateQuantity={(id, qty) => setProduct((prev) => ({ ...prev, count: qty }))}
                         />
                         <Button handle={handlePurchase} rouded title="MUA HÀNG" />
-                    </div>
-                    <p className="text-sm text-gray-600">còn {product.quantity} sản phẩm</p>
-
-                    {/* Social Share */}
-                    <div className="flex items-center gap-4 mt-4 cursor-pointer">
-                        <span className="text-sm font-semibold uppercase">Chia sẻ</span>
-                        <FontAwesomeIcon className="text-blue-600" icon={faFacebook} />
-                        <FontAwesomeIcon className="text-sky-500" icon={faTwitter} />
-                        <FontAwesomeIcon className="text-red-500" icon={faGooglePlus} />
                     </div>
                 </div>
             </div>

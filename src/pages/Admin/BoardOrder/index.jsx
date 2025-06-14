@@ -126,8 +126,8 @@ function BoardOrder() {
                 {chooseRemove && (
                     <PopUpRemove
                         id={chooseRemove.id}
-                        title={'Xóa đơn đặt hàng'}
-                        desc={`Bạn có chắc chắn muốn xóa đơn hàng ${chooseRemove?.name} của khách hàng ${chooseRemove?.user?.firstName} không?`}
+                        title={'Hủy đơn đặt hàng'}
+                        desc={`Bạn có chắc chắn muốn hủy đơn hàng ${chooseRemove?.name} của khách hàng ${chooseRemove?.user?.firstName} không?`}
                         onRemove={() => deleteOrder(chooseRemove)}
                         onClose={() => setChooseRemove({})}
                         isRemove={Object.keys(chooseRemove).length > 0}

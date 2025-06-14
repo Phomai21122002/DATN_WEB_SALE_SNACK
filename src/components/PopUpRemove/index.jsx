@@ -16,7 +16,7 @@ function PopUpRemove({ title, desc, onRemove, onClose, isRemove }) {
                     />
                     <Button
                         handle={onRemove}
-                        title={'Xóa'}
+                        title={'Xác nhận'}
                         classNameButton={'bg-red-400 hover:bg-red-500 text-white'}
                     />
                 </div>

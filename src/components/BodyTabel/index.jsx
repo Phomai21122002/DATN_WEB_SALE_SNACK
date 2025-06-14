@@ -10,7 +10,7 @@ const BodyTabel = ({ index, item = {}, onEdit, onDel, status = false, onShow }) 
             <td className="py-3 px-6">{item.name}</td>
             <td className="py-3 px-6 min-w-[120px]">{item?.countProduct}</td>
             <td className="py-3 px-6">{item.total?.toLocaleString()} VND</td>
-            <td className="py-3 px-6">
+            <td className="py-3 px-6 min-w-[140px]">
                 <span className={`px-3 py-1 rounded-full text-xs ${getOrderStatusStyle(item.status)}`}>
                     {getOrderStatusText(item.status)}
                 </span>
@@ -18,16 +18,21 @@ const BodyTabel = ({ index, item = {}, onEdit, onDel, status = false, onShow }) 
             {userData && userData.role?.name === 'Admin' && (
                 <td className="py-3 px-6 min-w-[120px]">
                     {status ? (
-                        <button className="text-blue-600 hover:underline" onClick={() => onShow(item)}>
-                            Xem chi tiết
-                        </button>
+                        <>
+                            <button className="text-blue-600 hover:underline mr-2" onClick={() => onShow(item)}>
+                                Xem
+                            </button>
+                            <button className="text-red-600 hover:underline" onClick={() => onDel(item)}>
+                                Xóa
+                            </button>
+                        </>
                     ) : (
                         <>
                             <button className="text-blue-600 hover:underline mr-2" onClick={() => onEdit(item)}>
                                 Xác nhận
                             </button>
                             <button className="text-red-600 hover:underline" onClick={() => onDel(item)}>
-                                Xóa
+                                hủy
                             </button>
                         </>
                     )}
