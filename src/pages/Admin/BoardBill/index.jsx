@@ -37,7 +37,12 @@ function BoardBill() {
                         Array.from({ length: 10 }).map((_, idx) => <SkeletonRow key={idx} col={listTitle.length} />)
                     ) : orderList.length > 0 ? (
                         orderList.map((order, index) => (
-                            <BodyTabelBill key={order.id} index={index} item={order} onShow={showBill} />
+                            <BodyTabelBill
+                                key={order.id}
+                                index={(page - 1) * data?.pageSize + index}
+                                item={order}
+                                onShow={showBill}
+                            />
                         ))
                     ) : (
                         <tr>

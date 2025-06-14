@@ -20,20 +20,22 @@ function Product() {
     const [products, setProducts] = useState([]);
     const [chooseNameCategory, setChooseNameCategory] = useState(null);
     const [categories, setCategories] = useState([]);
-    const [allProducts, setAllProducts] = useState([]);
     const [chooseRemove, setChooseRemove] = useState({});
     const [statistic, setStatistic] = useState({});
+    const [nameSearch, setNameSearch] = useState(null);
 
     const navigate = useNavigate();
 
-    const filters = useMemo(() => ({ categoryId: chooseNameCategory, PageNumber: page }), [page, chooseNameCategory]);
+    const filters = useMemo(
+        () => ({ Name: nameSearch, categoryId: chooseNameCategory, PageNumber: page }),
+        [page, chooseNameCategory, nameSearch],
+    );
     const { data, isLoading, refetchListProduct } = useGetProducts(filters);
     const totalPages = useMemo(() => {
         const totalCount = data?.totalCount || 0;
         return totalCount ? Math.ceil(totalCount / data?.pageSize) : 0;
     }, [data]);
     useEffect(() => {
-        setAllProducts(data?.datas || []);
         setProducts(data?.datas || []);
     }, [data]);
 
@@ -69,16 +71,7 @@ function Product() {
     };
 
     const handleSearchProduct = (title) => {
-        const lowerTitle = removeVietnameseTones(title?.toLowerCase() || '');
-
-        const filtered = lowerTitle
-            ? allProducts.filter((product) => {
-                  const name = removeVietnameseTones(product.name.toLowerCase());
-                  return name.includes(lowerTitle);
-              })
-            : allProducts;
-
-        setProducts(filtered);
+        setNameSearch(removeVietnameseTones(title?.toLowerCase()));
     };
 
     return (

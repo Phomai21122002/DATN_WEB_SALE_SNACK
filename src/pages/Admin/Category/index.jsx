@@ -70,7 +70,7 @@ function Category() {
 
         setCategories(filtered);
     };
-    console.log(chooseRemove);
+
     return (
         <>
             <SearchSortListOfAdmin

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 
 import HeaderTable from '~/components/HeaderTabel';
 import { listTitle } from './Constant';
@@ -12,6 +13,7 @@ import Pagination from '~/components/Pagination';
 import SkeletonRow from '~/components/SkeletonRow';
 import PopUpRemove from '~/components/PopUpRemove';
 import StatCardProduct from '~/components/StatCardProduct';
+import { removeVietnameseTones } from '../Category/Constant';
 
 function BoardOrder() {
     const navigate = useNavigate();
@@ -20,11 +22,13 @@ function BoardOrder() {
     const [orderList, setOrderList] = useState([]);
     const [orderListStatistic, setOrderListStatistic] = useState({});
     const [chooseRemove, setChooseRemove] = useState({});
+    const [nameSearch, setNameSearch] = useState(null);
+    const [searchOrder, setSearchOrder] = useState('');
 
     const params = useMemo(() => {
         if (!userData?.id) return null;
-        return { userId: userData.id, Status: 1, PageNumber: page };
-    }, [userData, page]);
+        return { Name: nameSearch, userId: userData.id, Status: 1, PageNumber: page };
+    }, [userData, page, nameSearch]);
     const { data, isLoading, refetch } = useGetProductsInOrderInAdmin(params);
 
     const totalPages = useMemo(() => {
@@ -35,8 +39,12 @@ function BoardOrder() {
     useEffect(() => {
         setOrderList(data?.datas || []);
         const getDataStatisticOrder = async () => {
-            const res = await GetOrderStatistic();
-            setOrderListStatistic(res);
+            try {
+                const res = await GetOrderStatistic();
+                setOrderListStatistic(res);
+            } catch (error) {
+                console.log(error);
+            }
         };
         getDataStatisticOrder();
     }, [data]);
@@ -55,14 +63,12 @@ function BoardOrder() {
         }
     };
 
+    const handleSearchProduct = () => {
+        setNameSearch(removeVietnameseTones(searchOrder?.toLowerCase()));
+    };
+
     return (
         <div className="space-y-8">
-            {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <StatCardRenevue type="orders" title="New Orders" value="1,390" />
-                <StatCardRenevue type="sales" title="Sales" value="$57,890" />
-                <StatCardRenevue type="revenue" title="Revenue" value="$12,390" />
-                <StatCardRenevue type="products" title="Total Products" value="1,390" />
-            </div> */}
             <div className="flex flex-col sm:flex-row gap-4 my-4 rounded-lg bg-gray-200 px-4 py-6">
                 <StatCardProduct value={orderListStatistic?.amountPending} label="Pending Orders" type="pending" />
                 <StatCardProduct value={orderListStatistic?.amountShipped} label="Shipped Orders" type="shipped" />
@@ -73,7 +79,24 @@ function BoardOrder() {
                     type="cancelled"
                 />
             </div>
-
+            <div className="flex items-center justify-end">
+                <input
+                    type="text"
+                    placeholder="Tìm kiếm..."
+                    value={searchOrder}
+                    onChange={(e) => setSearchOrder(e.target.value)}
+                    className="ml-2 max-w-[300px] ring-2 ring-gray-300 rounded-lg p-[6px] text-sm text-gray-700"
+                />
+                <div
+                    onClick={handleSearchProduct}
+                    className="group absolute rounded-tr-md rounded-br-md px-2 transition duration-200 cursor-pointer"
+                >
+                    <SearchOutlinedIcon
+                        sx={{ fontSize: '20px' }}
+                        className="text-gray-500 group-hover:text-yellow-500"
+                    />
+                </div>
+            </div>
             <div className="bg-white shadow-md rounded-lg overflow-hidden">
                 <table className="min-w-full text-left text-sm">
                     <HeaderTable listTitle={listTitle} />

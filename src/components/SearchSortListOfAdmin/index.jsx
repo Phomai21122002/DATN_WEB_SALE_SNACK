@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 
 function SearchSortListOfAdmin({ title, categories, onSortChange, onSearch }) {
     const [selectedCategoryId, setSelectedCategoryId] = useState('');
-    const [searchProduct, setsearchProduct] = useState('');
+    const [searchProduct, setSearchProduct] = useState('');
 
     const handleCategoryChange = (event) => {
         const selectedId = event.target.value;
@@ -12,11 +13,9 @@ function SearchSortListOfAdmin({ title, categories, onSortChange, onSearch }) {
         }
     };
 
-    const handleSearchProduct = (event) => {
-        const title = event.target.value;
-        setsearchProduct(title);
-        if (onSortChange) {
-            onSearch(title);
+    const handleSearchProduct = () => {
+        if (onSearch) {
+            onSearch(searchProduct);
         }
     };
     return (
@@ -41,9 +40,18 @@ function SearchSortListOfAdmin({ title, categories, onSortChange, onSearch }) {
                     type="text"
                     placeholder="Tìm kiếm..."
                     value={searchProduct}
-                    onChange={(e) => handleSearchProduct(e)}
+                    onChange={(e) => setSearchProduct(e.target.value)}
                     className="ml-2 max-w-[300px] ring-2 ring-gray-300 rounded-lg p-[6px] text-sm text-gray-700"
                 />
+                <div
+                    onClick={handleSearchProduct}
+                    className="group absolute rounded-tr-md rounded-br-md px-2 transition duration-200 cursor-pointer"
+                >
+                    <SearchOutlinedIcon
+                        sx={{ fontSize: '20px' }}
+                        className="text-gray-500 group-hover:text-yellow-500"
+                    />
+                </div>
             </div>
         </div>
     );

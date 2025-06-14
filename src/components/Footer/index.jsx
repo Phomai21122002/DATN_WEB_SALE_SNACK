@@ -9,9 +9,9 @@ function Footer() {
         <footer className="bg-neutral-100 text-center text-neutral-600 dark:bg-neutral-600 dark:text-neutral-200 lg:text-left mt-[50px]">
             {/* <!-- Main container div: holds the entire content of the footer, including four sections (TW Elements, Products, Useful links, and Contact), with responsive styling and appropriate padding/margins. --> */}
             <div className="max-w-[80%] mx-auto py-10 text-center md:text-left">
-                <div className="grid-1 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {/* <!-- TW Elements section --> */}
-                    <div className="">
+                    <div>
                         <h6 className="mb-4 flex items-center justify-center text-sm font-semibold md:justify-start">
                             <Link
                                 to={routes.home}
@@ -29,27 +29,19 @@ function Footer() {
                     </div>
                     {/* <!-- Products section --> */}
                     <div className="text-sm">
-                        <h6 className="mb-4 flex justify-center font-semibold uppercase md:justify-start">
-                            Truy cập nhanh
-                        </h6>
-                        <p className="mb-4">
-                            <a href="/" className="text-neutral-600 dark:text-neutral-200">
-                                Sản phẩm bán chạy
-                            </a>
-                        </p>
-                        <p className="mb-4">
-                            <a href="/" className="text-neutral-600 dark:text-neutral-200">
-                                Sản phẩm mới ra mắt
-                            </a>
-                        </p>
-                        <p className="mb-4">
-                            <a href="/" className="text-neutral-600 dark:text-neutral-200">
-                                Giỏ hàng
-                            </a>
-                        </p>
+                        <iframe
+                            title="Phô Mai Shop"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3833.8342169500065!2d108.13407707460004!3d16.07409043930882!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31421f94a20c2503%3A0xb07b0c95ad2dfd55!2zVG_DoCBFMywgQ2h1bmcgY8awIE5ow6Ag4bufIHjDoyBo4buZaSBLQ04gSG_DoCBLaMOhbmg!5e0!3m2!1svi!2s!4v1749899638864!5m2!1svi!2s"
+                            width="100%"
+                            height="300"
+                            style={{ border: 0 }}
+                            allowFullScreen=""
+                            loading="lazy"
+                            referrerPolicy="no-referrer-when-downgrade"
+                        />
                     </div>
                     {/* <!-- Contact section --> */}
-                    <div className="text-sm">
+                    <div className=" text-sm">
                         <h6 className="mb-4 flex justify-center font-semibold uppercase md:justify-start">Liên hệ</h6>
 
                         <p className="mb-4 flex items-center justify-center md:justify-start">
@@ -57,12 +49,12 @@ function Footer() {
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
                                 fill="currentColor"
-                                className="mr-3 h-7 w-7"
+                                className="mr-3 h-5 w-5"
                             >
                                 <path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z" />
                                 <path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" />
                             </svg>
-                            Tòa E4, Khu công nghiệp Hòa Khánh, Phường Hòa Khánh Bắc, Quận Liên Chiểu, TP. Đà Nẵng
+                            Toà E3, Chung cư Nhà ở xã hội KCN Hoà Khánh
                         </p>
 
                         <p className="mb-4 flex items-center justify-center md:justify-start">

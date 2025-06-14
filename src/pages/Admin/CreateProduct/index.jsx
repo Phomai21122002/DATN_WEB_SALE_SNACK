@@ -62,7 +62,7 @@ function CreateProduct() {
             tag: '',
             urls: images.map((image) => image.url),
         };
-        console.log(newProduct);
+
         try {
             await AddProduct(categoryId, newProduct);
             navigate(routes.adminListProduct);
