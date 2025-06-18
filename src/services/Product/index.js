@@ -52,6 +52,7 @@ export const GetProductBySlug = async ({ slug }) => {
 };
 
 export const AddProduct = async (categoryId, data) => {
+    console.log(data);
     const res = await request.post(`/product`, data, {
         params: {
             categoryId: categoryId,
@@ -93,11 +94,19 @@ export const RemoveProductOrder = async ({ userId, orderId, productId }) => {
 };
 
 export const GetRecommenedProductBySlug = async ({ slug }) => {
-    const res = await request.get(`http://127.0.0.1:8000/api`, {
+    const res = await request.get(`http://127.0.0.1:8000/api/recommender-content`, {
         params: {
             slug: slug,
         },
     });
-    console.log(res.data);
+    return res.data;
+};
+
+export const GetRecommenedByUserId = async ({ UserId }) => {
+    const res = await request.get(`http://127.0.0.1:8000/api/recommender-collaborative`, {
+        params: {
+            user_id: UserId,
+        },
+    });
     return res.data;
 };

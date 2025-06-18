@@ -35,6 +35,7 @@ export const SignUp = async (firstName, lastName, email, password) => {
 };
 
 export const ConfirmEmail = async (email, code) => {
+    console.log(email);
     const res = await request.post('/Auth/confirmEmail', null, {
         params: {
             email,

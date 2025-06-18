@@ -11,11 +11,10 @@ import { ConfirmEmail, SignIn } from '~/services/Auth';
 import Loading from '~/components/Loading';
 import { useStorage } from '~/Contexts';
 import PopUpCode from '~/components/PopUpCode';
-import { GetProfile } from '~/services/User';
 
 const Login = memo(() => {
     const navigate = useNavigate();
-    const { setIsLoggedIn, refetchProfile, setUserData } = useStorage();
+    const { setIsLoggedIn, refetchProfile } = useStorage();
     const [errorPass, setErrorPass] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [showCodePopup, setShowCodePopup] = useState(false);
@@ -55,7 +54,6 @@ const Login = memo(() => {
         setIsLoading(true);
         SignIn(email, password)
             .then(async (res) => {
-                console.log(res);
                 if (!res.isConfirmEmail) {
                     setLoginEmail(email);
                     setShowCodePopup(true);
@@ -87,10 +85,8 @@ const Login = memo(() => {
             expires: 7,
             path: '/',
         });
-        const profile = await GetProfile();
-        setUserData(profile);
         navigate(routes.home);
-        toast.success('Login successfully');
+        toast.success('Đăng nhập thành công');
     };
 
     return (

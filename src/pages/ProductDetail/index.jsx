@@ -14,12 +14,11 @@ import { useQueryClient } from '@tanstack/react-query';
 import { EQueryKeys } from '~/constants';
 import Pagination from '~/components/Pagination';
 import routes from '~/config/routes';
-import SkeletonProduct from '~/components/SkeletonProduct';
-import Product from '~/components/Product';
 import { updatedProducts } from '~/components/MenuProduct/Constains';
 import { convertRatingData, getRatingDescription } from './Constants';
 import ItemFeedback from '~/components/ItemFeedback';
 import ReviewForm from '~/components/ReviewForm';
+import MenuProductRecommender from '~/components/MenuProductRecommender';
 
 const ProductDetail = () => {
     const { slug } = useParams();
@@ -42,7 +41,7 @@ const ProductDetail = () => {
                 const res = await GetProductBySlug({ slug });
                 setProduct({ ...res, count: 1 });
                 const resRecommendedProduct = await GetRecommenedProductBySlug({ slug });
-                setAllProducts(updatedProducts(resRecommendedProduct.recommendedProduct));
+                setAllProducts(updatedProducts(resRecommendedProduct));
             } catch (err) {
                 console.log(err);
             } finally {
@@ -94,28 +93,6 @@ const ProductDetail = () => {
     const totalCount = data?.totalCount || 0;
     const totalPages = totalCount ? Math.ceil(totalCount / data?.pageSize) : 0;
 
-    const addToCart = async (productId, quantity) => {
-        if (userData && Object.keys(userData).length > 0) {
-            const res = await AddCart({
-                quantity,
-                userId: userData.id,
-                productId,
-            });
-            res &&
-                queryClient.invalidateQueries({
-                    queryKey: [EQueryKeys.GET_LIST_CART, userData?.id],
-                });
-        } else {
-            navigate(routes.login);
-        }
-    };
-
-    const updateQuantity = (id, newQuantity) => {
-        setAllProducts((prev) =>
-            prev.map((product) => (product.id === id ? { ...product, count: newQuantity } : product)),
-        );
-    };
-    console.log(product);
     return (
         <div className="max-w-[1200px] mx-auto pt-32">
             <div className="flex flex-col md:flex-row gap-6 mb-12">
@@ -219,62 +196,6 @@ const ProductDetail = () => {
                 >
                     Thêm đánh giá
                 </span>
-
-                {/* Add Review */}
-                {/* {chooseAddComment && (
-                    <div className="bg-white w-full p-8 mt-8">
-                        <form
-                            onSubmit={(e) => {
-                                e.preventDefault();
-                                handleAddReview();
-                            }}
-                            className="space-y-4"
-                        >
-                            <h2 className="uppercase mb-4 text-xl">Đánh giá của bạn</h2>
-                            <StarRate className={'mb-4'} sizeStar={40} gap={4} rating={rating} setRating={setRating} />
-
-                            <h2 className="uppercase mb-4 text-xl">Nhận xét của bạn</h2>
-                            <textarea
-                                placeholder="Nội dung đánh giá"
-                                className="border text-xl p-2 w-full rounded"
-                                rows={4}
-                                value={reviewContent || ''}
-                                onChange={(e) => setReviewContent(e.target.value)}
-                                required
-                            />
-                            <input
-                                className="text-xl"
-                                type="file"
-                                accept="image/*,video/*"
-                                multiple
-                                onChange={handleMediaUpload}
-                            />
-                            <div className="flex gap-4 flex-wrap">
-                                {reviewMedia.map((url, index) => (
-                                    <div key={index} className="relative">
-                                        {url.match(/.(mp4|webm)$/) ? (
-                                            <video controls className="w-32 h-32">
-                                                <source src={url} type="video/mp4" />
-                                            </video>
-                                        ) : (
-                                            <Image src={url} className="w-32 h-32 object-cover rounded" />
-                                        )}
-                                        <button
-                                            type="button"
-                                            onClick={() => handleRemoveMedia(index)}
-                                            className="absolute top-0 right-0 text-red-500"
-                                        >
-                                            ✕
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                            <button type="submit" className="w-full  text-xl bg-blue-600 text-white px-4 py-2 rounded">
-                                Gửi đánh giá
-                            </button>
-                        </form>
-                    </div>
-                )} */}
                 {chooseAddComment && (
                     <ReviewForm
                         onSubmit={({ rating, content, mediaFiles }) => handleAddReview(rating, content, mediaFiles)}
@@ -283,23 +204,12 @@ const ProductDetail = () => {
             </div>
 
             <div className="p-8">
-                <div className="flex text-xl text-gray-500 font-medium mb-4 uppercase">Các sản phẩm liên quan</div>
-                <div className="relative">
-                    <div className="overflow-hidden">
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 transition-all duration-500 p-1">
-                            {loading
-                                ? Array.from({ length: 5 }).map((_, index) => <SkeletonProduct key={index} />)
-                                : allProducts.map((product) => (
-                                      <Product
-                                          key={product.id}
-                                          product={product}
-                                          addToCart={addToCart}
-                                          updateQuantity={updateQuantity}
-                                      />
-                                  ))}
-                        </div>
-                    </div>
-                </div>
+                <MenuProductRecommender
+                    title="Các sản phẩm liên quan"
+                    loading={loading}
+                    allProducts={allProducts}
+                    setAllProducts={setAllProducts}
+                />
             </div>
         </div>
     );

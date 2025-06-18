@@ -62,7 +62,7 @@ function CreateProduct() {
             tag: '',
             urls: images.map((image) => image.url),
         };
-
+        console.log(newProduct);
         try {
             await AddProduct(categoryId, newProduct);
             navigate(routes.adminListProduct);
@@ -127,11 +127,6 @@ function CreateProduct() {
 
                 <div>
                     <label className="block text-sm font-bold mb-1">Mô tả chi tiết sản phẩm</label>
-                    {/* <textarea
-                        className="w-full text-sm p-2 border rounded-md min-h-[100px]"
-                        {...register('descriptionDetail', { required: 'Mô tả về chi tiết sản phẩm là bắt buộc' })}
-                        placeholder="Nhập mô tả chi tiết về sản phẩm"
-                    ></textarea> */}
                     <Controller
                         control={control}
                         name="descriptionDetail"

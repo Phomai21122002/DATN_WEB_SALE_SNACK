@@ -10,9 +10,9 @@ import { toast } from 'react-toastify';
 import PopUpCode from '~/components/PopUpCode';
 import { loginLogoList } from '../Login/constants/logo';
 import Cookies from 'js-cookie';
-import { GetProfile } from '~/services/User';
 import { useStorage } from '~/Contexts';
 import routes from '~/config/routes';
+import Loading from '~/components/Loading';
 
 function SignUp() {
     const navigate = useNavigate();
@@ -28,20 +28,24 @@ function SignUp() {
         mode: 'onSubmit',
         reValidateMode: 'onBlur',
     });
-    const { setIsLoggedIn, setUserData } = useStorage();
+    const { setIsLoggedIn } = useStorage();
     const [showCodePopup, setShowCodePopup] = useState(false);
     const [registeredEmail, setRegisteredEmail] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = (values) => {
         const { email, password, firstName, lastName } = values;
+        setIsLoading(true);
         Register(firstName, lastName, email, password)
             .then(() => {
                 setRegisteredEmail(email);
                 setShowCodePopup(true);
+                setIsLoading(false);
             })
             .catch((err) => {
                 console.error(err);
                 toast.error('Đăng ký không thành công');
+                setIsLoading(false);
             });
     };
 
@@ -53,10 +57,8 @@ function SignUp() {
             expires: 7,
             path: '/',
         });
-        const profile = await GetProfile();
-        setUserData(profile);
         navigate(routes.home);
-        toast.success('Register successfully');
+        toast.success('Đăng ký thành công');
     };
 
     return (
@@ -201,7 +203,7 @@ function SignUp() {
                     </div>
                 </div>
             </div>
-
+            {isLoading && <Loading />}
             {showCodePopup && (
                 <PopUpCode email={registeredEmail} onBack={() => setShowCodePopup(false)} onVerify={handleVerify} />
             )}

@@ -42,7 +42,9 @@ function PopUpCode({ email, onBack, onVerify }) {
     const handleVerify = async () => {
         try {
             await onVerify(verifyCode);
+            console.log('onBack');
             onBack();
+            console.log('onBack1');
         } catch (error) {
             setErrorCode('Mã xác nhận không đúng. Vui lòng thử lại.');
         }
@@ -54,7 +56,6 @@ function PopUpCode({ email, onBack, onVerify }) {
                 <div className="flex items-center justify-start mb-4">
                     <button
                         onClick={() => {
-                            console.log('ONbACK');
                             onBack();
                         }}
                         className="text-red-500 hover:opacity-70"
