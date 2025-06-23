@@ -15,6 +15,8 @@ import {
     CheckOutPayment,
     CreateCategory,
     CreateProduct,
+    FeedBackProduct,
+    FindProduct,
     Home,
     Login,
     Order,
@@ -44,6 +46,7 @@ const publicRoutes = [
     { path: config.routes.categoryDetail, component: CategoryDetail },
     { path: config.routes.reset, component: ForgotPassword, layout: AuthLayout },
     { path: config.routes.verifyEmail, component: VerifiEmail, layout: AuthLayout },
+    { path: config.routes.find, component: FindProduct },
 ];
 
 const adminRoutes = [
@@ -63,6 +66,7 @@ const adminRoutes = [
     { path: config.routes.adminListUser, component: BoardUser, layout: AdminLayout },
     { path: config.routes.adminUpdateUser, component: UpdateUser, layout: AdminLayout },
     { path: config.routes.adminUpdateOrder, component: UpdateOrder, layout: AdminLayout },
+    { path: config.routes.adminFeedBackProduct, component: FeedBackProduct, layout: AdminLayout },
 ];
 
 const userRoutes = [

@@ -11,3 +11,4 @@ export { default as BoardUser } from '~/pages/Admin/BoardUser';
 export { default as BoardRevenue } from '~/pages/Admin/BoardRevenue';
 export { default as UpdateUser } from '~/pages/Admin/UpdateUser';
 export { default as UpdateOrder } from '~/pages/Admin/UpdateOrder';
+export { default as FeedBackProduct } from '~/pages/Admin/FeedBackProduct';

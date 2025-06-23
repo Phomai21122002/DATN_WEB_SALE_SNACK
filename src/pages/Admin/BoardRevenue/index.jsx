@@ -1,9 +1,9 @@
 import { Chart } from 'react-google-charts';
 
-import { dataChart } from './Constant';
+import { transformToChartData } from './Constant';
 import { useEffect, useState } from 'react';
 import StatCardDashBoard from '~/components/StatCardDashBoard';
-import { GetProductsTop, GetStatistic, GetStatisticRevenue } from '~/services/Statistic';
+import { GetProductsTop, GetStatistic, GetStatisticRevenue, GetTotalSoldProductOfCategory } from '~/services/Statistic';
 import routes from '~/config/routes';
 import { useNavigate } from 'react-router-dom';
 
@@ -11,6 +11,7 @@ function BoardRevenue() {
     const [statistic, setStatistic] = useState({});
     const [productsTop, setProductsTop] = useState([]);
     const [revenueMonths, setRevenueMonths] = useState([]);
+    const [totalSoldProduct, setTotalSoldProduct] = useState([]);
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const navigate = useNavigate();
 
@@ -22,11 +23,12 @@ function BoardRevenue() {
             setProductsTop(resProductsTop);
             const resRevenue = await GetStatisticRevenue();
             setRevenueMonths(resRevenue);
-            console.log(resRevenue);
+            const resTotalSoldProductInCategory = await GetTotalSoldProductOfCategory();
+            setTotalSoldProduct(transformToChartData(resTotalSoldProductInCategory));
         };
         getData();
     }, []);
-    console.log(statistic);
+
     const months = Array.from({ length: 12 }, (_, i) => i + 1);
     const filteredData = revenueMonths.filter((d) => d.year === selectedYear);
     const revenueByMonth = months.map((m) => {
@@ -130,59 +132,28 @@ function BoardRevenue() {
 
             <div className="grid grid-cols-12 gap-4 my-4 bg-gray-200 px-4 py-6 w-full">
                 <div className="col-span-12 md:col-span-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
-                    <StatCardDashBoard label="Total Users" value={statistic?.totalUsers} growth={95} type="users" />
-                    <StatCardDashBoard label="Total Orders" value={statistic?.totalOrders} growth={30} type="orders" />
-                    <StatCardDashBoard
-                        label="Total Products"
-                        value={statistic?.totalProducts}
-                        growth={25}
-                        type="products"
-                    />
-                    <StatCardDashBoard
-                        label="Total Categories"
-                        value={statistic?.totalCategories}
-                        growth={45}
-                        type="categories"
-                    />
+                    <StatCardDashBoard label="Total Users" value={statistic?.totalUsers} type="users" />
+                    <StatCardDashBoard label="Total Orders" value={statistic?.totalOrders} type="orders" />
+                    <StatCardDashBoard label="Total Products" value={statistic?.totalProducts} type="products" />
+                    <StatCardDashBoard label="Total Categories" value={statistic?.totalCategories} type="categories" />
                 </div>
                 <div className="col-span-12 md:col-span-4">
                     <StatCardDashBoard
                         label="Total Sales"
                         value={statistic?.totalSales}
-                        growth={40.63}
                         type="sales"
                         className={'h-full'}
                     >
-                        <Chart chartType="PieChart" width="100%" height="220px" data={dataChart} options={options} />
+                        <Chart
+                            chartType="PieChart"
+                            width="100%"
+                            height="220px"
+                            data={totalSoldProduct}
+                            options={options}
+                        />
                     </StatCardDashBoard>
                 </div>
             </div>
-
-            {/* <table className="min-w-full text-left text-sm">
-                <HeaderTable listTitle={listTitle} />
-                <tbody>
-                    {revenueProducts.map((order, index) => (
-                        <tr key={index} className="border-b hover:bg-gray-50 cursor-pointer">
-                            <td className="py-3 px-6">{index + 1}</td>
-                            <td className="py-3 px-6">{order.name}</td>
-                            <td className="py-3 px-6">{order?.price?.toLocaleString()} VND</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table> */}
-            {/* {orderList.length === 0 && <div className="text-center py-6 text-gray-500">Không có đơn hàng nào</div>}
-            <BackgroundCart className="flex flex-col w-full orders-end mt-8 mb-12">
-                <div className="text-[16px] font-medium w-full max-w-md">
-                    <div className="flex justify-between orders-center mb-4">
-                        <span className="text-gray-700">Tổng sản phẩm đã bán:</span>
-                        <span className="text-black-500 font-semibold">{productSalesCount?.toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between orders-center mb-4">
-                        <span className="text-gray-700">Tổng doanh thu:</span>
-                        <span className="text-red-500 font-semibold">{totalRevenue?.toLocaleString()}đ</span>
-                    </div>
-                </div>
-            </BackgroundCart> */}
         </div>
     );
 }

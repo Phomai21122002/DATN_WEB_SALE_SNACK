@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import useGetCarts from '~/hooks/useGetCarts';
 import useGetProfile from '~/hooks/useGetProfile';
 
@@ -8,6 +8,9 @@ export const StorageContext = createContext();
 function GlobalStates({ children }) {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [checkedCart, setCheckedCart] = useState([]);
+    const refAllProduct = useRef(null);
+    const refRecommender = useRef(null);
+    const refNewest = useRef(null);
     const token = Cookies.get('authToken');
     const { data: userData, refetchProfile } = useGetProfile({
         enabled: !!token && !!isLoggedIn,
@@ -30,6 +33,9 @@ function GlobalStates({ children }) {
         setCheckedCart,
         refetchProfile,
         refetchListCart,
+        refAllProduct,
+        refRecommender,
+        refNewest,
     };
 
     return <StorageContext.Provider value={states}>{children}</StorageContext.Provider>;

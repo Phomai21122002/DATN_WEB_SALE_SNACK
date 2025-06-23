@@ -14,3 +14,8 @@ export const GetProductsTop = async () => {
     const res = await request.get(`/product/productsTop`);
     return res.data;
 };
+
+export const GetTotalSoldProductOfCategory = async () => {
+    const res = await request.get(`/statistic/total-sold-category`);
+    return res.data;
+};

@@ -1,51 +1,29 @@
-import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
-import { Skeleton } from '@mui/material';
-
-import Button from '~/components/Button';
-import ImageSlider from '~/components/ImageSlider';
-import CountNumber from '~/components/CountNumber';
-import { GetProductBySlug, GetRecommenedProductBySlug } from '~/services/Product';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useStorage } from '~/Contexts';
-import { AddCart } from '~/services/Cart';
-import { CreateFeedBack } from '~/services/Feedback';
+import { GetProductBySlug } from '~/services/Product';
 import useGetFeedBacks from '~/hooks/useGetFeedBacks';
-import { useQueryClient } from '@tanstack/react-query';
-import { EQueryKeys } from '~/constants';
-import Pagination from '~/components/Pagination';
 import routes from '~/config/routes';
-import { updatedProducts } from '~/components/MenuProduct/Constains';
-import { convertRatingData, getRatingDescription } from './Constants';
+import ImageSlider from '~/components/ImageSlider';
+import { Pagination, Skeleton } from '@mui/material';
+import { convertRatingData, getRatingDescription } from '~/pages/ProductDetail/Constants';
 import ItemFeedback from '~/components/ItemFeedback';
-import ReviewForm from '~/components/ReviewForm';
-import MenuProductRecommender from '~/components/MenuProductRecommender';
 
-const ProductDetail = () => {
+function FeedBackProduct() {
     const { slug } = useParams();
     const navigate = useNavigate();
-    const queryClient = useQueryClient();
     const { userData } = useStorage();
 
     const [product, setProduct] = useState({});
-    const [feedbacks, setFeedbacks] = useState([]);
-    const [revenueRating, setRevenueRating] = useState({});
-    const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
-    const [chooseAddComment, setChooseAddComment] = useState(false);
-    const [allProducts, setAllProducts] = useState([]);
 
     useEffect(() => {
         const getProductById = async () => {
-            setLoading(true);
             try {
                 const res = await GetProductBySlug({ slug });
                 setProduct({ ...res, count: 1 });
-                const resRecommendedProduct = await GetRecommenedProductBySlug({ slug });
-                setAllProducts(updatedProducts(resRecommendedProduct));
             } catch (err) {
                 console.log(err);
-            } finally {
-                setLoading(false);
             }
         };
         getProductById();
@@ -57,44 +35,22 @@ const ProductDetail = () => {
         [page, userData?.id, product?.id],
     );
     const { data, refetchListFeedback } = useGetFeedBacks(filterFeedbacks);
-    useEffect(() => {
-        setFeedbacks(data?.datas[0].feedBacks || []);
-        setRevenueRating(convertRatingData(data?.datas[0]));
-    }, [data]);
 
-    const handleAddReview = async (rating, content, mediaFiles) => {
-        try {
-            await CreateFeedBack(userData.id, {
-                productId: product?.id,
-                rate: rating,
-                content: content,
-                urls: mediaFiles,
-            });
-            queryClient.invalidateQueries([
-                EQueryKeys.GET_LIST_FEEDBACK,
-                { userId: userData.id, productId: product.id },
-            ]);
-            setChooseAddComment(false);
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    const handlePurchase = async () => {
-        if (userData) {
-            await AddCart({ quantity: product.count, userId: userData.id, productId: product.id });
-            queryClient.invalidateQueries([EQueryKeys.GET_LIST_CART, userData.id]);
-            navigate(routes.cart);
-        } else {
-            navigate(routes.login);
-        }
-    };
+    const feedbacks = useMemo(() => data?.datas?.[0]?.feedBacks ?? [], [data]);
+    const revenueRating = useMemo(() => convertRatingData(data?.datas?.[0]), [data]);
 
     const totalCount = data?.totalCount || 0;
-    const totalPages = totalCount ? Math.ceil(totalCount / data?.pageSize) : 0;
+    const totalPages = useMemo(
+        () => (totalCount ? Math.ceil(totalCount / data?.pageSize) : 0),
+        [totalCount, data?.pageSize],
+    );
+
+    const handleBack = () => {
+        navigate(routes.adminListProduct);
+    };
 
     return (
-        <div className="max-w-[1200px] mx-auto pt-32">
+        <div className="max-w-[1200px] mx-auto pt-6">
             <div className="flex flex-col md:flex-row gap-6 mb-12">
                 <div className="flex-1">
                     <div className="w-full max-w-md mx-auto">
@@ -125,15 +81,6 @@ const ProductDetail = () => {
                         <p className="text-sm text-gray-600">Còn {product.quantity} sản phẩm</p>
                         <span className="text-gray-400">•</span>
                         <p className="text-sm text-gray-600">Đã bán {product.sold}</p>
-                    </div>
-
-                    <div className="flex items-center gap-4">
-                        <CountNumber
-                            product={product}
-                            quantity={product?.count || 1}
-                            onUpdateQuantity={(id, qty) => setProduct((prev) => ({ ...prev, count: qty }))}
-                        />
-                        <Button handle={handlePurchase} rouded title="MUA HÀNG" />
                     </div>
                 </div>
             </div>
@@ -188,31 +135,20 @@ const ProductDetail = () => {
                 ) : (
                     <div className="text-center py-6 text-gray-500">Không có lượt đánh giá</div>
                 )}
-                <Pagination page={page} setPage={setPage} totalPages={totalPages} />
+                <div className="flex justify-center my-6">
+                    <Pagination page={page} count={totalPages} onChange={(_, val) => setPage(val)} color="primary" />
+                </div>
 
-                <span
-                    onClick={() => setChooseAddComment((prev) => !prev)}
-                    className="flex justify-end my-8 cursor-pointer text-xl hover:text-blue-500"
+                <button
+                    type="button"
+                    className="bg-gray-500 text-sm text-white p-2 rounded-md hover:bg-gray-600"
+                    onClick={handleBack}
                 >
-                    Thêm đánh giá
-                </span>
-                {chooseAddComment && (
-                    <ReviewForm
-                        onSubmit={({ rating, content, mediaFiles }) => handleAddReview(rating, content, mediaFiles)}
-                    />
-                )}
-            </div>
-
-            <div className="p-8">
-                <MenuProductRecommender
-                    title="Các sản phẩm liên quan"
-                    loading={loading}
-                    allProducts={allProducts}
-                    setAllProducts={setAllProducts}
-                />
+                    Quay lại
+                </button>
             </div>
         </div>
     );
-};
+}
 
-export default ProductDetail;
+export default FeedBackProduct;

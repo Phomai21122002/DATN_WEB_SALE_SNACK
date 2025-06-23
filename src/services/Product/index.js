@@ -110,3 +110,21 @@ export const GetRecommenedByUserId = async ({ UserId }) => {
     });
     return res.data;
 };
+
+export const GetRecommenedByUser = async ({ UserId }) => {
+    const res = await request.get(`http://127.0.0.1:8000/api/recommender-collaborative-user`, {
+        params: {
+            user_id: UserId,
+        },
+    });
+    return res.data;
+};
+
+export const GetRecommenedByNameProduct = async ({ Name }) => {
+    const res = await request.get(`http://127.0.0.1:8000/api/recommender-find`, {
+        params: {
+            name: Name,
+        },
+    });
+    return res.data;
+};

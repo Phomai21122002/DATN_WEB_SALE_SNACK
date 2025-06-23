@@ -27,11 +27,11 @@ const Login = memo(() => {
         },
     });
 
-    useEffect(() => {
-        setIsLoggedIn(false);
-        localStorage.clear();
-        Cookies.remove('authToken');
-    }, [setIsLoggedIn]);
+    // useEffect(() => {
+    //     setIsLoggedIn(false);
+    //     localStorage.clear();
+    //     Cookies.remove('authToken');
+    // }, [setIsLoggedIn]);
 
     useEffect(() => {
         const handleMessage = async (event) => {
@@ -41,7 +41,7 @@ const Login = memo(() => {
             Cookies.set('refreshToken', refreshToken, { expires: 7 });
             setIsLoggedIn(true);
             await refetchProfile();
-            toast.success('Login successfully!');
+            toast.success('Đăng nhập thành công!');
             navigate(routes.home);
         };
         window.addEventListener('message', handleMessage);
@@ -62,8 +62,9 @@ const Login = memo(() => {
                         expires: 7,
                         path: '/',
                     });
+                    Cookies.set('refreshToken', res.refreshToken, { expires: 7 });
                     setIsLoggedIn(true);
-                    toast.success('Login successfully');
+                    toast.success('Đăng nhập thành công!');
                     navigate(routes.home);
                 }
             })
@@ -85,6 +86,7 @@ const Login = memo(() => {
             expires: 7,
             path: '/',
         });
+        Cookies.set('refreshToken', res.refreshToken, { expires: 7 });
         navigate(routes.home);
         toast.success('Đăng nhập thành công');
     };
@@ -139,7 +141,7 @@ const Login = memo(() => {
                             />
 
                             <Button type="submit" variant="contained">
-                                Continue
+                                Đăng nhập
                             </Button>
                         </form>
                         {errorPass && <p className="mt-2 text-red-500 text-sm">{errorPass}</p>}

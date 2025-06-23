@@ -1,17 +1,15 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-export const refreshAccessToken = async () => {
-    const refreshToken = Cookies.get('refreshToken') || '';
+export const refreshAccessToken = async ({ token, refreshToken }) => {
     try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/auth/refresh`, {
-            headers: {
-                Authorization: `Bearer ${refreshToken}`,
-            },
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/Auth/Refresh`, {
+            expiredToken: token,
+            refreshToken: refreshToken,
         });
-        Cookies.set('authToken', response.data.accessToken);
+        Cookies.set('authToken', response.data.token);
         Cookies.set('refreshToken', response.data.refreshToken);
-        return response.data.accessToken;
+        return response.data.token;
     } catch (error) {
         console.error('Unable to refresh token', error);
         return null;

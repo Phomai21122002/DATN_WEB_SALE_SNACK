@@ -67,8 +67,9 @@ request.interceptors.response.use(
 
             originalRequest._retry = true;
             isRefreshing = true;
-
-            const newAccessToken = await refreshAccessToken();
+            const token = Cookies.get('authToken');
+            const refreshToken = Cookies.get('refreshToken');
+            const newAccessToken = await refreshAccessToken({ token: token, refreshToken: refreshToken });
 
             if (newAccessToken !== null) {
                 processQueue(null, newAccessToken);
@@ -81,13 +82,13 @@ request.interceptors.response.use(
 
                 if (!isRefreshing) {
                     isRefreshing = true;
-                    Cookies.remove('authToken');
-                    Cookies.remove('refreshToken');
+                    // Cookies.remove('authToken');
+                    // Cookies.remove('refreshToken');
 
                     // Thêm kiểm tra nếu chưa redirect
-                    if (!window.location.href.includes('/login')) {
-                        window.location.replace('/login');
-                    }
+                    // if (!window.location.href.includes('/login')) {
+                    //     window.location.replace('/login');
+                    // }
                 }
                 return Promise.reject(error);
             }

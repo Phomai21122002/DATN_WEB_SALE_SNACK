@@ -21,9 +21,10 @@ export const GetBills = async ({ userId, PageNumber = 1, PageSize = 10 }) => {
     return res.data;
 };
 
-export const GetBillsAdmin = async ({ PageNumber = 1, PageSize = 10 }) => {
+export const GetBillsAdmin = async ({ Name, PageNumber = 1, PageSize = 10 }) => {
     const res = await request.get(`/bill/admin/bills`, {
         params: {
+            Name,
             PageNumber,
             PageSize,
         },

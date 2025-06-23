@@ -9,7 +9,7 @@ function DefaultLayout({ children }) {
             <Header />
             {children}
             <Footer />
-            <ChatBot />
+            {/* <ChatBot /> */}
         </div>
     );
 }

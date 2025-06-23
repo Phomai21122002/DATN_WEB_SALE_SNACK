@@ -179,7 +179,7 @@ function SignUp() {
                         />
 
                         <Button type="submit" variant="contained">
-                            Continue
+                            Đăng ký
                         </Button>
                     </form>
                     <div className="mt-6 text-[14px] font-bold text-slate-400">Others:</div>

@@ -1,5 +1,5 @@
 import HeaderTable from '~/components/HeaderTabel';
-import { listTitle } from './Constant';
+import { listTitle, updatedProducts } from './Constant';
 import SearchSortListOfAdmin from '~/components/SearchSortListOfAdmin';
 import { useEffect, useMemo, useState } from 'react';
 import { AdminDeleteProduct } from '~/services/Product';
@@ -36,7 +36,7 @@ function Product() {
         return totalCount ? Math.ceil(totalCount / data?.pageSize) : 0;
     }, [data]);
     useEffect(() => {
-        setProducts(data?.datas || []);
+        setProducts(updatedProducts(data?.datas || []));
     }, [data]);
 
     const editProduct = (slug) => {
@@ -73,7 +73,7 @@ function Product() {
     const handleSearchProduct = (title) => {
         setNameSearch(removeVietnameseTones(title?.toLowerCase()));
     };
-
+    console.log(products);
     return (
         <>
             <div className="flex flex-col sm:flex-row gap-4 my-4 rounded-lg bg-gray-200 px-4 py-6">
@@ -94,7 +94,11 @@ function Product() {
                             Array.from({ length: 10 }).map((_, idx) => <SkeletonRow key={idx} col={listTitle.length} />)
                         ) : products.length > 0 ? (
                             products.map((product, index) => (
-                                <tr key={product.id} className="border-b hover:bg-gray-50">
+                                <tr
+                                    key={product.id}
+                                    onClick={() => navigate(routes.adminFeedBackProduct.replace(':slug', product.slug))}
+                                    className="border-b hover:bg-gray-50 cursor-pointer"
+                                >
                                     <td className="py-3 px-6">{(page - 1) * data?.pageSize + index + 1}</td>
                                     <td className="py-3 px-6">
                                         {product.urls.length > 0 && (
@@ -118,26 +122,26 @@ function Product() {
                                     <td className="py-3 px-6">{product.quantity}</td>
                                     <td className="py-3 px-6">{product.price.toLocaleString()} VND</td>
                                     <td className="py-3 px-6">
-                                        <span
-                                            className={`px-3 py-1 rounded-full text-xs ${
-                                                new Date(product.dateEnd) < new Date()
-                                                    ? 'bg-red-200 text-red-800'
-                                                    : 'bg-green-200 text-green-800'
-                                            }`}
-                                        >
-                                            {product.createdAt} - {product.expiryDate}
+                                        <span className={`px-3 py-1 rounded-full text-xs bg-green-200 text-green-800`}>
+                                            {product.usageDuration}
                                         </span>
                                     </td>
                                     <td className="py-3 px-6">
                                         <button
                                             className="text-blue-600 hover:underline mr-2"
-                                            onClick={() => editProduct(product.slug)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                editProduct(product.slug);
+                                            }}
                                         >
                                             Chỉnh sửa
                                         </button>
                                         <button
                                             className="text-red-600 hover:underline"
-                                            onClick={() => setChooseRemove(product)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setChooseRemove(product);
+                                            }}
                                         >
                                             Xóa
                                         </button>

@@ -74,26 +74,39 @@ function ItemFeedback({ feedback, product, refetchListFeedback }) {
                     </div>
                 </div>
 
-                {userData?.id === feedback?.user?.id && (
+                {(userData?.id === feedback?.user?.id || userData.role?.name === 'Admin') && (
                     <div className="relative" ref={menuRef}>
                         <button onClick={toggleMenu} className="px-2 py-1 rounded-full hover:bg-gray-100">
                             <MoreVertIcon />
                         </button>
-                        {isOpen && (
-                            <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-300 shadow-lg rounded-md z-10">
-                                <button
-                                    onClick={handleEdit}
-                                    className="w-full text-sm px-4 py-2 text-left hover:bg-gray-100"
-                                >
-                                    Sửa
-                                </button>
-                                <button
-                                    onClick={() => handleDelete(feedback?.user?.id, feedback?.id)}
-                                    className="w-full text-sm px-4 py-2 text-left hover:bg-gray-100 text-red-500"
-                                >
-                                    Xóa
-                                </button>
-                            </div>
+                        {isOpen ? (
+                            userData.role?.name === 'Admin' ? (
+                                <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-300 shadow-lg rounded-md z-10">
+                                    <button
+                                        onClick={() => handleDelete(feedback?.user?.id, feedback?.id)}
+                                        className="w-full text-sm px-4 py-2 text-left hover:bg-gray-100 text-red-500"
+                                    >
+                                        Xóa
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-300 shadow-lg rounded-md z-10">
+                                    <button
+                                        onClick={handleEdit}
+                                        className="w-full text-sm px-4 py-2 text-left hover:bg-gray-100"
+                                    >
+                                        Sửa
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(feedback?.user?.id, feedback?.id)}
+                                        className="w-full text-sm px-4 py-2 text-left hover:bg-gray-100 text-red-500"
+                                    >
+                                        Xóa
+                                    </button>
+                                </div>
+                            )
+                        ) : (
+                            ' '
                         )}
                     </div>
                 )}

@@ -18,11 +18,12 @@ function BoardUser() {
     const [page, setPage] = useState(1);
     const [allUser, setAllUser] = useState([]);
     const [nameSearch, setNameSearch] = useState(null);
+    const [nameSort, setNameSort] = useState(null);
     const [chooseRemove, setChooseRemove] = useState({});
 
     const params = useMemo(() => {
-        return { PageNumber: page, Name: nameSearch };
-    }, [page, nameSearch]);
+        return { PageNumber: page, Name: nameSearch, SortBy: nameSort };
+    }, [page, nameSearch, nameSort]);
     const { data, isLoading, refetch } = useGetUsers(params);
 
     const totalPages = useMemo(() => {
@@ -50,11 +51,11 @@ function BoardUser() {
 
     const handleSortChange = (id) => {
         if (Number(id) === 1) {
-            setUsers(() => [...allUser].sort((a, b) => a.username?.localeCompare(b.username)));
+            setNameSort('name');
         } else if (Number(id) === 2) {
-            setUsers(() => [...allUser].sort((a, b) => a.email?.localeCompare(b.email)));
+            setNameSort('email');
         } else if (Number(id) === 3) {
-            setUsers(() => [...allUser].sort((a, b) => a.phoneNumber?.localeCompare(b.phoneNumber)));
+            setNameSort('phone');
         } else {
             setUsers(allUser);
         }
@@ -63,7 +64,7 @@ function BoardUser() {
     const handleSearchUser = (title) => {
         setNameSearch(removeVietnameseTones(title?.toLowerCase()));
     };
-    console.log(chooseRemove);
+
     return (
         <>
             <SearchSortListOfAdmin

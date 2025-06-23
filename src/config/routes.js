@@ -16,6 +16,7 @@ export const routesAdmin = Object.fromEntries(
         adminProfile: 'profile',
         adminChangePass: 'changepass',
         adminUpdateOrder: 'updateorder/:id',
+        adminFeedBackProduct: 'feedbackproduct/:slug',
     }).map(([key, value]) => [key, `/admin/${value}`]),
 );
 
@@ -35,6 +36,7 @@ const routes = {
     product: '/product/:slug',
     cart: '/cart',
     order: '/order',
+    find: '/find/:name',
     categoryDetail: '/category/:id',
     login: '/login',
     signup: '/signup',

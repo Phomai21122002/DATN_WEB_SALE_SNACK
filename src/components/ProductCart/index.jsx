@@ -1,6 +1,5 @@
 import { memo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 import routes from '~/config/routes';
 import QuantitySelector from '~/components/QuantitySelector';
@@ -54,10 +53,6 @@ function ProductCart({ product, onUpdateQuantity, setChooseRemove }) {
                 >
                     Xóa
                 </button>
-                <div className="flex items-center text-red-500 cursor-pointer">
-                    <span className="text-[12px] leading-none">Tìm sản phẩm tương tự</span>
-                    <ArrowDropDownIcon style={{ fontSize: 20 }} />
-                </div>
             </div>
         </>
     );

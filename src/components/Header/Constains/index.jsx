@@ -1,18 +1,11 @@
-import FastfoodOutlinedIcon from '@mui/icons-material/FastfoodOutlined';
-import CakeOutlinedIcon from '@mui/icons-material/CakeOutlined';
-import LocalDrinkOutlinedIcon from '@mui/icons-material/LocalDrinkOutlined';
-
 export const menuHeader = [
     {
-        title: 'Bánh ép',
-        icon: <FastfoodOutlinedIcon sx={{ fontSize: '16px' }} />,
+        title: 'Đáng chú ý',
     },
     {
-        title: 'Nước uống',
-        icon: <LocalDrinkOutlinedIcon sx={{ fontSize: '16px' }} />,
+        title: 'Hot nhất',
     },
     {
-        title: 'Bánh kem',
-        icon: <CakeOutlinedIcon sx={{ fontSize: '16px' }} />,
+        title: 'Tất cả sản phẩm',
     },
 ];

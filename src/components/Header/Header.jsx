@@ -15,7 +15,7 @@ import PopperCart from '../PopperCart';
 import useGetProducts from '~/hooks/useGetProducts';
 
 const Header = () => {
-    const { userData, dataCart } = useStorage();
+    const { userData, dataCart, refRecommender, refNewest, refAllProduct } = useStorage();
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
     const [anchorElCart, setAnchorElCart] = useState(null);
@@ -64,6 +64,23 @@ const Header = () => {
         setAnchorElCart(null);
     };
 
+    const handleMenuClick = (index) => {
+        const scrollTargets = [refRecommender, refNewest, refAllProduct];
+        const targetRef = scrollTargets[index];
+        if (targetRef?.current) {
+            targetRef.current.scrollIntoView({ behavior: 'smooth' });
+        } else {
+            console.warn('ref not ready for index:', index);
+            setTimeout(scrollTargets, 50);
+        }
+    };
+
+    const handleFindProduct = () => {
+        console.log(searchQuery);
+        const encodedName = encodeURIComponent(searchQuery);
+        navigate(routes.find.replace(':name', encodedName));
+    };
+
     const open = Boolean(anchorEl);
     const openCart = Boolean(anchorElCart);
     const idProfile = open ? 'simple-popover' : undefined;
@@ -79,6 +96,7 @@ const Header = () => {
                         {menuHeader.map((item, index) => (
                             <div
                                 key={index}
+                                onClick={() => handleMenuClick(index)}
                                 className="flex items-center space-x-1 hover:text-yellow-400 cursor-pointer"
                             >
                                 {item.icon}
@@ -94,12 +112,20 @@ const Header = () => {
                             type="text"
                             name="no-autocomplete"
                             placeholder="Tìm kiếm..."
-                            value={searchQuery}
+                            value={searchQuery ?? ''}
                             onChange={handleSearchInputChange}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleFindProduct();
+                                }
+                            }}
                             className="ml-2 w-full outline-none text-sm text-gray-700"
                             autoComplete="off"
                         />
-                        <div className="rounded-tr-md rounded-br-md py-1 px-2 hover:bg-yellow-200 transition duration-200 cursor-pointer">
+                        <div
+                            onClick={handleFindProduct}
+                            className="rounded-tr-md rounded-br-md py-1 px-2 hover:bg-yellow-200 transition duration-200 cursor-pointer"
+                        >
                             <SearchOutlinedIcon sx={{ fontSize: '20px' }} className="text-gray-500" />
                         </div>
                         {filteredResults?.length > 0 && (

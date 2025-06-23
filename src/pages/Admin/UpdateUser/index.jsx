@@ -53,7 +53,6 @@ function UpdateUser() {
             idRole: Number(role),
             url: user.url,
         };
-        console.log(userReq);
         try {
             await UpdateUserOfAdmin(id, userReq);
             navigate(routes.adminListUser);
