@@ -2,14 +2,16 @@ import { Controller, useForm } from 'react-hook-form';
 import { uploadMediaToCloudinary } from './Constant';
 import { useEffect, useRef, useState } from 'react';
 import { GetCategories } from '~/services/Category';
-import { AddProduct } from '~/services/Product';
+import { AddProduct, GetDataOnCSV } from '~/services/Product';
 import { useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
 import noImage from '~/assets/images/No-image.png';
 import JoditEditor from 'jodit-react';
+import { useStorage } from '~/Contexts';
 
 function CreateProduct() {
     const navigate = useNavigate();
+    const { token } = useStorage();
     const editor = useRef(null);
     const [images, setImages] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -62,10 +64,10 @@ function CreateProduct() {
             tag: '',
             urls: images.map((image) => image.url),
         };
-        console.log(newProduct);
         try {
             await AddProduct(categoryId, newProduct);
             navigate(routes.adminListProduct);
+            if (token) GetDataOnCSV({ token: token });
         } catch (err) {
             console.error('Error saving product:', err);
         }

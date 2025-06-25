@@ -46,7 +46,7 @@ function Home() {
                             setAllProducts={setAllProducts}
                         />
                     </div>
-                    <div ref={refNewest} style={{ scrollMarginTop: '80px' }}>
+                    <div className="mt-8" ref={refNewest} style={{ scrollMarginTop: '80px' }}>
                         <MenuProductRecommender
                             title={'Sản phẩm hot nhất'}
                             loading={loading}

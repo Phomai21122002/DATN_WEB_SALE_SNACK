@@ -6,10 +6,11 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useStorage } from '~/Contexts';
 import { DeleteFeedBack, UpdateFeedBack } from '~/services/Feedback';
 import ReviewForm from '../ReviewForm';
+import { GetDataOnCSV } from '~/services/Product';
 
 function ItemFeedback({ feedback, product, refetchListFeedback }) {
     const menuRef = useRef();
-    const { userData } = useStorage();
+    const { userData, token } = useStorage();
     const [isOpen, setIsOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
 
@@ -22,6 +23,7 @@ function ItemFeedback({ feedback, product, refetchListFeedback }) {
         setIsOpen(false);
         await DeleteFeedBack(userId, feedbackId);
         await refetchListFeedback();
+        if (token) GetDataOnCSV({ token: token });
     };
 
     const handleCancel = () => {

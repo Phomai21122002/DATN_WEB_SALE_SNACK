@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import ChatBot from '~/components/ChatBot';
+// import ChatBot from '~/components/ChatBot';
 import Footer from '~/components/Footer';
 import Header from '~/components/Header/Header';
 

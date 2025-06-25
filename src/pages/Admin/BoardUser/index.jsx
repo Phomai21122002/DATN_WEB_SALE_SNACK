@@ -11,6 +11,8 @@ import SkeletonRow from '~/components/SkeletonRow';
 import noImage from '~/assets/images/No-image.png';
 import { removeVietnameseTones } from '../Category/Constant';
 import PopUpRemove from '~/components/PopUpRemove';
+import { useStorage } from '~/Contexts';
+import { GetDataOnCSV } from '~/services/Product';
 
 function BoardUser() {
     const navigate = useNavigate();
@@ -20,6 +22,7 @@ function BoardUser() {
     const [nameSearch, setNameSearch] = useState(null);
     const [nameSort, setNameSort] = useState(null);
     const [chooseRemove, setChooseRemove] = useState({});
+    const { token } = useStorage();
 
     const params = useMemo(() => {
         return { PageNumber: page, Name: nameSearch, SortBy: nameSort };
@@ -36,14 +39,15 @@ function BoardUser() {
         setUsers(data?.datas || []);
     }, [data]);
 
-    const editOrder = (id) => {
+    const editUser = (id) => {
         navigate(routes.adminUpdateUser.replace(':id', id));
     };
-    const deleteOrder = async (user) => {
+    const deleteUser = async (user) => {
         try {
             await DeleteUserById(user?.id);
             refetch();
             setChooseRemove({});
+            if (token) GetDataOnCSV({ token: token });
         } catch (error) {
             console.error('Error fetching User data: ', error);
         }
@@ -99,7 +103,7 @@ function BoardUser() {
                                     <td className="py-3 px-6">
                                         <button
                                             className="text-blue-600 hover:underline mr-2"
-                                            onClick={() => editOrder(User.id)}
+                                            onClick={() => editUser(User.id)}
                                         >
                                             Chỉnh sửa
                                         </button>
@@ -129,7 +133,7 @@ function BoardUser() {
                         desc={`Bạn có chắc chắn muốn xóa khách hàng ${
                             chooseRemove?.firstName + ' ' + chooseRemove?.lastName
                         } này không?`}
-                        onRemove={() => deleteOrder(chooseRemove)}
+                        onRemove={() => deleteUser(chooseRemove)}
                         onClose={() => setChooseRemove({})}
                         isRemove={Object.keys(chooseRemove).length > 0}
                     />

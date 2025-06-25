@@ -2,7 +2,7 @@ import HeaderTable from '~/components/HeaderTabel';
 import { listTitle, updatedProducts } from './Constant';
 import SearchSortListOfAdmin from '~/components/SearchSortListOfAdmin';
 import { useEffect, useMemo, useState } from 'react';
-import { AdminDeleteProduct } from '~/services/Product';
+import { AdminDeleteProduct, GetDataOnCSV } from '~/services/Product';
 import noImage from '~/assets/images/No-image.png';
 import { useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
@@ -14,6 +14,7 @@ import SkeletonRow from '~/components/SkeletonRow';
 import PopUpRemove from '~/components/PopUpRemove';
 import StatCardProduct from '~/components/StatCardProduct';
 import { GetStatistic } from '~/services/Statistic';
+import { useStorage } from '~/Contexts';
 
 function Product() {
     const [page, setPage] = useState(1);
@@ -23,6 +24,7 @@ function Product() {
     const [chooseRemove, setChooseRemove] = useState({});
     const [statistic, setStatistic] = useState({});
     const [nameSearch, setNameSearch] = useState(null);
+    const { token } = useStorage();
 
     const navigate = useNavigate();
 
@@ -47,6 +49,7 @@ function Product() {
             await AdminDeleteProduct(product?.id);
             await refetchListProduct();
             setChooseRemove({});
+            if (token) GetDataOnCSV({ token: token });
         } catch (error) {
             console.error('Error fetching product data: ', error);
         }
@@ -73,7 +76,7 @@ function Product() {
     const handleSearchProduct = (title) => {
         setNameSearch(removeVietnameseTones(title?.toLowerCase()));
     };
-    console.log(products);
+
     return (
         <>
             <div className="flex flex-col sm:flex-row gap-4 my-4 rounded-lg bg-gray-200 px-4 py-6">

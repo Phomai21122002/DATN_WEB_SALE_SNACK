@@ -1,25 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
 
-import { useStorage } from '~/Contexts';
-import { AddCart } from '~/services/Cart';
-import { EQueryKeys } from '~/constants';
-import routes from '~/config/routes';
-import Product from '~/components/Product';
-import SkeletonProduct from '~/components/SkeletonProduct';
 import { GetRecommenedByNameProduct } from '~/services/Product';
 import { updatedProducts } from '~/components/MenuProduct/Constains';
 import MenuProductRecommender from '~/components/MenuProductRecommender';
 
 function FindProduct() {
-    const navigate = useNavigate();
-    const queryClient = useQueryClient();
     const { name: nameProduct } = useParams();
     const [products, setProducts] = useState([]);
-    const { userData } = useStorage();
-    const productsPerPage = 12;
-    const [paginatedProducts, setPaginatedProducts] = useState([]);
     const [sortOrder, setSortOrder] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
@@ -41,30 +29,6 @@ function FindProduct() {
         };
         getDataRecommend();
     }, [nameProduct]);
-
-    const addToCart = async (productId, quantity) => {
-        if (userData && Object.keys(userData).length > 0) {
-            const res = await AddCart({
-                quantity: quantity,
-                userId: userData?.id,
-                productId: productId,
-            });
-            res &&
-                queryClient.invalidateQueries({
-                    queryKey: [EQueryKeys.GET_LIST_CART, userData?.id],
-                });
-        } else {
-            navigate(routes.login);
-        }
-    };
-
-    const updateQuantity = (id, newQuantity) => {
-        setProducts((prevProducts) =>
-            prevProducts.map((product) =>
-                product.id === id && product.quantity >= newQuantity ? { ...product, count: newQuantity } : product,
-            ),
-        );
-    };
 
     const handleSortChange = (event) => {
         setSortOrder(event.target.value);

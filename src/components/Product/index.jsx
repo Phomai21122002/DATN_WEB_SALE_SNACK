@@ -32,7 +32,11 @@ function Product({ product, updateQuantity, addToCart }) {
                         <p className="text-lg my-2 text-red-600">
                             {Number(product.price).toLocaleString('vi-VN', { currency: 'VND' })} đ
                         </p>
-                        <p className="text-[12px] my-2 text-gray-600">còn {product.quantity} sp</p>
+                        {product.quantity <= 0 ? (
+                            <p className="text-[12px] my-2 text-white p-1 rounded-full bg-red-500">hết hàng</p>
+                        ) : (
+                            <p className="text-[12px] my-2 text-gray-600">còn {product.quantity} sp</p>
+                        )}
                     </div>
                 </Link>
 

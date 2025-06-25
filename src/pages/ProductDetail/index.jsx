@@ -5,7 +5,7 @@ import { Skeleton } from '@mui/material';
 import Button from '~/components/Button';
 import ImageSlider from '~/components/ImageSlider';
 import CountNumber from '~/components/CountNumber';
-import { GetProductBySlug, GetRecommenedProductBySlug } from '~/services/Product';
+import { GetDataOnCSV, GetProductBySlug, GetRecommenedProductBySlug } from '~/services/Product';
 import { useStorage } from '~/Contexts';
 import { AddCart } from '~/services/Cart';
 import { CreateFeedBack } from '~/services/Feedback';
@@ -24,7 +24,7 @@ const ProductDetail = () => {
     const { slug } = useParams();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
-    const { userData } = useStorage();
+    const { userData, token } = useStorage();
 
     const [product, setProduct] = useState({});
     const [feedbacks, setFeedbacks] = useState([]);
@@ -75,6 +75,7 @@ const ProductDetail = () => {
                 { userId: userData.id, productId: product.id },
             ]);
             setChooseAddComment(false);
+            if (token) GetDataOnCSV({ token: token });
         } catch (error) {
             console.log(error);
         }
