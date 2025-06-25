@@ -14,7 +14,6 @@ export const Roles = async () => {
 };
 
 export const SignUp = async (firstName, lastName, email, password) => {
-    console.log(firstName, lastName, email, password);
     const res = await request.post(
         '/Auth/register',
         {
@@ -35,7 +34,6 @@ export const SignUp = async (firstName, lastName, email, password) => {
 };
 
 export const ConfirmEmail = async (email, code) => {
-    console.log(email);
     const res = await request.post('/Auth/confirmEmail', null, {
         params: {
             email,

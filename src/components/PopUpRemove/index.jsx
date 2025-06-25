@@ -2,7 +2,7 @@ import { memo } from 'react';
 import Button from '../Button';
 import CoverPopUp from '../CoverPopUp';
 
-function PopUpRemove({ title, desc, onRemove, onClose, isRemove }) {
+function PopUpRemove({ title, desc, onRemove, onClose, isRemove, isLoading }) {
     return (
         <CoverPopUp isOpen={isRemove} onClose={onClose}>
             <div className="bg-white p-6 rounded-lg w-[400px] relative">
@@ -16,7 +16,7 @@ function PopUpRemove({ title, desc, onRemove, onClose, isRemove }) {
                     />
                     <Button
                         handle={onRemove}
-                        title={'Xác nhận'}
+                        title={isLoading ? 'Đang xử lý...' : 'Xác nhận'}
                         classNameButton={'bg-red-400 hover:bg-red-500 text-white'}
                     />
                 </div>

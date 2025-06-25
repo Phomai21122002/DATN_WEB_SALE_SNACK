@@ -12,3 +12,5 @@ export { default as BoardRevenue } from '~/pages/Admin/BoardRevenue';
 export { default as UpdateUser } from '~/pages/Admin/UpdateUser';
 export { default as UpdateOrder } from '~/pages/Admin/UpdateOrder';
 export { default as FeedBackProduct } from '~/pages/Admin/FeedBackProduct';
+export { default as BoardCancelProduct } from '~/pages/Admin/BoardCancelProduct';
+export { default as BoardCancelCategory } from '~/pages/Admin/BoardCancelCategory';

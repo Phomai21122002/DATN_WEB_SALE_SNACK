@@ -5,12 +5,12 @@ export const listPaymentByAcount = [
         value: 1,
         isActive: false,
     },
-    {
-        method: 'MoMo',
-        title: 'Bằng ví MOMO',
-        value: 2,
-        isActive: false,
-    },
+    // {
+    //     method: 'MoMo',
+    //     title: 'Bằng ví MOMO',
+    //     value: 2,
+    //     isActive: false,
+    // },
     {
         method: 'COD',
         title: 'Thanh toán khi nhận hàng',

@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import SkeletonRow from '~/components/SkeletonRow';
 import PopUpRemove from '~/components/PopUpRemove';
 
-function Category() {
+function BoardCancelCategory() {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [categories, setCategories] = useState([]);
@@ -146,4 +146,4 @@ function Category() {
     );
 }
 
-export default Category;
+export default BoardCancelCategory;

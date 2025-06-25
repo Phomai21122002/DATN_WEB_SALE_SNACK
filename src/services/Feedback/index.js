@@ -32,7 +32,6 @@ export const DeleteFeedBack = async (userId, feedbackId) => {
 };
 
 export const UpdateFeedBack = async (userId, feedbackId, data) => {
-    console.log(userId, feedbackId, data);
     const res = await request.put(`/feedback`, data, {
         params: {
             inputUserId: userId,

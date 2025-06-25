@@ -11,7 +11,6 @@ const VerifiEmail = () => {
     const email = queryParams.get('email');
 
     const handleBack = () => {
-        console.log('handleback');
         navigate(routes.reset);
     };
 

@@ -36,7 +36,6 @@ function UpdateProduct() {
                 const formattedExpiryDate = resProduct.expiryDate
                     ? new Date(resProduct.expiryDate).toLocaleDateString('en-CA')
                     : '';
-                console.log(resProduct);
                 reset({
                     id: resProduct.id,
                     name: resProduct.name,

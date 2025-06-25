@@ -9,6 +9,8 @@ export const routesAdmin = Object.fromEntries(
         adminListCategory: 'listcategory',
         adminListConfirmOrder: 'confirmorder',
         adminListCancelOrder: 'cancelorder',
+        adminListCancelProduct: 'cancelproduct',
+        adminListCancelCategory: 'cancelcategory',
         adminListBill: 'bill',
         adminListUser: 'user',
         adminUpdateUser: 'user/:id',

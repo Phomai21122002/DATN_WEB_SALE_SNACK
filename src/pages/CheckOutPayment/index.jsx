@@ -25,7 +25,6 @@ function CheckOutPayment() {
 
         fetchPaymentResult();
     }, [params, refetchListCart]);
-    console.log(orderData);
     const isSuccess = useMemo(() => orderData?.success, [orderData]);
 
     return (

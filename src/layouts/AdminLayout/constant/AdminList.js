@@ -78,6 +78,16 @@ export const ToDoList = () => [
             },
         ],
     },
+    {
+        title: 'Kho Lưu Trữ',
+        list: [
+            {
+                icon: <PlaylistRemoveOutlinedIcon fontSize="small" />,
+                title: 'Danh sách sản phẩm đã xóa',
+                path: routes.adminListCancelProduct,
+            },
+        ],
+    },
 ];
 
 export const UserItems = () => [

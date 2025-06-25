@@ -21,7 +21,6 @@ function UpdateOrder() {
         };
         getData();
     }, [id, userId]);
-    console.log(order);
 
     const handleBack = () => {
         switch (order?.status) {
@@ -109,12 +108,12 @@ function UpdateOrder() {
                         </div>
                         <div className="flex justify-between items-center">
                             <span className="text-gray-700">Phí vận chuyển (khu vực đà nẵng):</span>
-                            <span className="text-black font-semibold">20,000đ</span>
+                            <span className="text-black font-semibold">30,000đ</span>
                         </div>
                         <div className="flex justify-between items-center">
                             <span className="text-gray-700">Tổng thành tiền:</span>
                             <span className="text-red-500 font-semibold">
-                                {(order?.total + 20000)?.toLocaleString() ?? 0}đ
+                                {(order?.total + 30000)?.toLocaleString() ?? 0}đ
                             </span>
                         </div>
                         <div className="flex justify-between items-center">

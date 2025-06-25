@@ -21,6 +21,27 @@ export const GetProducts = async ({
     return res.data;
 };
 
+export const GetProductsRemove = async ({
+    Name,
+    SortBy = null,
+    isDecsending = false,
+    PageNumber = 1,
+    PageSize = 10,
+    categoryId,
+} = {}) => {
+    const res = await request.get('/product/productsRemoveSoft', {
+        params: {
+            categoryId,
+            Name,
+            SortBy,
+            isDecsending,
+            PageNumber,
+            PageSize,
+        },
+    });
+    return res.data;
+};
+
 export const GetProductsByIdCategory = async ({ categoryId, isDecsending, PageNumber = 1, PageSize = 10 } = {}) => {
     const res = await request.get('/product/productsByIdCategory', {
         params: {
@@ -52,7 +73,6 @@ export const GetProductBySlug = async ({ slug }) => {
 };
 
 export const AddProduct = async (categoryId, data) => {
-    console.log(data);
     const res = await request.post(`/product`, data, {
         params: {
             categoryId: categoryId,
@@ -62,8 +82,6 @@ export const AddProduct = async (categoryId, data) => {
 };
 
 export const AdminUpdateProduct = async (productId, categoryId, data) => {
-    console.log(data);
-
     const res = await request.put(`/product`, data, {
         params: {
             productId: productId,
@@ -73,8 +91,26 @@ export const AdminUpdateProduct = async (productId, categoryId, data) => {
     return res.data;
 };
 
+export const AdminRestoreProduct = async (productId) => {
+    const res = await request.put(`/product/restore`, null, {
+        params: {
+            productId: productId,
+        },
+    });
+    return res.data;
+};
+
 export const AdminDeleteProduct = async (id) => {
     const res = await request.delete(`/product/soft-delete`, {
+        params: {
+            productId: id,
+        },
+    });
+    return res.data;
+};
+
+export const DeleteProduct = async (id) => {
+    const res = await request.delete(`/product`, {
         params: {
             productId: id,
         },
@@ -94,7 +130,6 @@ export const RemoveProductOrder = async ({ userId, orderId, productId }) => {
 };
 
 export const GetDataOnCSV = async ({ token }) => {
-    console.log(token);
     const res = await request.get('http://127.0.0.1:8000/data', {
         headers: {
             Authorization: `Bearer ${token}`,

@@ -16,9 +16,7 @@ function FindProduct() {
             if (nameProduct !== '') {
                 try {
                     setIsLoading(true);
-                    console.log(nameProduct);
                     const res = await GetRecommenedByNameProduct({ Name: nameProduct });
-                    console.log(res);
                     setProducts(updatedProducts(res));
                 } catch (error) {
                     setIsLoading(false);

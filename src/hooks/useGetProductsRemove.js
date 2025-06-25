@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { EQueryKeys } from '~/constants';
-import { GetProductsByIdCategory } from '~/services/Product';
+import { GetProductsRemove } from '~/services/Product';
 
-const useGetProductsByIdCategory = (filters) => {
+const useGetProductsRemove = (filters) => {
     const {
         data,
         isLoading,
@@ -12,9 +12,9 @@ const useGetProductsByIdCategory = (filters) => {
         fetchNextPage,
         hasNextPage,
     } = useQuery({
-        queryKey: [EQueryKeys.GET_LIST_PRODUCT_BY_IDCATEGORY, filters],
+        queryKey: [EQueryKeys.GET_LIST_PRODUCT, filters],
         queryFn: async () => {
-            const response = await GetProductsByIdCategory(filters);
+            const response = await GetProductsRemove(filters);
             return response;
         },
         enabled: !!filters,
@@ -33,4 +33,4 @@ const useGetProductsByIdCategory = (filters) => {
     };
 };
 
-export default useGetProductsByIdCategory;
+export default useGetProductsRemove;

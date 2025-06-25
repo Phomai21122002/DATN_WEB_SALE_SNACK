@@ -3,6 +3,8 @@ import { AdminLayout, AuthLayout } from '~/layouts';
 import {
     BillDetail,
     BoardBillUser,
+    BoardCancelCategory,
+    BoardCancelProduct,
     BoardOrder,
     BoardOrderUser,
     BoardRevenue,
@@ -59,6 +61,8 @@ const adminRoutes = [
     { path: config.routes.adminListCategory, component: Category, layout: AdminLayout },
     { path: config.routes.adminListConfirmOrder, component: BoardConfirmOrder, layout: AdminLayout },
     { path: config.routes.adminListCancelOrder, component: BoardCancelOrder, layout: AdminLayout },
+    { path: config.routes.adminListCancelProduct, component: BoardCancelProduct, layout: AdminLayout },
+    { path: config.routes.adminListCancelCategory, component: BoardCancelCategory, layout: AdminLayout },
     { path: config.routes.adminListBill, component: BoardBill, layout: AdminLayout },
     { path: config.routes.adminProfile, component: ProfileAdmin, layout: AdminLayout },
     { path: config.routes.adminChangePass, component: ChangePassAdmin, layout: AdminLayout },
