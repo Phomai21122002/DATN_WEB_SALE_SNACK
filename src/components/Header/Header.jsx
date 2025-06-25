@@ -76,7 +76,6 @@ const Header = () => {
     };
 
     const handleFindProduct = () => {
-        console.log(searchQuery);
         const encodedName = encodeURIComponent(searchQuery);
         navigate(routes.find.replace(':name', encodedName));
     };

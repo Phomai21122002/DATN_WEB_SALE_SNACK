@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 
 import routes from '~/config/routes';
 import { useStorage } from '~/Contexts';
-import { GetPaymentMomo, GetPaymentVnpay } from '~/services/Payment';
+import { GetPaymentVnpay } from '~/services/Payment';
 
 function CheckOutPayment() {
     const [params] = useSearchParams();
@@ -14,8 +14,7 @@ function CheckOutPayment() {
     useEffect(() => {
         const fetchPaymentResult = async () => {
             try {
-                const partnerCode = params.get('partnerCode');
-                const res = partnerCode === 'MOMO' ? await GetPaymentMomo(params) : await GetPaymentVnpay(params);
+                const res = await GetPaymentVnpay(params);
                 setOrderData(res);
                 await refetchListCart();
             } catch (err) {

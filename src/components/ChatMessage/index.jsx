@@ -1,7 +1,6 @@
 import logoSale from '~/assets/images/Logo-sales.png';
 
 function ChatMessage({ chat }) {
-    console.log(chat.text);
     return (
         <div className={`flex items-center justify-${chat.role === 'admin' ? 'start' : 'end'}`}>
             {chat.role === 'admin' && (

@@ -42,9 +42,7 @@ function PopUpCode({ email, onBack, onVerify }) {
     const handleVerify = async () => {
         try {
             await onVerify(verifyCode);
-            console.log('onBack');
             onBack();
-            console.log('onBack1');
         } catch (error) {
             setErrorCode('Mã xác nhận không đúng. Vui lòng thử lại.');
         }
